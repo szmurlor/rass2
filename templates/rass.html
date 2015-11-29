@@ -39,3 +39,12 @@
   {% endfor -%}
   </ul>
 {% endmacro -%}
+
+{% macro debug_panel(context) -%}
+<div>
+  <h1>Debug</h1>
+  {% for key, value in context.iteritems() -%}
+      <li>{{ key }} = {{ value }}</li>
+  {% endfor -%}
+</div>
+{% endmacro -%}

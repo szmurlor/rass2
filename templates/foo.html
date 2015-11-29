@@ -11,6 +11,7 @@
 {% endblock %}
 
 {% block start %}
+{{ rass.debug_panel(context) }}
 <form action="/foo/process" enctype="multipart/form-data" method="POST">
   <dl>
     <dt>Plan</dt><dd>{{ rass.file_select_or_upload('rtplan', rtplan) }}</dd>
