@@ -1,22 +1,27 @@
 import collections
+import cPickle as pickle
+from sqlalchemy.orm.exc import NoResultFound, MultipleResultsFound
 from database import db, UserSessionData
 from rass_app import app
 
 class UserSession(collections.MutableMapping):
-	def __init__(self, user, *args, **kwargs):
+	def __init__(self, user):
 		self.user_id = user.id
 		self.store = dict()
-		self.update(dict(*args, **kwargs))  # use the free update to set keys
+		for key, in self.list_all_keys_in_database():
+			print key
+			self.store[self.__keytransform__(key)] = self.fetch_from_database(key)
+
+	def list_all_keys_in_database(self):
+		keys = UserSessionData.query.with_entities(UserSessionData.key).all()
+		return keys
 
 	def fetch_from_database(self, key, default=None):
-		print "Fetchingg"
 		try:
 			user_session_data = UserSessionData.query.filter_by(key=key, user_id=self.user_id).one()
-			value = pickle.loads(user_session_data.data)
-			app.logger.info("Fetched %r -> %s" % (key, value))
+			value = pickle.loads(user_session_data.value)
 			return value
-		except Exception, e:
-			app.logger.exception("Error while fetching the value for %r" % key)
+		except NoResultFound, e:
 			return default
 		
 	def store_in_database(self, key, value):
@@ -28,7 +33,6 @@ class UserSession(collections.MutableMapping):
 			user_session_data.value = pickle.dumps(value)
 			db.session.add(user_session_data)
 			db.session.commit()
-			app.logger.info("Stored %r -> %s" % (key, value))
 		except Exception, e:
 			app.logger.exception("Error while saving %r -> %r" % (key, value))
 
@@ -37,22 +41,22 @@ class UserSession(collections.MutableMapping):
 			user_session_data = UserSessionData.query.filter_by(key=key, user_id=self.user_id).one()
 			db.session.delete(user_session_data)
 			db.session.commit()
-		except Exception, e:
+		except NoResultFound, e:
 			app.logger.exception("Error while removing %r" % (key))
 
 	def __getitem__(self, key):
-		app.logger.info("GEtting")
 		if key not in self.store:
-			self.store[self.__keytransform__(key)] = self.fetch_from_database(key)
+			value = self.fetch_from_database(key)
+			if value is not None:
+				self.store[self.__keytransform__(key)] = value
 		return self.store[self.__keytransform__(key)]
 
 	def __setitem__(self, key, value):
-		app.logger.info("Setting")
 		self.store_in_database(key, value)
 		self.store[self.__keytransform__(key)] = value
 
 	def __delitem__(self, key):
-		self.delete_from_database()
+		self.delete_from_database(key)
 		del self.store[self.__keytransform__(key)]
 
 	def __iter__(self):

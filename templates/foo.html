@@ -3,17 +3,23 @@
 
 {% block upload %}
 <form action="/foo/upload" enctype="multipart/form-data" method="POST">
-  Dane: {{ rass.file_upload('dataset') }}
+  <dl>
+   <dt>Dane</dt><dd>{{ rass.file_upload('dataset') }}</dd>
+  </dl>
   <input type="submit" />
 </form>
 {% endblock %}
 
 {% block start %}
-<form action="/foo/process" method="POST">
-  Plan: {{ rass.file_select('rtplan', rtplan) }}
-  ROIs: {{ rass.file_select('rtss', rtss) }}
+<form action="/foo/process" enctype="multipart/form-data" method="POST">
+  <dl>
+    <dt>Plan</dt><dd>{{ rass.file_select_or_upload('rtplan', rtplan) }}</dd>
+    <dt>ROIs</dt><dd>{{ rass.file_select('rtss', rtss) }}</dd>
+  </dl>
   <input type="submit" />
 </form>
 {% endblock %}
 
-
+{% block process %}
+<p>{{ content }}</p>
+{% endblock %}
