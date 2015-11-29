@@ -3,8 +3,8 @@ import filesystem_helper
 from database import db, StoredFile, TemporaryStoredFile
 from rass_app import app
 
-def new_file(raw_bytes, file_name, file_directory, content_type=None):
-	stored_file = TemporaryStoredFile(raw_bytes, file_name, file_directory, content_type)
+def new_file(raw_bytes, file_name, content_type=None):
+	stored_file = TemporaryStoredFile(raw_bytes, file_name, content_type)
 	return stored_file
 
 def find_file_by_uid(uid):
@@ -19,7 +19,7 @@ def find_file_by_uid(uid):
 
 def find_files_by_type(content_type):
 	try:
-		matched_files = StoredFile.query.filter_by(content_type=content_type).all()
+		matched_files = StoredFile.query.filter_by(content_type=content_type).order_by(StoredFile.stored_at.desc()).all()
 		db.session.expunge_all()
 		db.session.close()
 		return matched_files
@@ -27,9 +27,9 @@ def find_files_by_type(content_type):
 		app.logger.debug("Could not find files with 'content_type': %r" % content_type)
 		return []
 
-def store_file(temporary_stored_file, charset='utf-8'):
+def store_file(temporary_stored_file, directory, charset='utf-8'):
 	try:
-		temporary_stored_file.write()
+		temporary_stored_file.write(directory)
     		db.session.add(temporary_stored_file)
 		db.session.commit()
 		return temporary_stored_file

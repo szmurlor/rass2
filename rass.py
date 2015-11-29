@@ -57,7 +57,7 @@ def merge_http_request_arguments():
 
 		if key not in args or content_length > 0:
 			# it is OK to overwrite Form parameters if we have sent a file
-			args[key] = storage.new_file(content, file_name, g.user.home, content_type)
+			args[key] = storage.new_file(content, file_name, content_type)
 
 		if key in args and content_length is 0:
 			uid = args[key]

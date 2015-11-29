@@ -1,6 +1,8 @@
-from flask import request, flash
+from flask import request, flash, g
+from datetime import date
 import content_type_helper
 import storage
+import os
 
 __scenario__ = "Optymalizacja PARETO"
 
@@ -20,9 +22,13 @@ def start():
 
 def upload(dataset):
 	if dataset.uid is None:
-		dataset = storage.store_file(dataset)
+		today = date.today().strftime("%d-%m-%Y")
+		directory = os.path.join(g.user.home, 'pareto', today)
+		dataset = storage.store_file(dataset, directory)
+
 	if content_type_helper.is_archive(dataset.content_type):
 		extract()
+
 	return start()
 
 def process(rtplan, rtss=None):

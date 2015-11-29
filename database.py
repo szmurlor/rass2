@@ -85,17 +85,16 @@ class StoredFile(db.Model):
 class TemporaryStoredFile(StoredFile):
 	content = str()
 
-	def __init__(self, content, file_name, file_directory, content_type):
+	def __init__(self, content, file_name, content_type):
 		self.content = content
 
-		file_path = os.path.join(file_directory, file_name)
-
-		StoredFile.__init__(self, file_path, content_type)
+		StoredFile.__init__(self, file_name, content_type)
 
 	def read(self):
 		return self.content
 
-	def write(self, charset='latin2'):
+	def write(self, directory, charset='latin2'):
+		self.path = os.path.join(directory, self.name)
 		filesystem_helper.mkdir_directories_for(self.path)
 		with open(self.path, 'wb') as f:
 			content = self.read()
