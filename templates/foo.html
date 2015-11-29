@@ -14,8 +14,8 @@
 {{ rass.debug_panel(context) }}
 <form action="/foo/process" enctype="multipart/form-data" method="POST">
   <dl>
-    <dt>Plan</dt><dd>{{ rass.file_select_or_upload('rtplan', rtplan) }}</dd>
-    <dt>ROIs</dt><dd>{{ rass.file_select('rtss', rtss) }}</dd>
+    <dt>Archive</dt><dd>{{ rass.file_select_or_upload('archive', archive) }}</dd>
+    <dt>Text file</dt><dd>{{ rass.file_select('textfile', textfile) }}</dd>
   </dl>
   <input type="submit" />
 </form>

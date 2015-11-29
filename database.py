@@ -59,9 +59,12 @@ class StoredFile(db.Model):
 			self.path = directory
 			self.content_type = 'inode/directory'
 		else:
+			print 'Splitting %r' % name
 			name, extension = os.path.splitext(name)
+			print 'Into %r and %r' % (name, extension)
 			self.name = name
 			self.path = os.path.join(directory, name + extension)
+			print 'Path %r' % self.path
 
 			if content_type is None:
 				content_type = content_type_helper.get_content_type_by_extension(extension)
@@ -94,7 +97,7 @@ class TemporaryStoredFile(StoredFile):
 		return self.content
 
 	def write(self, directory, charset='latin2'):
-		self.path = os.path.join(directory, self.name)
+		self.path = os.path.join(directory, self.path)
 		filesystem_helper.mkdir_directories_for(self.path)
 		with open(self.path, 'wb') as f:
 			content = self.read()

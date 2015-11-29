@@ -1,6 +1,7 @@
 from flask import request, flash, g
 from datetime import date
 import content_type_helper
+import filesystem_helper
 import storage
 import os
 
@@ -13,11 +14,13 @@ class FileType(object):
 	CT = 'application/ctimage+dicom'
 
 def start():
-	rtplan = storage.find_files_by_type('text/plain')
-	rtss = []
+	archive = storage.find_files_by_type('application/zip')
+	textfile = storage.find_files_by_type('text/plain')
+	rtdose = storage.find_files_by_type('application/rtdose+dicom')
 	return {
-		'rtplan': rtplan,
-		'rtss': rtss
+		'rtdose': rtdose,
+		'archive': archive,
+		'textfile': textfile
 	}
 
 def upload(dataset):
@@ -26,12 +29,15 @@ def upload(dataset):
 		directory = os.path.join(g.user.home, 'pareto', today)
 		dataset = storage.store_file(dataset, directory)
 
-	if content_type_helper.is_archive(dataset.content_type):
-		extract()
-
 	return start()
 
-def process(rtplan, rtss=None):
+def process(textfile, archive):
+	if content_type_helper.is_archive(archive.content_type):
+		directory = filesystem_helper.extract_archive(archive.path, archive.content_type)
+		for path in filesystem_helper.list_path(directory + '/**/RD.*.dcm'):
+			print "Found %s" % path
+			storage.new_file_from_filesystem(path, 'application/rtdose+dicom')
+
 	return {
-		'content': rtplan.read()
+		'content': textfile.read()
 	}

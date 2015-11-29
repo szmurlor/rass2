@@ -1,5 +1,7 @@
 import logger
 import os, errno
+import content_type_helper
+from glob import glob
 
 class UnknownEncoding(Exception):
 	pass
@@ -14,6 +16,13 @@ def mkdir_directories_for(path):
 		else:
 			raise
 
+def extract_archive(file_path, content_type):
+	extractor = content_type_helper.get_archive_extractor(content_type)
+	return extractor().extract(file_path)
+
+def list_path(pattern):
+	return glob(pattern)
+		
 def convert_to_unicode(raw_string):
 	try:
 		return raw_string.decode('utf-8') # converts to unicode

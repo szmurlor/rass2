@@ -3,9 +3,19 @@ import filesystem_helper
 from database import db, StoredFile, TemporaryStoredFile
 from rass_app import app
 
-def new_file(raw_bytes, file_name, content_type=None):
+def new_file_from_raw_bytes(raw_bytes, file_name, content_type=None):
 	stored_file = TemporaryStoredFile(raw_bytes, file_name, content_type)
 	return stored_file
+
+def new_file_from_filesystem(file_path, content_type=None):
+	stored_file = StoredFile(file_path, content_type)
+	try:
+		db.session.add(stored_file)
+		db.session.commit()
+		return stored_file
+	except Exception, e:
+		app.logger.debug("Could not save %r" % file_path)
+		return None
 
 def find_file_by_uid(uid):
 	try:
