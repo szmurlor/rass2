@@ -55,12 +55,9 @@ class StoredFile(db.Model):
                 directory, name = os.path.split(file_path)
 
 		if len(name) > 0:
-			print 'Splitting %r' % name
 			name, extension = os.path.splitext(name)
-			print 'Into %r and %r' % (name, extension)
 			self.name = name
 			self.path = os.path.join(directory, name + extension)
-			print 'Path %r' % self.path
 
 			if content_type is None:
 				content_type = content_type_helper.get_content_type_by_extension(extension)
