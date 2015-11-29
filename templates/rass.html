@@ -11,9 +11,9 @@
   {% if possible_files|count -%}
     {% for file in possible_files -%}
       {% if file.selected -%}
-        <option value="{{ file.uid }}" selected="selected">{{ file.name }}</option>
+        <option value="{{ file.uid }}" selected="selected">{{ file.name }} ({{ file.path }})</option>
       {% else -%}
-        <option value="{{ file.uid }}">{{ file.name }}</option>
+        <option value="{{ file.uid }}">{{ file.name }} ({{ file.path }})</option>
       {% endif -%}
     {% endfor -%}
   {% else -%}
