@@ -1,4 +1,5 @@
 # -*- encoding: utf-8
+import os
 from flask import Flask
 from flask import g, session, request, flash, abort
 from flask import render_template, redirect, url_for
@@ -109,8 +110,12 @@ def download(uid):
 	if stored_file is None:
 		return render_template("no_file.html", uid=uid), 404
 
+	file_name = os.path.basename(stored_file.path)
 	content = stored_file.read(charset=None)
-	return content, 200, { 'Content-Type': stored_file.content_type }
+	return content, 200, {
+		'Content-Type': stored_file.content_type,
+		'Content-Disposition': "attachment; filename=" + file_name
+	}
 
 @app.route('/<scenario_name>/')
 def start(scenario_name):
