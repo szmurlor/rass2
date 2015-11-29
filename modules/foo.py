@@ -19,9 +19,15 @@ def start():
 	}
 
 def upload(dataset):
-	print 'DATASET %r' % dataset
 	if dataset.uid is None:
 		dataset = storage.store_file(dataset)
 	if content_type_helper.is_archive(dataset.content_type):
 		extract()
-	return {'uploaded':True}
+	return start()
+
+def process(rtplan, rtss=None):
+	content = rtplan.read()
+	print 'CONTENT: %r' % content
+	return {
+		'content': content
+	}

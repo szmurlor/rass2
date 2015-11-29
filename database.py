@@ -1,5 +1,7 @@
+# -*- coding: utf-8
 import os.path
 import content_type_helper
+import filesystem_helper
 from hashlib import sha512
 from random import choice
 from string import ascii_lowercase, digits
@@ -31,16 +33,16 @@ class User(db.Model):
 	def __repr__(self):
 		return '<User %r>' % self.username
 
-class SessionData(db.Model):
+class UserSessionData(db.Model):
 	uid = db.Column(db.Integer, primary_key=True)
 	user_id = db.Column(db.Integer)
 	key = db.Column(db.String(32))
-	value = db.Column(db.String(2048))
+	value = db.Column(db.Binary())
 
-	def __init__(self, user, key, value):
-		self.user_id = user.id
+	def __init__(self, key, value, user_id):
+		self.user_id = user_id
 		self.key = key
-		self.value = pickle.dumps(value)
+		self.value = value
 
 class StoredFile(db.Model):
 	uid = db.Column(db.Integer, primary_key=True)
@@ -69,10 +71,37 @@ class StoredFile(db.Model):
 
 	def read(self):
 		with open(self.path, 'rb') as f:
-			return f.read()
+			raw_bytes = f.read()
+			print 'StoredFile.read: %r' % raw_bytes
+			return raw_bytes.decode('utf-8')
 
 	def __repr__(self):
 		return '<StoredFile %s in %r (%s)>' % (self.name, self.path, self.content_type)
 
 	def __str__(self):
 		return self.path
+
+class TemporaryStoredFile(StoredFile):
+	content = str()
+
+	def __init__(self, content, file_name, file_directory, content_type):
+		self.content = content
+
+		file_path = os.path.join(file_directory, file_name)
+
+		StoredFile.__init__(self, file_path, content_type)
+
+	def read(self):
+		print 'TemporaryStoredFile.read: %r' % self.content
+		return self.content
+
+	def write(self):
+		filesystem_helper.mkdir_directories_for(self.path)
+		with open(self.path, 'wb') as f:
+			content = self.read()
+			print 'store_file: %r' % content
+			f.write(content.encode('utf-8'))
+
+	def __repr__(self):
+		return '<TemporaryStoredFile %s supposed to be written in %r (%s)>' % (self.name, self.path, self.content_type)
+

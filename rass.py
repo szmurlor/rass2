@@ -13,6 +13,9 @@ import database
 import storage
 import debug
 
+from session import UserSession
+from filesystem_helper import convert_to_unicode
+
 def reload_scenarios():
 	import pkgutil
 	import modules
@@ -34,11 +37,10 @@ def reload_scenarios():
 			logger.exception("Problem while importing modules.%s: %s" % (module_name, e))
 
 def merge_http_request_arguments():
-	logger.debug("""Merging following HTTP data:
-- QueryString: %s
-- Form: %s
-- Files: %s
-""" % (request.args, request.form, request.files))
+	logger.debug("Merging following HTTP data:"
+		"\n- QueryString: %s" % request.args +
+		"\n- Form: %s" % request.form +
+		"\n- Files: %s" % request.files)
 	
 	args = {}
 	for key, value in request.args.iteritems():
@@ -48,15 +50,15 @@ def merge_http_request_arguments():
 		args[key] = value # it is OK to overwrite QueryString parameters
 
 	for key, value in request.files.iteritems():
-		content = value.read()
-		
+		content = convert_to_unicode(value.read())
+
 		file_name = value.filename
 		content_type = value.content_type
 		content_length = len(content)
 
 		if key not in args or content_length > 0:
 			# it is OK to overwrite Form parameters if we have sent a file
-			args[key] = storage.new_file(content, file_name, '/tmp', content_type)
+			args[key] = storage.new_file(content, file_name, g.user.home, content_type)
 
 		if key in args and content_length is 0:
 			uid = args[key]
@@ -71,16 +73,19 @@ def merge_http_request_arguments():
 				"Name: %s, uid: %s, args[%s]: %s" % (key, uid, key, args[key]))
 	return args
 
-def save_user_data(user_data, step_data):
-	session['user_data'] = {}
-	user_data.update(step_data)
-	for key, value in user_data.iteritems():
-		session['user_data'][key] = value
-
 @app.errorhandler(401)
 def unauthorized(error):
 	logger.debug("Unauthorized access to %s" % request.url)
 	return redirect(url_for('login') + '?redirect_url=' + request.url)
+
+@app.errorhandler(500)
+@app.route('/error/<error>')
+def internal_error(error):
+	error_description = session.pop('error_description','')
+	error_message = session.pop('error_message','UNKNOWN')
+	error_date = session.pop('error_date', datetime.utcnow())
+	return render_template('error.html', error=error,error_description=error_description,
+		error_message=error_message, error_date=error_date)
 
 @app.before_request
 def before_request():
@@ -119,21 +124,25 @@ def process(scenario_name, step_name):
 	if scenario_name not in scenarios:
 		return render_template("no_scenario.html", scenario_name = scenario_name, scenarios = scenarios)
 
-	user_data = session.get('user_data', {})
-	print "USER_DATA %s" % user_data
+	user_data = UserSession(g.user)
+
 	scenario_class = scenarios[scenario_name]['class']
 	step_function = getattr(scenario_class, step_name, None)
 	if step_function is None:
 		logger.exception('Module %s has no %r function' % (scenario_class, step_name))
-		return render_template('error.html', scenario_name = scenario_name, step_name = step_name,
-			error_message = "NO STEP FUNCTION", error_date = datetime.utcnow()), 500
+		session['error_message'] = "NO STEP FUNCTION '%s'" % step_name
+		session['error_date'] = datetime.utcnow()
+		session['error_description'] = u"""Bład przetwarzania scenariusza {scenario_name}.
+W trakcie przetwarzania kroku '{step_name}' napotkano błąd.
+""".format(scenario_name=scenario_name, step_name=step_name)
+		#abort(500)
+		return redirect('/error/500')
 
 	args = merge_http_request_arguments()
 	step_data = step_function(**args)
 	user_data.update(step_data)
-	session['user_data'] = user_data
-	#save_user_data(user_data, step_data)
-	return render_template(scenario_name + '.html', **session['user_data'])
+
+	return render_template(scenario_name + '.html', **user_data)
 
 @app.route('/login/', methods=['GET', 'POST'])
 def login():
