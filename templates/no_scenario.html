@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% import 'rass.html' as rass %}
+
+{% block content %}
+  <ul id="navigation">
+  {% for item in navigation %}
+    <li><a href="{{ item.href }}">{{ item.caption }}</a></li>
+  {% endfor %}
+  </ul>
+
+  <h1>Brak scenariusza {{ scenario_name }}</h1>
+
+  Scenariusz "{{ scenario_name }}" nie istnieje. Może chodziło o jeden z poniższych scenariuszy?
+
+  {{ rass.scenario_list(scenarios) }}
+{% endblock %}

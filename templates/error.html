@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <ul id="navigation">
+  {% for item in navigation %}
+    <li><a href="{{ item.href }}">{{ item.caption }}</a></li>
+  {% endfor %}
+  </ul>
+
+  <h1>Bład przetwarzania scenariusza {{ scenario_name }}</h1>
+
+  W trakcie przetwarzania kroku '{{ step_name }}' napotkano błąd <strong>{{ error_message }}</strong>.
+  Data błędu: {{ error_date }}.
+
+{% endblock %}

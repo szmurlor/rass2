@@ -1,0 +1,19 @@
+{% extends "foo_master.html" %}
+{% import 'rass.html' as rass %}
+
+{% block upload %}
+<form action="/foo/upload" enctype="multipart/form-data" method="POST">
+  Dane: {{ rass.file_upload('dataset') }}
+  <input type="submit" />
+</form>
+{% endblock %}
+
+{% block start %}
+<form action="/foo/process" method="POST">
+  Plan: {{ rass.file_select('rtplan', rtplan) }}
+  ROIs: {{ rass.file_select('rtss', rtss) }}
+  <input type="submit" />
+</form>
+{% endblock %}
+
+

@@ -1,0 +1,35 @@
+{% macro file_select_or_upload(name, possible_files) -%}
+  {% if possible_files|count %}
+    {{ file_select(name, possible_files) }}
+  {% endif %}
+  {{ file_upload(name) }}
+{% endmacro %}
+
+{% macro file_select(name, possible_files ) -%}
+  <select name="{{ name }}">
+  {% if possible_files|count %}
+    {% for uid, name in possible_files %}
+      {% if loop.index == 1 %}
+        <option value="{{ uid }}" selected="selected">{{ name }}</option>
+      {% else %}
+        <option value="{{ uid }}">{{ name }}</option>
+      {% endif %}
+    {% endfor %}
+  {% else %}
+    <option selected="selected" disabled="disabled">Brak pasujących plików</option>
+  {% endif %}
+  </select>
+
+{% endmacro %}
+
+{% macro file_upload(name) -%}
+  <input type="file" name="{{ name }}"/>
+{% endmacro %}
+
+{% macro scenario_list(scenarios) -%}
+  <ul>
+  {% for key, scenario in scenarios.iteritems() %}
+    <li><a href="/{{ scenario.href }}/">{{ scenario.name }}</a></li>
+  {% endfor %}
+  </ul>
+{% endmacro %}
