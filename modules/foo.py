@@ -17,7 +17,9 @@ def start():
 	archive = storage.find_files_by_type('application/zip')
 	textfile = storage.find_files_by_type('text/plain')
 	rtdose = storage.find_files_by_type('application/rtdose+dicom')
+	directory = storage.find_files_by_type('inode/directory')
 	return {
+		'directory': directory,
 		'rtdose': rtdose,
 		'archive': archive,
 		'textfile': textfile
@@ -35,8 +37,9 @@ def process(textfile, archive):
 	if content_type_helper.is_archive(archive.content_type):
 		directory = filesystem_helper.extract_archive(archive.path, archive.content_type)
 		for path in filesystem_helper.list_path(directory + '/**/RD.*.dcm'):
-			print "Found %s" % path
 			storage.new_file_from_filesystem(path, 'application/rtdose+dicom')
+		for path in filesystem_helper.list_path(directory + '/**/'):
+			storage.new_file_from_filesystem(path)
 
 	return {
 		'content': textfile.read()

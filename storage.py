@@ -4,10 +4,12 @@ from database import db, StoredFile, TemporaryStoredFile
 from rass_app import app
 
 def new_file_from_raw_bytes(raw_bytes, file_name, content_type=None):
+	print 'NFRB %r' % file_name
 	stored_file = TemporaryStoredFile(raw_bytes, file_name, content_type)
 	return stored_file
 
 def new_file_from_filesystem(file_path, content_type=None):
+	print 'NFFF %r' % file_path
 	stored_file = StoredFile(file_path, content_type)
 	try:
 		db.session.add(stored_file)

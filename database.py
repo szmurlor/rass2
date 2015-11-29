@@ -54,11 +54,7 @@ class StoredFile(db.Model):
 	def __init__(self, file_path, content_type=None):
                 directory, name = os.path.split(file_path)
 
-		if name is '': # path is a directory (ends with '/')
-			self.name = os.path.join(os.path.basename(directory), '')
-			self.path = directory
-			self.content_type = 'inode/directory'
-		else:
+		if len(name) > 0:
 			print 'Splitting %r' % name
 			name, extension = os.path.splitext(name)
 			print 'Into %r and %r' % (name, extension)
@@ -71,6 +67,10 @@ class StoredFile(db.Model):
 				if content_type is None:
 					content_type = 'application/octet-stream'
 			self.content_type = content_type
+		else: # path is a directory (ends with '/')
+			self.name = os.path.join(os.path.basename(directory), '')
+			self.path = directory
+			self.content_type = 'inode/directory'
 
 	def read(self, charset='latin2'):
 		with open(self.path, 'rb') as f:
