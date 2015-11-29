@@ -1,3 +1,4 @@
+import logger
 import os, errno
 
 class UnknownEncoding(Exception):
@@ -22,5 +23,6 @@ def convert_to_unicode(raw_string):
 		return raw_string.decode('latin2') # converts to unicode
 	except Exception, e:
 		pass
-
-	raise UnknownEncoding()
+	
+	logger.debug("Could not convert %r using neither utf-8 nor latin2 decoder" % raw_string[:10])
+	return raw_string

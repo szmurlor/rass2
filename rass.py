@@ -51,7 +51,6 @@ def merge_http_request_arguments():
 
 	for key, value in request.files.iteritems():
 		content = convert_to_unicode(value.read())
-
 		file_name = value.filename
 		content_type = value.content_type
 		content_length = len(content)
@@ -110,7 +109,8 @@ def download(uid):
 	if stored_file is None:
 		return render_template("no_file.html", uid=uid), 404
 
-	return stored_file.read(), 200, { 'Content-Type': stored_file.content_type }
+	content = stored_file.read(charset=None)
+	return content, 200, { 'Content-Type': stored_file.content_type }
 
 @app.route('/<scenario_name>/')
 def start(scenario_name):

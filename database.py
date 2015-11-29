@@ -69,14 +69,15 @@ class StoredFile(db.Model):
 					content_type = 'application/octet-stream'
 			self.content_type = content_type
 
-	def read(self):
+	def read(self, charset='latin2'):
 		with open(self.path, 'rb') as f:
 			raw_bytes = f.read()
-			print 'StoredFile.read: %r' % raw_bytes
-			return raw_bytes.decode('utf-8')
+			if charset:
+				return raw_bytes.decode(charset)
+			return raw_bytes
 
 	def __repr__(self):
-		return '<StoredFile %s in %r (%s)>' % (self.name, self.path, self.content_type)
+		return '<StoredFile (uid: %s, name:"%s", path:"%s") %s>' % (self.uid, self.name, self.path, self.content_type)
 
 	def __str__(self):
 		return self.path
@@ -92,15 +93,15 @@ class TemporaryStoredFile(StoredFile):
 		StoredFile.__init__(self, file_path, content_type)
 
 	def read(self):
-		print 'TemporaryStoredFile.read: %r' % self.content
 		return self.content
 
-	def write(self):
+	def write(self, charset='latin2'):
 		filesystem_helper.mkdir_directories_for(self.path)
 		with open(self.path, 'wb') as f:
 			content = self.read()
-			print 'store_file: %r' % content
-			f.write(content.encode('utf-8'))
+			if charset:
+				content = content.encode(charset)
+			f.write(content)
 
 	def __repr__(self):
 		return '<TemporaryStoredFile %s supposed to be written in %r (%s)>' % (self.name, self.path, self.content_type)

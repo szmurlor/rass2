@@ -26,8 +26,6 @@ def upload(dataset):
 	return start()
 
 def process(rtplan, rtss=None):
-	content = rtplan.read()
-	print 'CONTENT: %r' % content
 	return {
-		'content': content
+		'content': rtplan.read()
 	}

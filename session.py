@@ -9,7 +9,6 @@ class UserSession(collections.MutableMapping):
 		self.user_id = user.id
 		self.store = dict()
 		for key, in self.list_all_keys_in_database():
-			print key
 			self.store[self.__keytransform__(key)] = self.fetch_from_database(key)
 
 	def list_all_keys_in_database(self):
