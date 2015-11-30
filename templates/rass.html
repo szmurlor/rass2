@@ -21,7 +21,7 @@
   {% endif -%}
   </select>
 
-  {{ file_upload(name, input_hidden) }}
+  {{ file_upload(name, hidden=input_hidden) }}
 {% endmacro -%}
 
 {% macro file_upload(name, hidden=False) -%}
@@ -30,6 +30,11 @@
   {% else -%}
     <input type="file" name="{{ name }}"/>
   {% endif -%}
+{% endmacro -%}
+
+{% macro file_hidden(name, value) -%}
+    <input type="hidden" name="{{ name }}" value="{{ value }}"/>
+    <input type="file" name="{{ name }}" hidden="hidden"/>
 {% endmacro -%}
 
 {% macro scenario_list(scenarios) -%}

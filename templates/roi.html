@@ -1,0 +1,54 @@
+{% extends "roi_master.html" %}
+{% import 'rass.html' as rass %}
+
+{% macro roi_list(name, possible_rois) %}
+<table>
+  <tr>
+    <td></td><td></td>
+  </tr>
+    {% if possible_rois|count -%}
+      {% for roi in possible_rois -%}
+      <tr>
+        <td style="background-color: {{ roi.color }}">
+          {% if roi.selected -%}
+		<input type="radio" name="{{ name }}" value="{{ roi.name }}" checked="checked"/>
+          {% else -%}
+		<input type="radio" name="{{ name }}" value="{{ roi.name }}"/>
+          {% endif -%}
+	</td>
+        <td>{{ roi.name }} </td>
+      </tr>
+      {% endfor -%}
+    {% endif -%}
+</table>
+{% endmacro %}
+
+{% block start %}
+{{ rass.debug_panel(context) }}
+{% endblock %}
+
+{% block extract %}
+<form action="/roi/extract" enctype="multipart/form-data" method="POST">
+  <dl>
+    <dt>Archiwum</dt><dd>{{ rass.file_select_or_upload('archive', archive) }}</dd>
+  </dl>
+  <input type="submit" />
+</form>
+{% endblock %}
+
+{% block process %}
+<form action="/roi/process" enctype="multipart/form-data" method="POST">
+  <dl>
+    <dt>RTSS</dt><dd>{{ rass.file_select_or_upload('rtss', rtss) }}</dd>
+  </dl>
+  <input type="submit" />
+</form>
+{% endblock %}
+
+{% block select_roi %}
+<form action="/roi/select_roi" enctype="multipart/form-data" method="POST">
+  {{ roi_list('roi', roi) }}
+  {{ rass.file_hidden('rtss', selected_rtss.uid) }}
+  <input type="submit" />
+</form>
+{% endblock %}
