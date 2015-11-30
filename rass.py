@@ -129,7 +129,7 @@ def process(scenario_name, step_name):
 	if scenario_name not in scenarios:
 		return render_template("no_scenario.html", scenario_name = scenario_name, scenarios = scenarios)
 
-	user_data = UserSession(g.user)
+	user_data = UserSession()
 
 	scenario_class = scenarios[scenario_name]['class']
 	step_function = getattr(scenario_class, step_name, None)
@@ -147,7 +147,7 @@ W trakcie przetwarzania kroku '{step_name}' napotkano błąd.
 	step_data = step_function(**args)
 	user_data.update(step_data)
 
-	return render_template(scenario_name + '.html', context=user_data, **user_data)
+	return render_template(scenario_name + '.html', user_data=user_data, **user_data)
 
 @app.route('/login/', methods=['GET', 'POST'])
 def login():

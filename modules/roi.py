@@ -3,6 +3,7 @@ from datetime import date
 import content_type_helper
 import filesystem_helper
 import storage
+import session
 import os
 
 __scenario__ = "Modyfikacja ROI"
@@ -14,10 +15,25 @@ class FileType(object):
 def _reload():
 	archive = storage.find_files_by_type('application/zip')
 	rtss = storage.find_files_by_type('application/rtss+dicom')
-	roi = []
+	roi = session.get('roi', [])
+
 	tx = ty = tz = 0
 	rx = ry = rz = 0
 	rotation_mode = 'GRAV'
+
+	selected_rtss = session.get('selected_rtss')
+	selected_roi  = session.get('selected_roi')
+
+	if selected_rtss:
+		for one in rtss:
+			if one.uid == selected_rtss.uid:
+				one.selected = True
+	if selected_roi:
+		for one in roi:
+			one.pop('selected', None)
+			if one['name'] == selected_roi:
+				one['selected'] = True
+
 	return {
 		'roi': roi,
 		'archive': archive,
@@ -49,7 +65,7 @@ def process(rtss):
 	print rtss.path
 	roi = [
 		{'color':'#f00', 'name':'ptv'}, 
-		{'color':'#0f0', 'name':'ctv', 'selected': True},
+		{'color':'#0f0', 'name':'ctv'},
 		{'color':'#00f', 'name':'outline'}
 	]
 	
@@ -62,4 +78,8 @@ def process(rtss):
 
 def select_roi(roi, rtss):
 	print 'python %s %s' % (rtss, roi)
-	return {}
+	
+	session.setdefault('selected_roi', roi)
+	session.setdefault('selected_rtss', rtss)
+
+	return _reload()

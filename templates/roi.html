@@ -24,7 +24,7 @@
 {% endmacro %}
 
 {% block start %}
-{{ rass.debug_panel(context) }}
+{{ rass.debug_panel(user_data) }}
 {% endblock %}
 
 {% block extract %}
@@ -46,9 +46,11 @@
 {% endblock %}
 
 {% block select_roi %}
+{% if selected_rtss -%}
 <form action="/roi/select_roi" enctype="multipart/form-data" method="POST">
   {{ roi_list('roi', roi) }}
   {{ rass.file_hidden('rtss', selected_rtss.uid) }}
   <input type="submit" />
 </form>
+{% endif -%}
 {% endblock %}

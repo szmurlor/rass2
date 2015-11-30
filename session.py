@@ -3,9 +3,23 @@ import cPickle as pickle
 from sqlalchemy.orm.exc import NoResultFound, MultipleResultsFound
 from database import db, UserSessionData
 from rass_app import app
+from flask import g
+import logger
+
+def get(key, default=None, user=None):
+	if user is None:
+		user = g.user
+	return UserSession(user)[key]
+
+def setdefault(key, value, user=None):
+	if user is None:
+		user = g.user
+	UserSession(user)[key] = value
 
 class UserSession(collections.MutableMapping):
-	def __init__(self, user):
+	def __init__(self, user=None):
+		if user is None:
+			user = g.user
 		self.user_id = user.id
 		self.store = dict()
 		for key, in self.list_all_keys_in_database():
@@ -33,7 +47,7 @@ class UserSession(collections.MutableMapping):
 			db.session.add(user_session_data)
 			db.session.commit()
 		except Exception, e:
-			app.logger.exception("Error while saving %r -> %r" % (key, value))
+			logger.exception("Error while saving %r -> %r" % (key, value))
 
 	def delete_from_database(self, key):
 		try:
@@ -41,13 +55,12 @@ class UserSession(collections.MutableMapping):
 			db.session.delete(user_session_data)
 			db.session.commit()
 		except NoResultFound, e:
-			app.logger.exception("Error while removing %r" % (key))
+			logger.exception("Error while removing %r" % (key))
 
 	def __getitem__(self, key):
-		if key not in self.store:
-			value = self.fetch_from_database(key)
-			if value is not None:
-				self.store[self.__keytransform__(key)] = value
+		value = self.fetch_from_database(key)
+		if value is not None:
+			self.store[self.__keytransform__(key)] = value
 		return self.store[self.__keytransform__(key)]
 
 	def __setitem__(self, key, value):
