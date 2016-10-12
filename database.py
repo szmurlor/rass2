@@ -12,6 +12,7 @@ from rass_app import app
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///data/rass.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
+db.session.expire_on_commit = False
 
 class User(db.Model):
 	id = db.Column(db.Integer, primary_key=True)

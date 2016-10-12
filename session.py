@@ -1,25 +1,30 @@
 import collections
 import cPickle as pickle
 from sqlalchemy.orm.exc import NoResultFound, MultipleResultsFound
-from database import db, UserSessionData
+from database import db, UserSessionData, User
 from rass_app import app
 from flask import g
 import logger
 
 def get(key, default=None, user=None):
 	if user is None:
-		user = g.user
+		user = getuser(g.user_id)
+	if key not in UserSession(user):
+		UserSession(user)[key] = default
 	return UserSession(user)[key]
 
 def setdefault(key, value, user=None):
 	if user is None:
-		user = g.user
+		user = getuser(g.user_id)
 	UserSession(user)[key] = value
+
+def getuser(user_id):
+	return User.query.filter_by(id=user_id).one()
 
 class UserSession(collections.MutableMapping):
 	def __init__(self, user=None):
 		if user is None:
-			user = g.user
+			user = getuser(g.user_id)
 		self.user_id = user.id
 		self.store = dict()
 		for key, in self.list_all_keys_in_database():

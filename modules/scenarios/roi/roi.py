@@ -49,7 +49,7 @@ def start():
 def extract(archive):
 	if archive.uid is None:
 		today = date.today().strftime("%d-%m-%Y")
-		directory = os.path.join(g.user.home, 'roi', today)
+		directory = os.path.join(g.user_home, 'roi', today)
 		archive = storage.store_file(archive, directory)
 
 	if content_type_helper.is_archive(archive.content_type):
