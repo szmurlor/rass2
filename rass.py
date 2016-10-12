@@ -21,9 +21,11 @@ def init_scenarios():
 	import pkgutil
 	import modules
 	import modules.scenarios.roi.roi
+	import modules.scenarios.pareto.pareto
 	global scenarios
 	scenarios = {}
 	scenarios['roi'] = create_scenario('roi', modules.scenarios.roi.roi)
+	scenarios['pareto'] = create_scenario('pareto', modules.scenarios.pareto.pareto)
 
 def create_scenario(module_name, scenario_class):
 	return {
