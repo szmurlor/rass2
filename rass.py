@@ -92,7 +92,7 @@ def before_request():
 			user = database.User.query.filter_by(id=user_id).one()
 			g.user_id = user_id
 			g.user_home = user.home
-			logger.debug("Authorized to %s" % g.user_id)
+			# logger.debug("Authorized to %s" % g.user_id)
 		except Exception, e:
 			logger.debug('Could not find the user with id=%s' % user_id)
 			logger.debug('Cause: %s' % e)

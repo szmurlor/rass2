@@ -33,4 +33,52 @@
     </tr>
   </tbody>
   </table>
+
+  <div>
+    <a class="btn btn-success" id="new_dataset_btn" href="#" onclick="show_new_dataset()">Nowy zbiór danych</a>
+
+      <form id="new_dataset" class="form-horizontal">
+          <div class="control-group">
+            <label class="control-label" for="Data_utworzenia">Data utworzenia:</label>
+            <div class="controls" id="Data_utworzenia">
+                <input type="text" value="12.10.2016" />
+            </div>
+          </div>
+          <div class="control-group">
+            <label class="control-label" for="Nazwa">Nazwa:</label>
+            <div class="controls" id="Nazwa">
+                <input type="text" value="PATIEN809231" />
+            </div>
+          </div>
+          <div class="control-group">
+            <label class="control-label" for="Wlasciciel">Właściciel:</label>
+            <div class="controls" id="Wlasciciel">
+                <input type="text" value="PATIEN809231" />
+            </div>
+          </div>
+          <div class="control-group">
+            <label class="control-label" for="notes">Krótkie uwagi:</label>
+            <div class="controls" id="notes">
+                <input type="text" value="Jakieś krótkie uwagi...." />
+            </div>
+          </div>
+
+          <div class="control-group">
+              <button class="btn btn-success">Zapisz</button>
+              <a href="#" onclick="hide_new_dataset();">(Anuluj)</a>
+          </div>
+        </form>
+        <script lang="javascript">
+            function hide_new_dataset() {
+                $("#new_dataset").hide();
+                $("#new_dataset_btn").show();
+            }
+            function show_new_dataset() {
+                $("#new_dataset").show();
+                $("#new_dataset_btn").hide();
+            }
+            hide_new_dataset();
+        </script>
+  </div>
+
 {% endblock %}
