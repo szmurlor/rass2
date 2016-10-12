@@ -17,25 +17,20 @@ import debug
 from session import UserSession
 from filesystem_helper import convert_to_unicode
 
-def reload_scenarios():
+def init_scenarios():
 	import pkgutil
 	import modules
+	import modules.scenarios.roi.roi
 	global scenarios
+	scenarios = {}
+	scenarios['roi'] = create_scenario('roi', modules.scenarios.roi.roi)
 
-	scenarios = {} # clear all previous scenarios
-	for importer, module_name, is_package in pkgutil.iter_modules(modules.__path__):
-		logger.debug("Found scenario %s (is a package: %s)" % (module_name, is_package))
-		try:
-			scenario_class = getattr(__import__('modules.%s' % module_name), module_name)
-			scenario =  {
-				'href' : module_name,
-				'class' : scenario_class,
-				'name' : getattr(scenario_class, '__scenario__', 'Scenariusz %s' % module_name)
-			}
-	
-			scenarios[module_name] = scenario
-		except Exception, e:
-			logger.exception("Problem while importing modules.%s: %s" % (module_name, e))
+def create_scenario(module_name, scenario_class):
+	return {
+		'href' : module_name,
+		'class' : scenario_class,
+		'name' : getattr(scenario_class, '__scenario__', 'Scenariusz %s' % module_name)
+	}
 
 def merge_http_request_arguments():
 	logger.debug("Merging following HTTP data:"
@@ -89,13 +84,18 @@ def internal_error(error):
 
 @app.before_request
 def before_request():
-	g.user = None
+	g.user_id = None
+	g.user_home = None
 	user_id = session.get('user_id')
 	if user_id:
 		try:
-			g.user = database.User.query.filter_by(id=user_id).one()
-		except:
+			user = database.User.query.filter_by(id=user_id).one()
+			g.user_id = user_id
+			g.user_home = user.home
+			logger.debug("Authorized to %s" % g.user_id)
+		except Exception, e:
 			logger.debug('Could not find the user with id=%s' % user_id)
+			logger.debug('Cause: %s' % e)
 
 @app.route('/')
 def index():
@@ -103,7 +103,7 @@ def index():
 
 @app.route('/fs/<uid>')
 def download(uid):
-        if not g.user:
+        if not g.user_id:
                 abort(401)
 
 	stored_file = storage.find_file_by_uid(uid)
@@ -123,7 +123,7 @@ def start(scenario_name):
 
 @app.route('/<scenario_name>/<step_name>', methods=['GET', 'POST'])
 def process(scenario_name, step_name):
-        if not g.user:
+        if not g.user_id:
                 abort(401)
 
 	if scenario_name not in scenarios:
@@ -185,7 +185,7 @@ def logout():
 	flash(u'Wylogowano użytkownika', 'info')
 	return render_template('login.html')
 
-reload_scenarios()
+init_scenarios()
 
 if __name__ == '__main__':
 	app.run(host='0.0.0.0')
