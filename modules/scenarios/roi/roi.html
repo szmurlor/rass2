@@ -32,7 +32,7 @@
   <dl>
     <dt>Archiwum</dt><dd>{{ rass.file_select_or_upload('archive', archive) }}</dd>
   </dl>
-  <input type="submit" />
+  <input type="submit" value="extract"/>
 </form>
 {% endblock %}
 
@@ -41,7 +41,7 @@
   <dl>
     <dt>RTSS</dt><dd>{{ rass.file_select_or_upload('rtss', rtss) }}</dd>
   </dl>
-  <input type="submit" />
+  <input type="submit" value="process"/>
 </form>
 {% endblock %}
 
@@ -50,7 +50,80 @@
 <form action="/roi/select_roi" enctype="multipart/form-data" method="POST">
   {{ roi_list('roi', roi) }}
   {{ rass.file_hidden('rtss', selected_rtss.uid) }}
-  <input type="submit" />
+  <input type="submit" value="select roi"/>
+</form>
+{% endif -%}
+{% endblock %}
+
+{% block transform_roi %}
+{% if selected_roi -%}
+<form action="/roi/transform_roi" enctype="multipart/form-data" method="POST">
+  {%- if resolution -%}
+    <h2 class="form-heading">Rozdzielczość przestrzenna ustalona automatycznie</h2>
+    <div class="control-group">
+      <div class="row-fluid controls">Axis horizontalis: {{ resolution[0] }} mm, &nbsp; Axis sagittalis: {{ resolution[1] }} mm, &nbsp; Axis verticalis: {{ resolution[2] }} mm.</div>
+    </div>
+  {%- else -%}
+    <div class="control-group">
+    <label class="control-label">Rozdzielczość:</label>
+    <div class="row-fluid controls">
+	<div class="input-append span2"><input type="text" value="{{ dx }}" name="dx" placeholder="1" class="input-small text-right"><span class="add-on">mm</span></div>
+	<div class="input-append span2"><input type="text" value="{{ dy }}" name="dy" placeholder="1" class="input-small text-right"><span class="add-on">mm</span></div>
+	<div class="input-append span2"><input type="text" value="{{ dz }}" name="dz" placeholder="1" class="input-small text-right"><span class="add-on">mm</span></div>
+    </div> 
+    </div>
+  {%- endif -%}
+
+
+  <h2 class="form-heading">Wybierz przekształcenie {{ selected_roi }} &rarr; {{ new_roi }} </h2>
+  <div class="control-group">
+    <label class="control-label">Przesunięcie</label>
+    <div class="row-fluid controls">
+      <div class="input-prepend input-append span2"><span class="add-on">tx</span><input type="text" value="{{ tx }}" name="tx" placeholder="0" class="input-small text-right"><span class="add-on">mm</span></div>
+      <div class="input-prepend input-append span2"><span class="add-on">ty</span><input type="text" value="{{ ty }}" name="ty" placeholder="0" class="input-small text-right"><span class="add-on">mm</span></div>
+      <div class="input-prepend input-append span2"><span class="add-on">tz</span><input type="text" value="{{ tz }}" name="tz" placeholder="0" class="input-small text-right"><span class="add-on">mm</span></div>
+      <label class="label">tx, &alpha; - axis horizontalis<br />ty, &beta; - axis sagittalis<br/>tz, &gamma; - axis verticalis</label>
+    </div>
+  </div>
+
+  <div class="control-group">
+    <label class="control-label">Obrót</label>
+    <div class="row-fluid controls">
+      <div class="span3"><input type="radio" value="BASE" name="rotation_mode" {{ "checked" if rotation_mode != "GRAV" }} class="radio-small"><label class="radio inline"> - względem środka podstawy</label></div>
+      <div class="span3"><input type="radio" value="GRAV" name="rotation_mode" {{ "checked" if rotation_mode == "GRAV" }} class="radio-small"><label class="radio inline"> - względem środka ciężkości</label></div>
+    </div>
+    <div class="row-fluid controls">
+      <div class="input-prepend input-append span2"><span class="add-on">&alpha;</span><input type="text" value="{{ rx }}" name="rx" placeholder="0" class="input-small text-right"><span class="add-on">&deg;</span></div>
+      <div class="input-prepend input-append span2"><span class="add-on">&beta;</span><input type="text" value="{{ ry }}" name="ry" placeholder="0" class="input-small text-right"><span class="add-on">&deg;</span></div>
+      <div class="input-prepend input-append span2"><span class="add-on">&gamma;</span><input type="text" value="{{ rz }}" name="rz" placeholder="0" class="input-small text-right"><span class="add-on">&deg;</span></div>
+    </div>
+  </div>
+
+  <h2 class="form-heading">Możliwe jest wygładzenie brzegu przeksztalcanego obszaru zainteresowania</h2>
+  <div class="control-group">
+    <label class="control-label">Współczynnik wygładzenia</label>
+    <div class="row-fluid controls">
+      <input type="text" value="{{ psr_depth }}" name="psr_depth" class="input" placeholder="0" id="psr_depth">
+      <label class="label">Wygladzanie: 0 (brak wygładzenia), 5 (bardzo) - 10 (slabo).</label>
+    </div> 
+  </div>
+
+  <h2 class="form-heading">Możliwa jest zmiana etykiety zbioru obszarów zainteresowania</h2>
+    <div class="control-group">
+    <div class="row-fluid controls">
+      Etykieta zbioru źródłowego to "<span style="font-weight:bold">{{ label }}</span>"
+    </div> 
+    <label class="control-label">Nowa etykieta:</label>
+    <div class="row-fluid controls">
+    <input type="text" value="{{ new_label }}" name="new_label" class="input" placeholder="" id="new_label">
+      <label class="label">Jeśli nie wpiszesz nic, to zostanie zachowana stara etykieta.</label>
+    </div> 
+    </div>
+
+  <input type="hidden" name="new_roi" value="{{ new_roi }}"/>
+  <input type="hidden" name="roi" value="{{ selected_roi }}"/>
+  {{ rass.file_hidden('rtss', selected_rtss.uid) }}
+  <input type="submit" value="transform roi"/>
 </form>
 {% endif -%}
 {% endblock %}
