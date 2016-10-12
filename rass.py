@@ -147,7 +147,7 @@ W trakcie przetwarzania kroku '{step_name}' napotkano błąd.
 	step_data = step_function(**args)
 	user_data.update(step_data)
 
-	return render_template(scenario_name + '.html', user_data=user_data, **user_data)
+	return render_template('scenarios/' + scenario_name + '/' + scenario_name + '.html', user_data=user_data, **user_data)
 
 @app.route('/login/', methods=['GET', 'POST'])
 def login():
