@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <h1>Magazyn danych</h1>
+  <p>Tutaj możesz zarządząć zbiorami danych (zbiorami plików), które posiadają nazwę, datę utworzenia oraz właściciela. Zbiory
+  danych mogą być wykkorzystywane przez scenariusze. Zbiory danych mogą również służyć do wymiany plików między członkami zespołów.</p>
+  <p>Here you can manage datasets (sets with files) which have name, date of creation and an owner. The datasets will be later used by scenarios.
+      The datasets can also be used as a storage for file exchange between members of the teams.</p>
+
+  <h3>Zbiory danych</h3>
+  <p>Tabela zbiorów danych do których masz uprawnienia.</p>
+  <table class="table">
+  <thead>
+    <tr>
+        <th>L.p.</th>
+        <th>Operacje</th>
+        <th>Data utworzenia</th>
+        <th>Nazwa</th>
+        <th>Liczba plików</th>
+        <th>Uwagi</th>
+        <th>Ostatnia modyfikacja</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+        <td>1.</td>
+        <td><a href="/data/1">(Otwórz)</a></td>
+        <td>12.10.2016</td>
+        <td>PATIEN809231</td>
+        <td>3</td>
+        <td>-</td>
+        <td>12:13 12.10.2016 przez szmurlor</td>
+    </tr>
+  </tbody>
+  </table>
+{% endblock %}

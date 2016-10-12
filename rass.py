@@ -101,6 +101,18 @@ def before_request():
 def index():
 	return render_template('index.html', scenarios=scenarios)
 
+@app.route('/data/')
+def datastore():
+	if not g.user:
+		abort(401)
+	return render_template('datastore/datastore.html', scenarios=scenarios, uid=None)
+
+@app.route('/data/<uid>')
+def dataset(uid):
+	if not g.user:
+		abort(401)
+	return render_template('datastore/dataset.html', scenarios=scenarios, uid=uid)
+
 @app.route('/fs/<uid>')
 def download(uid):
         if not g.user:
