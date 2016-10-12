@@ -103,13 +103,13 @@ def index():
 
 @app.route('/data/')
 def datastore():
-	if not g.user:
+	if not g.user_id:
 		abort(401)
 	return render_template('datastore/datastore.html', scenarios=scenarios, uid=None)
 
 @app.route('/data/<uid>')
 def dataset(uid):
-	if not g.user:
+	if not g.user_id:
 		abort(401)
 	return render_template('datastore/dataset.html', scenarios=scenarios, uid=uid)
 
