@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <h1>Magazyn danych</h1>
+  <p>Tutaj możesz zarządząć zbiorami danych (zbiorami plików), które posiadają nazwę, datę utworzenia oraz właściciela. Zbiory
+  danych mogą być wykkorzystywane przez scenariusze. Zbiory danych mogą również służyć do wymiany plików między członkami zespołów.</p>
+  <p>Here you can manage datasets (sets with files) which have name, date of creation and an owner. The datasets will be later used by scenarios.
+      The datasets can also be used as a storage for file exchange between members of the teams.</p>
+
+  <h3>Zbiory danych</h3>
+  <p>Tabela zbiorów danych do których masz uprawnienia.</p>
+  <table class="table">
+  <thead>
+    <tr>
+        <th>L.p.</th>
+        <th>Operacje</th>
+        <th>Data utworzenia</th>
+        <th>Nazwa</th>
+        <th>Liczba plików</th>
+        <th>Uwagi</th>
+        <th>Ostatnia modyfikacja</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+        <td>1.</td>
+        <td><a href="/data/1">(Otwórz)</a></td>
+        <td>12.10.2016</td>
+        <td>PATIEN809231</td>
+        <td>3</td>
+        <td>-</td>
+        <td>12:13 12.10.2016 przez szmurlor</td>
+    </tr>
+  </tbody>
+  </table>
+
+  <div>
+    <a class="btn btn-success" id="new_dataset_btn" href="#" onclick="show_new_dataset()">Nowy zbiór danych</a>
+
+      <form id="new_dataset" class="form-horizontal">
+          <div class="control-group">
+            <label class="control-label" for="Data_utworzenia">Data utworzenia:</label>
+            <div class="controls" id="Data_utworzenia">
+                <input type="text" value="12.10.2016" />
+            </div>
+          </div>
+          <div class="control-group">
+            <label class="control-label" for="Nazwa">Nazwa:</label>
+            <div class="controls" id="Nazwa">
+                <input type="text" value="PATIEN809231" />
+            </div>
+          </div>
+          <div class="control-group">
+            <label class="control-label" for="Wlasciciel">Właściciel:</label>
+            <div class="controls" id="Wlasciciel">
+                <input type="text" value="PATIEN809231" />
+            </div>
+          </div>
+          <div class="control-group">
+            <label class="control-label" for="notes">Krótkie uwagi:</label>
+            <div class="controls" id="notes">
+                <input type="text" value="Jakieś krótkie uwagi...." />
+            </div>
+          </div>
+
+          <div class="control-group">
+              <button class="btn btn-success">Zapisz</button>
+              <a href="#" onclick="hide_new_dataset();">(Anuluj)</a>
+          </div>
+        </form>
+        <script lang="javascript">
+            function hide_new_dataset() {
+                $("#new_dataset").hide();
+                $("#new_dataset_btn").show();
+            }
+            function show_new_dataset() {
+                $("#new_dataset").show();
+                $("#new_dataset_btn").hide();
+            }
+            hide_new_dataset();
+        </script>
+  </div>
+
+{% endblock %}

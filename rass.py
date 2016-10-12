@@ -92,7 +92,7 @@ def before_request():
 			user = database.User.query.filter_by(id=user_id).one()
 			g.user_id = user_id
 			g.user_home = user.home
-			logger.debug("Authorized to %s" % g.user_id)
+			# logger.debug("Authorized to %s" % g.user_id)
 		except Exception, e:
 			logger.debug('Could not find the user with id=%s' % user_id)
 			logger.debug('Cause: %s' % e)
@@ -100,6 +100,18 @@ def before_request():
 @app.route('/')
 def index():
 	return render_template('index.html', scenarios=scenarios)
+
+@app.route('/data/')
+def datastore():
+	if not g.user_id:
+		abort(401)
+	return render_template('datastore/datastore.html', scenarios=scenarios, uid=None)
+
+@app.route('/data/<uid>')
+def dataset(uid):
+	if not g.user_id:
+		abort(401)
+	return render_template('datastore/dataset.html', scenarios=scenarios, uid=uid)
 
 @app.route('/fs/<uid>')
 def download(uid):

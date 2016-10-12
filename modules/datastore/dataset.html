@@ -1,0 +1,164 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <h1>Zbiór danych</h1>
+
+  <form class="form-horizontal">
+      <div class="control-group">
+        <div class="controls" id="Data_utworzenia">
+            <span class="span7"></span>
+            <a href="#" onclick="edit();">(Zmień)</a>
+        </div>
+      </div>
+      <div class="control-group">
+        <label class="control-label" for="Data_utworzenia">Data utworzenia:</label>
+        <div class="controls" id="Data_utworzenia">
+            <input type="text" readonly value="12.10.2016" />
+        </div>
+      </div>
+      <div class="control-group">
+        <label class="control-label" for="Nazwa">Nazwa:</label>
+        <div class="controls" id="Nazwa">
+            <input type="text" readonly value="PATIEN809231" />
+        </div>
+      </div>
+      <div class="control-group">
+        <label class="control-label" for="Wlasciciel">Właściciel:</label>
+        <div class="controls" id="Wlasciciel">
+            <input type="text" readonly value="PATIEN809231" />
+        </div>
+      </div>
+      <div class="control-group">
+        <label class="control-label" for="notes">Krótkie uwagi:</label>
+        <div class="controls" id="notes">
+            <input type="text" readonly value="Jakieś krótkie uwagi...." />
+        </div>
+      </div>
+
+      <div class="control-group">
+        <label class="control-label" for="Komentarz">Dłuższy komentarz / notatki:</label>
+        <div class="controls" id="Komentarz">
+            <textarea cols="100" rows ="10" class="span8" readonly>Jakieś długi komentarz</textarea>
+        </div>
+      </div>
+    </form>
+
+
+   <h3>Dane CT</h3>
+   <p>Proszę wgrywać skompresowane archiwa zip zawierające same pliki DICOM opisujące CT</p>
+
+    <table class="table">
+    <thead>
+    <tr>
+        <th>L.p.</th>
+        <th>Operacje</th>
+        <th>Opis</th>
+        <th>Nazwa oryginalna</th>
+        <th>Ostatnia modyfikacja</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <td>1.</td>
+        <td>
+            <a href="/data/fs/1">(Pobierz)</a>
+            <a href="/data/delete/1">(Usuń)</a>
+        </td>
+        <td>Dane CT PATIEN809231</td>
+        <td>CT_2012_809231.zip</td>
+        <td>12:13 12.10.2016 przez szmurlor</td>
+    </tr>
+    <tr>
+        <td>2.</td>
+        <td>
+            <a href="/data/fs/1">(Pobierz)</a>
+            <a href="/data/delete/1">(Usuń)</a>
+        </td>
+        <td>Dane inne CT PATIEN809231</td>
+        <td>CT_2014_809231.zip</td>
+        <td>9:13 16.10.2016 przez szmurlor</td>
+    </tr>
+    </tbody>
+    </table>
+
+    <h3>Dane ROI</h3>
+    <p>Proszę wgrywać skompresowane archiwa zip zawierające plik RS* lub pojedyncze pliki DICOM</p>
+
+    <table class="table">
+    <thead>
+    <tr>
+        <th>L.p.</th>
+        <th>Operacje</th>
+        <th>Opis</th>
+        <th>Nazwa oryginalna</th>
+        <th>Ostatnia modyfikacja</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <td>1.</td>
+        <td>
+            <a href="/data/fs/1">(Pobierz)</a>
+            <a href="/data/delete/1">(Usuń)</a>
+        </td>
+        <td>Dane CT PATIEN809231</td>
+        <td>CT_2012_809231.zip</td>
+        <td>12:13 12.10.2016 przez szmurlor</td>
+    </tr>
+    </tbody>
+    </table>
+
+    <h3>Plany RT</h3>
+    <p>Proszę wgrywać skompresowane archiwa zip zawierające same pliki RP* definiujące DICOM</p>
+
+    <table class="table">
+    <thead>
+    <tr>
+        <th>L.p.</th>
+        <th>Operacje</th>
+        <th>Opis</th>
+        <th>Nazwa oryginalna</th>
+        <th>Ostatnia modyfikacja</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <td>1.</td>
+        <td>
+            <a href="/data/fs/1">(Pobierz)</a>
+            <a href="/data/delete/1">(Usuń)</a>
+        </td>
+        <td>Dane CT PATIEN809231</td>
+        <td>CT_2012_809231.zip</td>
+        <td>12:13 12.10.2016 przez szmurlor</td>
+    </tr>
+    </tbody>
+    </table>
+
+    <h3>Wyniki PARETO</h3>
+    <p>Proszę wgrywać skompresowane archiwa z wynikami PARETO</p>
+
+    <table class="table">
+    <thead>
+    <tr>
+        <th>L.p.</th>
+        <th>Operacje</th>
+        <th>Opis</th>
+        <th>Nazwa oryginalna</th>
+        <th>Ostatnia modyfikacja</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <td>1.</td>
+        <td>
+            <a href="/data/fs/1">(Pobierz)</a>
+            <a href="/data/delete/1">(Usuń)</a>
+        </td>
+        <td>Dane CT PATIEN809231</td>
+        <td>CT_2012_809231.zip</td>
+        <td>12:13 12.10.2016 przez szmurlor</td>
+    </tr>
+    </tbody>
+    </table>
+{% endblock %}
