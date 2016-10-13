@@ -24,9 +24,11 @@ matplotlib = False
 
 __scenario__ = "Modyfikacja ROI"
 
+
 class FileType(object):
 	RTSS = 'application/rtss+dicom'
 	CT = 'application/ctimage+dicom'
+
 
 def _reload():
 	archive = storage.find_files_by_type('application/zip')
@@ -127,6 +129,7 @@ def select_roi(roi, rtss):
 		'resolution': resolution
 	})
 	return data
+
 
 def transform_roi(roi, rtss, rotation_mode, dz, dx, dy, rx, ry, rz, tx, ty, tz, psr_depth, new_roi, new_label):
 	source = rtss.path

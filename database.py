@@ -1,5 +1,9 @@
 # -*- coding: utf-8
 import os.path
+
+from sqlalchemy.orm import relationship
+from sqlalchemy.sql.sqltypes import DateTime
+
 import content_type_helper
 import filesystem_helper
 from hashlib import sha512
@@ -14,7 +18,9 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 db.session.expire_on_commit = False
 
+
 class User(db.Model):
+	__tablename__ = 'user'
 	id = db.Column(db.Integer, primary_key=True)
 	username = db.Column(db.String(80), unique=True)
 	password = db.Column(db.String(128))
@@ -34,6 +40,7 @@ class User(db.Model):
 	def __repr__(self):
 		return '<User %r>' % self.username
 
+
 class UserSessionData(db.Model):
 	uid = db.Column(db.Integer, primary_key=True)
 	user_id = db.Column(db.Integer)
@@ -45,15 +52,47 @@ class UserSessionData(db.Model):
 		self.key = key
 		self.value = value
 
+
+class Dataset(db.Model):
+	__tablename__ = 'dataset'
+	id = db.Column(db.Integer, primary_key=True)
+	date_created = db.Column(db.DateTime())
+	date_modified = db.Column(db.DateTime())
+
+	user_modified_id = db.Column(db.Integer, db.ForeignKey("user.id"))
+	user_modified = relationship("User", back_populates="datasets_modified", foreign_keys=[user_modified_id])
+
+	user_created_id = db.Column(db.Integer, db.ForeignKey("user.id"))
+	user_created = relationship("User", back_populates="datasets_created", foreign_keys=[user_created_id])
+
+	name = db.Column(db.String(128))
+	type = db.Column(db.String(50))
+	short_notes = db.Column(db.String(255))
+	long_notes = db.Column(db.String(8192))
+
+	def __init__(self, name, user_created):
+		self.user_created = user_created
+		self.name = name
+		self.date_created = datetime.utcnow
+		self.date_modified = self.date_created
+		self.user_modified = user_created
+
+User.datasets_modified = relationship("Dataset", order_by=Dataset.id, back_populates="user_modified", foreign_keys=[Dataset.user_modified_id])
+User.datasets_created = relationship("Dataset", order_by=Dataset.id, back_populates="user_created", foreign_keys=[Dataset.user_created_id])
+
+
 class StoredFile(db.Model):
 	uid = db.Column(db.Integer, primary_key=True)
 	path = db.Column(db.String(512))
 	name = db.Column(db.String(128))
 	content_type = db.Column(db.String(32))
 	stored_at = db.Column(db.DateTime(), default=datetime.utcnow)
+	dataset_id = db.Column(db.Integer, db.ForeignKey("dataset.id"))
+	dataset = relationship("Dataset", back_populates="files")
+	type = db.Column(db.String(128))
 
 	def __init__(self, file_path, content_type=None):
-                directory, name = os.path.split(file_path)
+		directory, name = os.path.split(file_path)
 
 		if len(name) > 0:
 			name, extension = os.path.splitext(name)
@@ -82,6 +121,8 @@ class StoredFile(db.Model):
 
 	def __str__(self):
 		return self.path
+
+Dataset.files = relationship("StoredFile", order_by=StoredFile.uid, back_populates="dataset")
 
 class TemporaryStoredFile(StoredFile):
 	content = str()

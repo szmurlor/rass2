@@ -37,7 +37,7 @@
   <div>
     <a class="btn btn-success" id="new_dataset_btn" href="#" onclick="show_new_dataset()">Nowy zbiór danych</a>
 
-      <form id="new_dataset" class="form-horizontal">
+      <form id="new_dataset" class="form-horizontal" action="/data/add" method="POST">
           <div class="control-group">
             <label class="control-label" for="Data_utworzenia">Data utworzenia:</label>
             <div class="controls" id="Data_utworzenia">
@@ -64,7 +64,7 @@
           </div>
 
           <div class="control-group">
-              <button class="btn btn-success">Zapisz</button>
+              <button class="btn btn-success" type="submit">Zapisz</button>
               <a href="#" onclick="hide_new_dataset();">(Anuluj)</a>
           </div>
         </form>
