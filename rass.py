@@ -1,10 +1,13 @@
 # -*- encoding: utf-8
+import dateutil
+
 from flask import g, session, request, flash
 from flask import render_template, redirect, url_for
 from datetime import datetime
 from rass_app import app
 import logger
 import database
+import dateutil.parser
 
 ##################################
 # Global variables
@@ -78,6 +81,18 @@ import authentication
 import modules.datastore.datastore
 # noinspection PyUnresolvedReferences
 import modules.scenarios.scenarios
+
+
+@app.template_filter('datetime')
+def _jinja2_filter_datetime(date, fmt=None):
+	format='%d.%m.%Y %H:%M:%S'
+	return date.strftime(format)
+
+
+@app.template_filter('date')
+def _jinja2_filter_datetime(date, fmt=None):
+	format='%d.%m.%Y'
+	return date.strftime(format)
 
 
 if __name__ == '__main__':

@@ -22,15 +22,18 @@
     </tr>
   </thead>
   <tbody>
+    {% for ds in datasets -%}
     <tr>
         <td>1.</td>
-        <td><a href="/data/1">(Otwórz)</a></td>
-        <td>12.10.2016</td>
-        <td>PATIEN809231</td>
-        <td>3</td>
+        <td><a href="/data/{{  ds.id }}">(Otwórz)</a></td>
+        <td>{{ ds.date_created }}</td>
+        <td>{{ ds.name }}</td>
         <td>-</td>
-        <td>12:13 12.10.2016 przez szmurlor</td>
+        <td>{{ ds.short_notes }}</td>
+        <td>{{ ds.date_modified|datetime }} przez {{ ds.user_modified.username if ds.user_modified else '-' }}</td>
     </tr>
+    {% endfor -%}
+
   </tbody>
   </table>
 
@@ -38,32 +41,26 @@
     <a class="btn btn-success" id="new_dataset_btn" href="#" onclick="show_new_dataset()">Nowy zbiór danych</a>
 
       <form id="new_dataset" class="form-horizontal" action="/data/add" method="POST">
-          <div class="control-group">
-            <label class="control-label" for="Data_utworzenia">Data utworzenia:</label>
-            <div class="controls" id="Data_utworzenia">
-                <input name="date_created" type="text" value="12.10.2016" />
+          <div class="form-group">
+            <label class="control-label col-sm-2" for="Data_utworzenia">Data utworzenia:</label>
+            <div class="col-sm-4">
+                <input id="Data_utworzenia" class="form-control" name="date_created" type="text" value="" placeholder="(Format: dd.mm.YYYY, np. 29.10.2016)"/>
             </div>
           </div>
-          <div class="control-group">
-            <label class="control-label" for="Nazwa">Nazwa:</label>
-            <div class="controls" id="Nazwa">
-                <input name="name" type="text" value="PATIEN809231" />
+          <div class="form-group">
+            <label class="control-label col-sm-2" for="Nazwa">Nazwa:</label>
+            <div class="col-sm-4">
+                <input class="form-control" name="name" id="Nazwa" type="text" value="" placeholder="(Nazwa przypadku)"/>
             </div>
           </div>
-          <div class="control-group">
-            <label class="control-label" for="Wlasciciel">Właściciel:</label>
-            <div class="controls" id="Wlasciciel">
-                <input name="user_created" type="text" value="PATIEN809231" />
-            </div>
-          </div>
-          <div class="control-group">
-            <label class="control-label" for="notes">Krótkie uwagi:</label>
-            <div class="controls" id="notes">
-                <input name="short_notes" type="text" value="Jakieś krótkie uwagi...." />
+          <div class="form-group">
+            <label class="control-label col-sm-2" for="notes">Krótkie uwagi:</label>
+            <div class="col-sm-4">
+                <input class="form-control" id="notes" name="short_notes" type="text" value="" /> <small>(Krótkie adnotacje, widoczne na liście ze zbiorami danych.)</small>
             </div>
           </div>
 
-          <div class="control-group">
+          <div class="form-group">
               <button class="btn btn-success" type="submit">Dodaj</button>
               <a href="#" onclick="hide_new_dataset();">(Anuluj)</a>
           </div>

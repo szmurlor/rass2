@@ -73,7 +73,7 @@ class Dataset(db.Model):
 	def __init__(self, name, user_created):
 		self.user_created = user_created
 		self.name = name
-		self.date_created = datetime.utcnow
+		self.date_created = datetime.utcnow()
 		self.date_modified = self.date_created
 		self.user_modified = user_created
 
