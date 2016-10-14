@@ -49,7 +49,7 @@
                         {% if dataset_types.length == 1 %}
                         <option value="type.id" selected>{{type.name}}</option>
                         {% else %}
-                        <option value="type.id">{{type.name}}</option>
+                        <option value="{{ type.id }}">{{type.name}}</option>
                         {% endif %}
                     {% endfor %}
                 </select>

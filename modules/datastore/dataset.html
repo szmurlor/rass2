@@ -55,23 +55,23 @@
       </div>
     </form>
 
-
-   <h3>Dane CT</h3>
-   <p>Proszę wgrywać skompresowane archiwa zip zawierające same pliki DICOM opisujące CT</p>
+{% for file_type in dataset.type.file_types_list() %}
+   <h3>{{ file_type.desc }}</h3>
+   <p>Proszę wgrywać: {{ file_type.formats }}</p>
 
     <table class="table">
-    <thead>
-    <tr>
+    <thead><tr>
         <th>L.p.</th>
         <th>Operacje</th>
         <th>Opis</th>
         <th>Nazwa oryginalna</th>
         <th>Ostatnia modyfikacja</th>
-    </tr>
-    </thead>
+    </tr></thead>
     <tbody>
+    {% set idx = 1 %}
+    {% for file in dataset.files_by_type(file_type.name) %}
     <tr>
-        <td>1.</td>
+        <td>{{idx}}</td>
         <td>
             <a href="/data/fs/1">(Pobierz)</a>
             <a href="/data/delete/1">(Usuń)</a>
@@ -80,97 +80,9 @@
         <td>CT_2012_809231.zip</td>
         <td>12:13 12.10.2016 przez szmurlor</td>
     </tr>
-    <tr>
-        <td>2.</td>
-        <td>
-            <a href="/data/fs/1">(Pobierz)</a>
-            <a href="/data/delete/1">(Usuń)</a>
-        </td>
-        <td>Dane inne CT PATIEN809231</td>
-        <td>CT_2014_809231.zip</td>
-        <td>9:13 16.10.2016 przez szmurlor</td>
-    </tr>
+    {% set idx = idx + 1 %}
+    {% endfor %}
     </tbody>
     </table>
-
-    <h3>Dane ROI</h3>
-    <p>Proszę wgrywać skompresowane archiwa zip zawierające plik RS* lub pojedyncze pliki DICOM</p>
-
-    <table class="table">
-    <thead>
-    <tr>
-        <th>L.p.</th>
-        <th>Operacje</th>
-        <th>Opis</th>
-        <th>Nazwa oryginalna</th>
-        <th>Ostatnia modyfikacja</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr>
-        <td>1.</td>
-        <td>
-            <a href="/data/fs/1">(Pobierz)</a>
-            <a href="/data/delete/1">(Usuń)</a>
-        </td>
-        <td>Dane CT PATIEN809231</td>
-        <td>CT_2012_809231.zip</td>
-        <td>12:13 12.10.2016 przez szmurlor</td>
-    </tr>
-    </tbody>
-    </table>
-
-    <h3>Plany RT</h3>
-    <p>Proszę wgrywać skompresowane archiwa zip zawierające same pliki RP* definiujące DICOM</p>
-
-    <table class="table">
-    <thead>
-    <tr>
-        <th>L.p.</th>
-        <th>Operacje</th>
-        <th>Opis</th>
-        <th>Nazwa oryginalna</th>
-        <th>Ostatnia modyfikacja</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr>
-        <td>1.</td>
-        <td>
-            <a href="/data/fs/1">(Pobierz)</a>
-            <a href="/data/delete/1">(Usuń)</a>
-        </td>
-        <td>Dane CT PATIEN809231</td>
-        <td>CT_2012_809231.zip</td>
-        <td>12:13 12.10.2016 przez szmurlor</td>
-    </tr>
-    </tbody>
-    </table>
-
-    <h3>Wyniki PARETO</h3>
-    <p>Proszę wgrywać skompresowane archiwa z wynikami PARETO</p>
-
-    <table class="table">
-    <thead>
-    <tr>
-        <th>L.p.</th>
-        <th>Operacje</th>
-        <th>Opis</th>
-        <th>Nazwa oryginalna</th>
-        <th>Ostatnia modyfikacja</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr>
-        <td>1.</td>
-        <td>
-            <a href="/data/fs/1">(Pobierz)</a>
-            <a href="/data/delete/1">(Usuń)</a>
-        </td>
-        <td>Dane CT PATIEN809231</td>
-        <td>CT_2012_809231.zip</td>
-        <td>12:13 12.10.2016 przez szmurlor</td>
-    </tr>
-    </tbody>
-    </table>
+{% endfor %}
 {% endblock %}

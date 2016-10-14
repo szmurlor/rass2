@@ -1,4 +1,5 @@
 # -*- coding: utf-8
+import json
 import os.path
 
 from sqlalchemy.orm import relationship
@@ -79,6 +80,11 @@ class Dataset(db.Model):
 		self.date_modified = self.date_created
 		self.user_modified = user_created
 
+	def files_by_type(self, file_type_name):
+		result = []
+		return result
+
+
 User.datasets_modified = relationship("Dataset", order_by=Dataset.id, back_populates="user_modified", foreign_keys=[Dataset.user_modified_id])
 User.datasets_created = relationship("Dataset", order_by=Dataset.id, back_populates="user_created", foreign_keys=[Dataset.user_created_id])
 
@@ -92,6 +98,11 @@ class DatasetType(db.Model):
 
 	def __init__(self, name):
 		self.name = name
+
+	def file_types_list(self):
+		config = json.loads(self.file_types)
+		return config['types']
+
 
 DatasetType.datasets = relationship("Dataset", order_by=Dataset.id, back_populates="type", foreign_keys=[Dataset.type_id])
 

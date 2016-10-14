@@ -26,11 +26,13 @@ def new_dataset():
     args = merge_http_request_arguments(True)
 
     user = database.User.query.filter_by(id=g.user_id).one()
+    dataset_type = database.DatasetType.query.filter_by(id=int(args['dataset_type'])).one()
     dataset = database.Dataset(name=args['name'], user_created=user)
     dataset.short_notes = args['short_notes']
     dataset.user_modified = user
     date_created = datetime.strptime(args['date_created'], '%d.%m.%Y');
     dataset.date_created = date_created
+    dataset.type = dataset_type
     database.db.session.add(dataset)
     database.db.session.commit()
 
