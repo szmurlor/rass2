@@ -1,10 +1,11 @@
 from flask import request
+from rass_app import app
 import logger
 import storage
 from filesystem_helper import convert_to_unicode
 
 
-def merge_http_request_arguments():
+def merge_http_request_arguments(log_args=False):
     logger.debug("Merging following HTTP data:"
                  "\n- QueryString: %s" % request.args +
                  "\n- Form: %s" % request.form +
@@ -13,11 +14,17 @@ def merge_http_request_arguments():
     args = {}
     for key, value in request.args.iteritems():
         args[key] = value
+        if log_args:
+            app.logger.info("[GET]: %s -> %s" % (key, value))
 
     for key, value in request.form.iteritems():
         args[key] = value  # it is OK to overwrite QueryString parameters
+        if log_args:
+            app.logger.info("[POST]: %s -> %s" % (key, value))
 
     for key, value in request.files.iteritems():
+        if log_args:
+            app.logger.info("[FILE]: %s -> %s" % (key, value))
         content = convert_to_unicode(value.read())
         file_name = value.filename
         content_type = value.content_type
@@ -38,4 +45,5 @@ def merge_http_request_arguments():
                 # args[key] has the old value (maybe a not existing uid)
                 logger.debug("Uploaded file has no content, the file selected using 'uid' doesn't exist.\n" +
                              "Name: %s, uid: %s, args[%s]: %s" % (key, uid, key, args[key]))
+
     return args

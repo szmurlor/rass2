@@ -2,7 +2,6 @@ import os
 
 from flask import g, abort, render_template
 from rass_app import app
-import storage
 from utils import *
 
 
@@ -12,18 +11,21 @@ def datastore():
         abort(401)
     return render_template('datastore/datastore.html', scenarios=g.scenarios, uid=None)
 
-@app.route('/data/new/', methods=['POST'])
-def new_dataset(uid):
+
+@app.route('/data/add', methods=['POST'])
+def new_dataset():
     if not g.user_id:
         abort(401)
-    args = merge_http_request_arguments()
-    return render_template('datastore/datastore.html', scenarios=g.scenarios, uid=uid)
+    args = merge_http_request_arguments(True)
+    return render_template('datastore/dataset.html', scenarios=g.scenarios, uid=1)
+
 
 @app.route('/data/delete/')
 def delete_dataset(uid):
     if not g.user_id:
         abort(401)
     return render_template('datastore/datastore.html', scenarios=g.scenarios, uid=uid)
+
 
 @app.route('/data/<uid>')
 def dataset(uid):
