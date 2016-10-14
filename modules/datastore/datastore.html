@@ -41,6 +41,21 @@
     <a class="btn btn-success" id="new_dataset_btn" href="#" onclick="show_new_dataset()">Nowy zbiór danych</a>
 
       <form id="new_dataset" class="form-horizontal" action="/data/add" method="POST">
+          <div class="form-group" id="fg_Rodzaj">
+            <label class="control-label col-sm-2" for="Rodzaj">Rodzaj zbioru:</label>
+            <div class="col-sm-4">
+                <select id="Rodzaj" class="form-control" name="dataset_type">
+                    {% for type in dataset_types %}
+                        {% if dataset_types.length == 1 %}
+                        <option value="type.id" selected>{{type.name}}</option>
+                        {% else %}
+                        <option value="type.id">{{type.name}}</option>
+                        {% endif %}
+                    {% endfor %}
+                </select>
+                <small>(Format: dd.mm.YYYY, np. 29.10.2016)</small>
+            </div>
+          </div>
           <div class="form-group" id="fg_Data_utworzenia">
             <label class="control-label col-sm-2" for="Data_utworzenia">Data utworzenia:</label>
             <div class="col-sm-4">

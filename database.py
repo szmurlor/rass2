@@ -56,17 +56,19 @@ class UserSessionData(db.Model):
 class Dataset(db.Model):
 	__tablename__ = 'dataset'
 	id = db.Column(db.Integer, primary_key=True)
+	name = db.Column(db.String(128))
+
 	date_created = db.Column(db.DateTime())
-	date_modified = db.Column(db.DateTime())
-
-	user_modified_id = db.Column(db.Integer, db.ForeignKey("user.id"))
-	user_modified = relationship("User", back_populates="datasets_modified", foreign_keys=[user_modified_id])
-
 	user_created_id = db.Column(db.Integer, db.ForeignKey("user.id"))
 	user_created = relationship("User", back_populates="datasets_created", foreign_keys=[user_created_id])
 
-	name = db.Column(db.String(128))
-	type = db.Column(db.String(50))
+	date_modified = db.Column(db.DateTime())
+	user_modified_id = db.Column(db.Integer, db.ForeignKey("user.id"))
+	user_modified = relationship("User", back_populates="datasets_modified", foreign_keys=[user_modified_id])
+
+	type_id = db.Column(db.Integer, db.ForeignKey("dataset_type.id"))
+	type = relationship("DatasetType", back_populates="datasets", foreign_keys=[type_id])
+
 	short_notes = db.Column(db.String(255))
 	long_notes = db.Column(db.String(8192))
 
@@ -79,6 +81,19 @@ class Dataset(db.Model):
 
 User.datasets_modified = relationship("Dataset", order_by=Dataset.id, back_populates="user_modified", foreign_keys=[Dataset.user_modified_id])
 User.datasets_created = relationship("Dataset", order_by=Dataset.id, back_populates="user_created", foreign_keys=[Dataset.user_created_id])
+
+
+class DatasetType(db.Model):
+	__tablename__ = 'dataset_type'
+	id = db.Column(db.Integer, primary_key=True)
+
+	name = db.Column(db.String(128))
+	file_types = db.Column(db.String(8192))
+
+	def __init__(self, name):
+		self.name = name
+
+DatasetType.datasets = relationship("Dataset", order_by=Dataset.id, back_populates="type", foreign_keys=[Dataset.type_id])
 
 
 class StoredFile(db.Model):

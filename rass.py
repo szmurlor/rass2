@@ -85,14 +85,14 @@ import modules.scenarios.scenarios
 
 @app.template_filter('datetime')
 def _jinja2_filter_datetime(date, fmt=None):
-	format='%d.%m.%Y %H:%M:%S'
-	return date.strftime(format)
+	dformat = '%d.%m.%Y %H:%M:%S'
+	return date.strftime(dformat)
 
 
 @app.template_filter('date')
-def _jinja2_filter_datetime(date, fmt=None):
-	format='%d.%m.%Y'
-	return date.strftime(format)
+def _jinja2_filter_date(date, fmt=None):
+	dformat = '%d.%m.%Y'
+	return date.strftime(dformat)
 
 
 if __name__ == '__main__':

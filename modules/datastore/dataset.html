@@ -12,42 +12,45 @@
       </div>
       <div class="form-group">
         <label class="control-label col-sm-2" for="Data_utworzenia">Data utworzenia:</label>
-        <div class="col-sm-4">
+        <div class="col-sm-6">
             <input id="Data_utworzenia" type="text" class="form-control" readonly value="{{ dataset.date_created }}" />
         </div>
       </div>
       <div class="form-group">
         <label class="control-label col-sm-2" for="Nazwa">Nazwa:</label>
-        <div class="col-sm-4">
+        <div class="col-sm-6">
             <input id="Nazwa" type="text" class="form-control" readonly value="{{ dataset.name }}" />
         </div>
       </div>
       <div class="form-group">
         <label class="control-label col-sm-2" for="Wlasciciel">Właściciel:</label>
-        <div class="col-sm-4">
-            <input id="Wlasciciel" type="text" class="form-control" readonly value="PATIEN809231" /> <small>(Kto utworzył zbiór danych?)</small>
+        <div class="col-sm-6">
+            <input id="Wlasciciel" type="text" class="form-control" readonly value="{{ dataset.user_created.username }}" /> <small>(Kto utworzył zbiór danych?)</small>
         </div>
       </div>
       <div class="form-group">
         <label class="control-label col-sm-2" for="notes">Krótkie uwagi:</label>
-        <div class="col-sm-4">
-            <input id="notes" type="text" class="form-control" readonly value="Jakieś krótkie uwagi...." />
+        <div class="col-sm-6">
+            <input id="notes" type="text" class="form-control" readonly value="{{ dataset.short_notes }}" />
         </div>
       </div>
 
       <div class="form-group">
-        <label class="control-label col-sm-2" for="Komentarz">Dłuższy komentarz / notatki:</label>
-        <div class="col-sm-4">
-            <div class="col-sm-4">
-                <div id="id_long_notes">
-
-                </div>
-            </div>
+        <label class="control-label col-sm-2">Dłuższy komentarz / notatki:</label>
+        <div class="col-sm-6">
+            {% if dataset.long_notes != None -%}
+                <div id="id_long_notes"></div>
+            {% else -%}
+                <div>-</div>
+            {% endif -%}
           <script lang="javascript">
             var converter = new showdown.Converter(),
-            html      = converter.makeHtml('{{ dataset.long_notes }}');
+            html = converter.makeHtml('{{ dataset.long_notes }}');
             $("#id_long_notes").html(html);
           </script>
+        </div>
+        <div class="col-sm-1">
+            <a href="#" onclick="change_notes()">(Zmień)</a>
         </div>
       </div>
     </form>
