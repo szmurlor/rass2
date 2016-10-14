@@ -41,7 +41,7 @@
     <a class="btn btn-success" id="new_dataset_btn" href="#" onclick="show_new_dataset()">Nowy zbiór danych</a>
 
       <form id="new_dataset" class="form-horizontal" action="/data/add" method="POST">
-          <div class="form-group">
+          <div class="form-group" id="fg_Data_utworzenia">
             <label class="control-label col-sm-2" for="Data_utworzenia">Data utworzenia:</label>
             <div class="col-sm-4">
                 <input id="Data_utworzenia" class="form-control" name="date_created" type="text" value="{{ now|date }}" />
@@ -77,7 +77,10 @@
                 $("#new_dataset_btn").hide();
             }
             function validate_add() {
+                var fg_Data_utworzenia = $('#fg_Data_utworzenia');
+                fg_Data_utworzenia.removeClass("has-error");
                 if (!$("#Data_utworzenia").val()) {
+                    fg_Data_utworzenia.addClass("has-error");
                     alert('Pole Data utworzenia jest wymagane.');
                     return false;
                 }
