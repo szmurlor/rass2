@@ -14,7 +14,7 @@ def datastore():
         abort(401)
 
     datasets = database.Dataset.query.order_by(database.Dataset.date_created)
-    return render_template('datastore/datastore.html', scenarios=g.scenarios, uid=None, datasets=datasets)
+    return render_template('datastore/datastore.html', scenarios=g.scenarios, uid=None, datasets=datasets, now=datetime.utcnow())
 
 
 @app.route('/data/add', methods=['POST'])

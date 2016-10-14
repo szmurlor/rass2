@@ -16,22 +16,22 @@
         <th>Operacje</th>
         <th>Data utworzenia</th>
         <th>Nazwa</th>
-        <th>Liczba plików</th>
         <th>Uwagi</th>
         <th>Ostatnia modyfikacja</th>
     </tr>
   </thead>
   <tbody>
+    {% set idx = 1 -%}
     {% for ds in datasets -%}
     <tr>
-        <td>1.</td>
+        <td>{{ idx }}.</td>
         <td><a href="/data/{{  ds.id }}">(Otwórz)</a></td>
         <td>{{ ds.date_created }}</td>
         <td>{{ ds.name }}</td>
-        <td>-</td>
         <td>{{ ds.short_notes }}</td>
         <td>{{ ds.date_modified|datetime }} przez {{ ds.user_modified.username if ds.user_modified else '-' }}</td>
     </tr>
+    {% set idx = idx + 1 -%}
     {% endfor -%}
 
   </tbody>
@@ -44,13 +44,15 @@
           <div class="form-group">
             <label class="control-label col-sm-2" for="Data_utworzenia">Data utworzenia:</label>
             <div class="col-sm-4">
-                <input id="Data_utworzenia" class="form-control" name="date_created" type="text" value="" placeholder="(Format: dd.mm.YYYY, np. 29.10.2016)"/>
+                <input id="Data_utworzenia" class="form-control" name="date_created" type="text" value="{{ now|date }}" />
+                <small>(Format: dd.mm.YYYY, np. 29.10.2016)</small>
             </div>
           </div>
           <div class="form-group">
             <label class="control-label col-sm-2" for="Nazwa">Nazwa:</label>
             <div class="col-sm-4">
-                <input class="form-control" name="name" id="Nazwa" type="text" value="" placeholder="(Nazwa przypadku)"/>
+                <input class="form-control" name="name" id="Nazwa" type="text" value="" />
+                <small>(Nazwa przypadku)</small>
             </div>
           </div>
           <div class="form-group">
@@ -61,7 +63,7 @@
           </div>
 
           <div class="form-group">
-              <button class="btn btn-success" type="submit">Dodaj</button>
+              <button class="btn btn-success" onclick="return validate_add()" type="submit">Dodaj</button>
               <a href="#" onclick="hide_new_dataset();">(Anuluj)</a>
           </div>
         </form>
@@ -74,8 +76,19 @@
                 $("#new_dataset").show();
                 $("#new_dataset_btn").hide();
             }
+            function validate_add() {
+                if (!$("#Data_utworzenia").val()) {
+                    alert('Pole Data utworzenia jest wymagane.');
+                    return false;
+                }
+                if (!$("#Nazwa").val()) {
+                    alert('Pole Nazwa jest wymagane.');
+                    return false;
+                }
+            }
             hide_new_dataset();
         </script>
+
   </div>
 
 {% endblock %}
