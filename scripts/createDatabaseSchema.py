@@ -5,7 +5,7 @@ import database
 sys.path.append(os.getcwd())
 
 from database import db
-db.drop_all()
+# db.drop_all()
 db.create_all()
 
 u = database.User('szmurlor')
