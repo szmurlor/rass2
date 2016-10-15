@@ -1,55 +1,110 @@
 {% extends "base.html" %}
 
 {% block content %}
+  <div class="pull-right"><small>Ostatnia modyfikacja: {{dataset.date_modified|datetime}} przez {{dataset.user_modified.username}}</small></div>
   <h1>Zbiór danych</h1>
+
+{% macro form_control_static(label, value) -%}
+<div class="form-group">
+    <label class="control-label col-sm-2">{{label}}</label>
+    <div class="col-sm-6">
+        <p class="form-control-static">{{value}}</p>
+    </div>
+</div>
+{% endmacro -%}
+
+{% macro input_text(label, value, name, id, info) -%}
+<div class="form-group">
+    <label class="control-label col-sm-2" for="{{id}}">{{label}}</label>
+    <div class="col-sm-6">
+        <input type="text" class="form-control" id="{{id}}" name="{{name}}" value="{{ value }}"/>
+        <small>{{info}}</small>
+    </div>
+</div>
+{% endmacro -%}
 
   <form class="form-horizontal" action="/data/update" method="POST">
       <input type="hidden" name="dataset_id" value="{{dataset.id}}" />
-      <div class="form-group">
-        <div class="col-sm-8"></div>
-        <div class="col-sm-2">
-            <a href="#" onclick="edit();">(Zmień)</a>
-        </div>
-      </div>
-      <div class="form-group">
-        <label class="control-label col-sm-2" for="Data_utworzenia">Data utworzenia:</label>
-        <div class="col-sm-6">
-            <input id="Data_utworzenia" type="text" class="form-control" readonly value="{{ dataset.date_created }}" />
-        </div>
-      </div>
-      <div class="form-group">
-        <label class="control-label col-sm-2" for="Nazwa">Nazwa:</label>
-        <div class="col-sm-6">
-            <input id="Nazwa" type="text" class="form-control" readonly value="{{ dataset.name }}" />
-        </div>
-      </div>
-      <div class="form-group">
-        <label class="control-label col-sm-2" for="Wlasciciel">Właściciel:</label>
-        <div class="col-sm-6">
-            <input id="Wlasciciel" type="text" class="form-control" readonly value="{{ dataset.user_created.username }}" /> <small>(Kto utworzył zbiór danych?)</small>
-        </div>
-      </div>
-      <div class="form-group">
-        <label class="control-label col-sm-2" for="notes">Krótkie uwagi:</label>
-        <div class="col-sm-6">
-            <input id="notes" type="text" class="form-control" readonly value="{{ dataset.short_notes }}" />
-        </div>
+
+    <script language="JavaScript">
+        function show_header_edit() {
+            $('#id-header-readonly').hide();
+            $('#id-header-edit').show();
+            $('#id-date-created').focus();
+        }
+        function hide_header_edit() {
+            $('#id-header-readonly').show();
+            $('#id-header-edit').hide();
+        }
+    </script>
+
+      {# To jest nagłówek zbioru danych w trybie READONLY #}
+      <div id="id-header-readonly">
+          <div class="form-group">
+            <div class="col-sm-8"></div>
+            <div class="col-sm-2">
+                <a href="#" onclick="show_header_edit();">(Zmień)</a>
+            </div>
+          </div>
+          {{form_control_static('Data utworzenia:', dataset.date_created|date )}}
+          {{form_control_static('Nazwa:', dataset.name )}}
+          {{form_control_static('Właściciel:', dataset.user_created.username )}}
+          {{form_control_static('Krótkie uwagi:', dataset.short_notes )}}
       </div>
 
-      <div id="notes-readonly">
+      {# To jest nagłówek zbioru danych w trybie EDIT #}
+      <div id="id-header-edit" style="display: none">
+          <div class="form-group">
+            <div class="col-sm-8"></div>
+            <div class="col-sm-2">
+            </div>
+          </div>
+
+          {{input_text('Data utworzenia:', dataset.date_created|date, 'date_created', 'id-date-created')}}
+          {{input_text('Nazwa:', dataset.name, 'name', 'id-name')}}
+          {{form_control_static('Właściciel:', dataset.user_created.username)}}
+          {{input_text('Krótkie uwagi:', dataset.short_notes, 'short_notes', 'id-short-notes')}}
+
+          <div class="form-group">
+            <div class="col-sm-2"></div>
+            <div class="col-sm-6">
+                <button type="submit" name="save_header" class="btn btn-success">Zapisz</button>
+                <a href="#" onclick="hide_header_edit()">(Anuluj)</a>
+            </div>
+          </div>
+      </div>
+
+        <script language="JavaScript">
+            function change_notes() {
+                $('#id-notes-readonly').hide();
+                $('#id-notes-edit').show();
+                $('#id-long-notes').focus();
+            }
+            function hide_notes() {
+                $('#id-notes-readonly').show();
+                $('#id-notes-edit').hide();
+            }
+        </script>
+      {# To jest wyświetlenie notatek w trybie READONLY.
+         Notatki te zostaną przepasowane przez Markdown.
+         JavaScript jest dołączony w skrypcie poniżej.
+      #}
+      <div id="id-notes-readonly">
           <div class="form-group">
             <label class="control-label col-sm-2">Dłuższy komentarz / notatki:</label>
             <div class="col-sm-6">
                 {% if dataset.long_notes != None -%}
-                    <div id="id_long_notes"></div>
+                    <div id="id-long-notes-readonly"></div>
                 {% else -%}
                     <div>-</div>
                 {% endif -%}
+
               <script lang="javascript">
                 var converter = new showdown.Converter(),
                 html = converter.makeHtml(`{{ dataset.long_notes }}`);
-                $("#id_long_notes").html(html);
+                $("#id-long-notes-readonly").html(html);
               </script>
+
             </div>
             <div class="col-sm-1">
                 <a href="#" onclick="change_notes()">(Zmień)</a>
@@ -57,11 +112,13 @@
         </div>
       </div>
 
-      <div id="notes-edit" style="display: none;">
+
+      {# To są notatki w trybie EDIT. #}
+      <div id="id-notes-edit" style="display: none;">
           <div class="form-group">
-            <label class="control-label col-sm-2" for="txt-long-notes">Dłuższy komentarz / notatki:</label>
+            <label class="control-label col-sm-2" for="id-long-notes">Dłuższy komentarz / notatki:</label>
             <div class="col-sm-6">
-                <textarea id="txt-long-notes" cols="100" rows="20" name="long_notes">{{dataset.long_notes}}</textarea>
+                <textarea id="id-long-notes" cols="100" rows="20" name="long_notes">{{dataset.long_notes}}</textarea>
             </div>
         </div>
         <div class="form-group">
@@ -72,17 +129,6 @@
       </div>
     </form>
 
-
-<script language="JavaScript">
-    function change_notes() {
-        $('#notes-readonly').hide();
-        $('#notes-edit').show();
-    }
-    function hide_notes() {
-        $('#notes-readonly').show();
-        $('#notes-edit').hide();
-    }
-</script>
 
 {% for file_type in dataset.type.file_types_list() %}
    <h3>{{ file_type.desc }}</h3>

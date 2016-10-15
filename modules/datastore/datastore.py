@@ -4,6 +4,7 @@ from datetime import datetime
 from flask import g, abort, render_template
 
 import database
+import rass_app
 from rass_app import app
 from utils import *
 
@@ -27,11 +28,13 @@ def update_dataset():
 
     user = database.User.query.filter_by(id=g.user_id).one()
     dataset = database.Dataset.query.filter_by(id=int(args['dataset_id'])).one()
-    #dataset.short_notes = args['short_notes']
+    dataset.short_notes = args['short_notes']
     dataset.long_notes = args['long_notes']
+    dataset.name = args['name']
     dataset.user_modified = user
-    #date_created = datetime.strptime(args['date_created'], '%d.%m.%Y');
-    #dataset.date_created = date_created
+    date_created = datetime.strptime(args['date_created'], '%d.%m.%Y');
+    dataset.date_created = date_created
+    dataset.date_modified = datetime.utcnow()
     database.db.session.add(dataset)
     database.db.session.commit()
 
@@ -48,6 +51,7 @@ def new_dataset():
     dataset_type = database.DatasetType.query.filter_by(id=int(args['dataset_type'])).one()
     dataset = database.Dataset(name=args['name'], user_created=user)
     dataset.short_notes = args['short_notes']
+    dataset.long_notes = rass_app.LONG_NOTES
     dataset.user_modified = user
     date_created = datetime.strptime(args['date_created'], '%d.%m.%Y');
     dataset.date_created = date_created
