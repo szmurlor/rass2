@@ -19,6 +19,25 @@ def datastore():
                            now=datetime.utcnow(), dataset_types=dataset_types)
 
 
+@app.route('/data/update', methods=['POST'])
+def update_dataset():
+    if not g.user_id:
+        abort(401)
+    args = merge_http_request_arguments(True)
+
+    user = database.User.query.filter_by(id=g.user_id).one()
+    dataset = database.Dataset.query.filter_by(id=int(args['dataset_id'])).one()
+    #dataset.short_notes = args['short_notes']
+    dataset.long_notes = args['long_notes']
+    dataset.user_modified = user
+    #date_created = datetime.strptime(args['date_created'], '%d.%m.%Y');
+    #dataset.date_created = date_created
+    database.db.session.add(dataset)
+    database.db.session.commit()
+
+    return render_template('datastore/dataset.html', scenarios=g.scenarios, uid=dataset.id, dataset=dataset)
+
+
 @app.route('/data/add', methods=['POST'])
 def new_dataset():
     if not g.user_id:
