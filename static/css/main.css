@@ -5,3 +5,7 @@ select {
 input[type="file"] {
   vertical-align: top;
 }
+
+.indent {
+  margin-left: 2em;
+}

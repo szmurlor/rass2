@@ -116,12 +116,32 @@ def upload_file():
         stored_file.dataset = dataset
         stored_file.type = file_type
         stored_file.name = file.filename
+        stored_file.description = args['description']
         stored_file.stored_at = datetime.utcnow()
         stored_file.stored_by = user
         database.db.session.add(stored_file)
         database.db.session.commit()
 
         flash(u'Pobrałem plik o nazwie: %s' % file.filename, 'success')
+
+    return render_template('datastore/dataset.html', scenarios=g.scenarios, uid=dataset.id, dataset=dataset)
+
+@app.route('/data/delete/<uid>', methods=['GET'])
+def delete_file(uid):
+    if not g.user_id:
+        abort(401)
+
+    dataset = None
+
+    stored_file = database.StoredFile.query.filter_by(uid=uid).one()
+    if stored_file is not None:
+        file_name = stored_file.name
+        os.remove(stored_file.path)
+        dataset = stored_file.dataset
+        database.db.session.delete(stored_file)
+        database.db.session.commit()
+
+        flash(u"Poprawnie usunąłem plik %s" % file_name, 'success')
 
     return render_template('datastore/dataset.html', scenarios=g.scenarios, uid=dataset.id, dataset=dataset)
 
