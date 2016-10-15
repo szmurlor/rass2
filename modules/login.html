@@ -1,10 +1,27 @@
 {% extends "base.html" %}
 {% block content %}
-		<form class="form-signin" method="POST" action="/login/">
-			<h2 class="form-signin-heading">Logowanie:</h2>
-			<input name="username" id="username" type="text" class="input-block-level" placeholder="Nazwa użytkownika"/>
-			<input name="password" id="password" type="password" class="input-block-level" placeholder="Hasło"/>
-			<input name="redirect_url" id="redirect_url" type="hidden" value="{{ redirect_url }}"/>
-			<button class="btn btn-large btn-primary" type="submit">Zaloguj</button>
-		</form>
+		<h2>Logowanie:</h2>
+		<div class="row">
+			<form class="form-horizontal" method="POST" action="/login/">
+				<div class="form-group">
+					<label class="col-sm-2 control-label" for="username">Nazwa użytkownika:</label>
+					<div class="col-sm-2">
+						<input name="username" id="username" type="text" class="form-control" placeholder="Nazwa użytkownika"/>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-sm-2 control-label" for="password">Hasło:</label>
+					<div class="col-sm-2">
+						<input name="password" id="password" type="password" class="form-control" placeholder="Hasło"/>
+					</div>
+				</div>
+				<div class="form-group">
+					<input name="redirect_url" id="redirect_url" type="hidden" value="{{ redirect_url }}"/>
+					<div class="col-sm-2"></div>
+					<div class="col-sm-2">
+						<button class="btn btn-primary" type="submit">Zaloguj</button>
+					</div>
+				</div>
+			</form>
+		</div>
 {% endblock %}
