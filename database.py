@@ -14,8 +14,6 @@ from datetime import datetime
 from flask.ext.sqlalchemy import SQLAlchemy
 from rass_app import app
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///data/rass.db'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 db.session.expire_on_commit = False
 
@@ -82,6 +80,11 @@ class Dataset(db.Model):
 
 	def files_by_type(self, file_type_name):
 		result = []
+
+		for f in self.files:
+			if f.type.lower() == file_type_name.lower():
+				result.append(f)
+
 		return result
 
 
@@ -103,7 +106,6 @@ class DatasetType(db.Model):
 		config = json.loads(self.file_types)
 		return config['types']
 
-
 DatasetType.datasets = relationship("Dataset", order_by=Dataset.id, back_populates="type", foreign_keys=[Dataset.type_id])
 
 
@@ -111,11 +113,16 @@ class StoredFile(db.Model):
 	uid = db.Column(db.Integer, primary_key=True)
 	path = db.Column(db.String(512))
 	name = db.Column(db.String(128))
+	description = db.Column(db.String(512))
 	content_type = db.Column(db.String(32))
+	type = db.Column(db.String(128))
+
 	stored_at = db.Column(db.DateTime(), default=datetime.utcnow)
+	stored_by_id = db.Column(db.Integer, db.ForeignKey("user.id"))
+	stored_by = relationship("User", foreign_keys=[stored_by_id])
+
 	dataset_id = db.Column(db.Integer, db.ForeignKey("dataset.id"))
 	dataset = relationship("Dataset", back_populates="files")
-	type = db.Column(db.String(128))
 
 	def __init__(self, file_path, content_type=None):
 		directory, name = os.path.split(file_path)

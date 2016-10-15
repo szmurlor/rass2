@@ -51,10 +51,10 @@
 	</div>
 
   	{% for category, message in get_flashed_messages(with_categories=true) %}
-<div class="alert alert-{{ category }} ">
-  <button type="button" class="close" data-dismiss="alert">&times;</button>
-  <strong>Komunikat:</strong> {{ message }}
-</div>
+		<div class="alert alert-{{ category }} ">
+		  <button type="button" class="close" data-dismiss="alert">&times;</button>
+		  <strong>Komunikat:</strong> {{ message }}
+		</div>
 	{% endfor %}
 
 	<div class="container">

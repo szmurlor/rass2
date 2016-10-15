@@ -119,6 +119,7 @@
             <label class="control-label col-sm-2" for="id-long-notes">Dłuższy komentarz / notatki:</label>
             <div class="col-sm-6">
                 <textarea id="id-long-notes" cols="100" rows="20" name="long_notes">{{dataset.long_notes}}</textarea>
+                <p class="help-block">Tekst może być wpisywany zgodnie ze składnią <a target="_blank" href="https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet">Markdown</a></p>
             </div>
         </div>
         <div class="form-group">
@@ -148,16 +149,44 @@
     <tr>
         <td>{{idx}}</td>
         <td>
-            <a href="/data/fs/1">(Pobierz)</a>
-            <a href="/data/delete/1">(Usuń)</a>
+            <a href="/fs/{{file.uid}}">(Pobierz)</a>
+            <a href="/data/delete/{{file.uid}}">(Usuń)</a>
         </td>
-        <td>Dane CT PATIEN809231</td>
-        <td>CT_2012_809231.zip</td>
-        <td>12:13 12.10.2016 przez szmurlor</td>
+        <td>{{file.description}}</td>
+        <td>{{file.name}}</td>
+        <td>{{file.stored_at|datetime}} przez szmurlor</td>
     </tr>
     {% set idx = idx + 1 %}
     {% endfor %}
     </tbody>
     </table>
+
+    <a href="#" id="id-show-upload-{{file_type.name}}" onclick="show_upload_file('{{file_type.name}}'); return false;">(Prześlij nowy plik)</a>
+    <div id="id-upload-file-{{file_type.name}}" class="panel panel-default" style="display: none;" >
+      <div class="panel-body">
+        <form action="/data/upload/" enctype="multipart/form-data" method="POST">
+            <input type="hidden" name="dataset_id" value="{{ dataset.id }}" />
+            <input type="hidden" name="file_type" value="{{ file_type.name }}" />
+            <div>
+                <div class="form-group">
+                    <input type="file" name="file"/>
+                    <p class="help-block">Proszę wgrywać: {{file_type.formats}}</p>
+                </div>
+                <input type="submit" formmethod="POST" name="upload_{{file_type.name}}" class="btn btn-success" value="Wyślij" />
+                <a href="#" onclick="hide_upload_file('{{file_type.name}}')">(Anuluj)</a>
+            </div>
+        </form>
+      </div>
+    </div>
+    <script language="JavaScript">
+        function show_upload_file(name) {
+            $('#id-upload-file-'+name).show();
+            $('#id-show-upload-'+name).hide();
+        }
+        function hide_upload_file(name) {
+            $('#id-upload-file-'+name).hide();
+            $('#id-show-upload-'+name).show();
+        }
+    </script>
 {% endfor %}
 {% endblock %}
