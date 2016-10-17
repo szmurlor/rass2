@@ -160,7 +160,7 @@
             </td>
             <td><b>{{file.name}}</b></td>
             <td>{{file.description}}</td>
-            <td>{{file.stored_at|datetime}} przez szmurlor</td>
+            <td>{{file.stored_at|datetime}} przez {{file.stored_by.username}}</td>
         </tr>
         {% set idx = idx + 1 %}
         {% endfor %}
