@@ -2,7 +2,9 @@
 from flask import Flask
 
 UPLOAD_FOLDER = "/home/data/"
-LONG_NOTES = u"""#### 1. Krótki opis przypadku COI
+LONG_NOTES = u"""...
+"""
+LONG_NOTES_WITH_EXAMPLE = u"""#### 1. Krótki opis przypadku COI
 
 1. ...
 
