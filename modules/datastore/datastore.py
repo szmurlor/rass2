@@ -126,6 +126,7 @@ def upload_file():
 
     return render_template('datastore/dataset.html', scenarios=g.scenarios, uid=dataset.id, dataset=dataset)
 
+
 @app.route('/data/delete/<uid>', methods=['GET'])
 def delete_file(uid):
     if not g.user_id:

@@ -102,9 +102,13 @@ class DatasetType(db.Model):
 	def __init__(self, name):
 		self.name = name
 
-	def file_types_list(self):
+	def file_types_list(self, parent):
 		config = json.loads(self.file_types)
-		return config['types']
+		res = []
+		for type in config['types']:
+			if 'parent_type' not in type or type['parent_type'] == parent:
+				res.append(type)
+		return res
 
 DatasetType.datasets = relationship("Dataset", order_by=Dataset.id, back_populates="type", foreign_keys=[Dataset.type_id])
 
