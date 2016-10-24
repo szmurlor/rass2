@@ -78,12 +78,17 @@ class Dataset(db.Model):
 		self.date_modified = self.date_created
 		self.user_modified = user_created
 
-	def files_by_type(self, file_type_name):
+	def files_by_type(self, file_type_name, parent_uid = None):
 		result = []
 
 		for f in self.files:
 			if f.type.lower() == file_type_name.lower():
-				result.append(f)
+				if parent_uid is None:
+					result.append(f)
+				else:
+					if f.parent is not None and f.parent.uid == parent_uid:
+						result.append(f)
+
 
 		return result
 
@@ -128,6 +133,8 @@ class StoredFile(db.Model):
 	dataset_id = db.Column(db.Integer, db.ForeignKey("dataset.id"))
 	dataset = relationship("Dataset", back_populates="files")
 
+	deleted = db.Column(db.Boolean, default=False)
+
 	def __init__(self, file_path, content_type=None):
 		directory, name = os.path.split(file_path)
 
@@ -160,6 +167,8 @@ class StoredFile(db.Model):
 		return self.path
 
 Dataset.files = relationship("StoredFile", order_by=StoredFile.uid, back_populates="dataset")
+StoredFile.parent_id = db.Column(db.Integer, db.ForeignKey("stored_file.uid"))
+StoredFile.parent = relationship(StoredFile, backref='children', remote_side=StoredFile.uid)
 
 class TemporaryStoredFile(StoredFile):
 	content = str()

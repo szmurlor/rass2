@@ -90,6 +90,9 @@ def upload_file():
     user = database.User.query.filter_by(id=g.user_id).one()
     dataset = database.Dataset.query.filter_by(id=int(args['dataset_id'])).one()
     file_type = args['file_type']
+    parent_uid = None
+    if args['parent_id'] is not None and len(args['parent_id']) > 0:
+        parent_uid = int(args['parent_id'])
 
     # check if the post request has the file part
     if 'file' not in request.files:
@@ -107,6 +110,11 @@ def upload_file():
         # Zapisuje plik w repozytorium plików pod 'bezpieczną' nazwą:
         # nazwa_oryginalna_uuid4
         # repozytorium plików to zdefiniowany folder w rass_app.
+        if parent_uid is not None:
+            parent_file = database.StoredFile.query.filter_by(uid=parent_uid).one_or_none()
+        else:
+            parent_file = None
+
         filename = secure_filename("%s_%s" % (file.filename, str(uuid.uuid4())))
         file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
         fullpath_filename = "%s%s" % (app.config['UPLOAD_FOLDER'], filename)
@@ -119,6 +127,7 @@ def upload_file():
         stored_file.description = args['description']
         stored_file.stored_at = datetime.utcnow()
         stored_file.stored_by = user
+        stored_file.parent = parent_file
         database.db.session.add(stored_file)
         database.db.session.commit()
 

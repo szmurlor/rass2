@@ -1,15 +1,36 @@
 {% extends "base.html" %}
 
 {% block content %}
+<style>
+    #id-header-readonly .form-group > .control-label {
+        padding-top: 2px;!important;
+    }
+    #id-header-readonly .form-group .form-control-static {
+        padding-top: 2px;!important;
+        min-height: 24px;!important;
+    }
+    #id-header-readonly .form-group {
+        margin-bottom: 5px;
+    }
+
+    .col1 { width: 2em; max-width: 2em;}
+    .col2 { width: 11em; max-width: 11em;}
+    .col3 { width: 20em; max-width: 20em;}
+    .col4 { width: 20em; max-width: 20em;}
+    .col5 { width: 10em; max-width: 10em;}
+    .table {word-wrap: break-word;}
+</style>
+
   <div class="pull-right"><small>Ostatnia modyfikacja: {{dataset.date_modified|datetime}} przez {{dataset.user_modified.username}}</small></div>
   <h1>Zbiór danych</h1>
 
-{% macro render_upload_new(file_type) -%}
+{% macro render_upload_new(file_type, parent_uid) -%}
     <a href="#" id="id-show-upload-{{file_type.name}}" onclick="show_upload_file('{{file_type.name}}'); return false;">(Prześlij nowy plik)</a>
     <div id="id-upload-file-{{file_type.name}}" class="panel panel-default" style="display: none;" >
       <div class="panel-body">
         <form action="/data/upload/" enctype="multipart/form-data" method="POST">
             <input type="hidden" name="dataset_id" value="{{ dataset.id }}" />
+            <input type="hidden" name="parent_id" value="{{ parent_uid }}" />
             <input type="hidden" name="file_type" value="{{ file_type.name }}" />
             <div>
                 <div class="form-group">
@@ -21,7 +42,7 @@
                     <input class="form-control" type="text" name="description" id="id-upload-file-comment-{{file_type.name}}" maxlength="512" />
                 </div>
                 <input type="submit" formmethod="POST" name="upload_{{file_type.name}}" class="btn btn-success" value="Wyślij" />
-                <a href="#" onclick="hide_upload_file('{{file_type.name}}')">(Anuluj)</a>
+                <a href="#" onclick="hide_upload_file('{{file_type.name}}'); return false;">(Anuluj)</a>
             </div>
         </form>
       </div>
@@ -38,23 +59,64 @@
     </script>
 {% endmacro %}
 
-{% macro render_inner_files(file_type, dataset) %}
+{% macro render_inner_inner_files(file_type, dataset, parent_uid) %}
 {% for file_type_inner in dataset.type.file_types_list(parent=file_type.name) %}
         <div class="row">
            <div class="col-sm-12">
-                <h4>{{ file_type_inner.desc }}</h4>
+                <h4 title="{{ file_type_inner.formats }}">{{ file_type_inner.desc }}</h4>
            </div>
         </div>
         <div class="row">
             <div class="col-sm-12">
-               <p>Proszę wgrywać: {{ file_type_inner.formats }}</p>
-                {% if not file_type_inner.only_one or dataset.files_by_type(file_type_inner.name)|length == 0 %}
-                    {{ render_upload_new(file_type_inner) }}
+                {% if not file_type_inner.only_one or dataset.files_by_type(file_type_inner.name, parent_uid = parent_uid)|length == 0 %}
+                    {{ render_upload_new(file_type_inner, parent_uid) }}
                 {% endif %}
 
                 <table class="table">
 
-                {% if not file_type_inner.only_one and dataset.files_by_type(file_type_inner.name)|length > 0 -%}
+                {% if not file_type_inner.only_one and dataset.files_by_type(file_type_inner.name, parent_uid = parent_uid)|length > 0 -%}
+                {% endif %}
+                <tbody>
+                {% set idx = 1 %}
+                {% for file in dataset.files_by_type(file_type_inner.name, parent_uid = parent_uid) %}
+                <tr>
+                    {% if not file_type_inner.only_one -%}
+                        <td class="col1">{{idx}}</td>
+                    {% endif -%}
+                    <td class="col2">
+                        <a href="/fs/{{file.uid}}">(Pobierz)</a>
+                        <a href="/data/delete/{{file.uid}}">(Usuń)</a>
+                    </td>
+                    <td class="col3"><b>{{file.name}}</b></td>
+                    <td class="col4">{{file.description}}</td>
+                    <td class="col5">{{file.stored_at|datetime}} przez {{file.stored_by.username}}</td>
+                </tr>
+                {% set idx = idx + 1 %}
+                {% endfor %}
+                </tbody>
+                </table>
+            </div>
+        </div>
+    {% endfor %}
+{%- endmacro %}
+
+{% macro render_inner_files(file_type, dataset, parent_uid) %}
+{% for file_type_inner in dataset.type.file_types_list(parent=file_type.name) %}
+        <div class="row">
+           <div class="col-sm-12">
+                <h4 title="{{ file_type_inner.formats }}">{{ file_type_inner.desc }}</h4>
+           </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-12">
+                {% if not file_type_inner.only_one or dataset.files_by_type(file_type_inner.name, parent_uid = parent_uid)|length == 0 %}
+                    {{ render_upload_new(file_type_inner, parent_uid) }}
+                {% endif %}
+
+                <table class="table">
+
+                {% if not file_type_inner.only_one and dataset.files_by_type(file_type_inner.name, parent_uid = parent_uid)|length > 0 -%}
+{#
                     <thead><tr>
                         {% if not file_type_inner.only_one -%}
                             <th>L.p.</th>
@@ -64,22 +126,35 @@
                         <th>Opcjonalny komentarz</th>
                         <th>Ostatnia modyfikacja</th>
                     </tr></thead>
+#}
                 {% endif %}
                 <tbody>
                 {% set idx = 1 %}
-                {% for file in dataset.files_by_type(file_type_inner.name) %}
+                {% for file in dataset.files_by_type(file_type_inner.name, parent_uid = parent_uid) %}
                 <tr>
                     {% if not file_type_inner.only_one -%}
-                        <td>{{idx}}</td>
+                        <td class="col1">{{idx}}</td>
                     {% endif -%}
-                    <td>
+                    <td class="col2">
                         <a href="/fs/{{file.uid}}">(Pobierz)</a>
                         <a href="/data/delete/{{file.uid}}">(Usuń)</a>
                     </td>
-                    <td><b>{{file.name}}</b></td>
-                    <td>{{file.description}}</td>
-                    <td>{{file.stored_at|datetime}} przez {{file.stored_by.username}}</td>
+                    <td class="col3"><b>{{file.name}}</b></td>
+                    <td class="col4">{{file.description}}</td>
+                    <td class="col5">{{file.stored_at|datetime}} przez {{file.stored_by.username}}</td>
                 </tr>
+                {% if dataset.type.file_types_list(parent=file_type_inner.name)|length > 0  %}
+                    <tr>
+                        <td></td>
+                        <td colspan="4">
+                            <div class="panel panel-default">
+                                <div class="panel-body">
+                                    {{- render_inner_inner_files(file_type_inner, dataset, file.uid) -}}
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                {% endif %}
                 {% set idx = idx + 1 %}
                 {% endfor %}
                 </tbody>
@@ -87,7 +162,7 @@
             </div>
         </div>
     {% endfor %}
-{% endmacro -%}
+{%- endmacro %}
 
 {% macro form_control_static(label, value) -%}
 <div class="form-group">
@@ -122,18 +197,7 @@
             $('#id-header-edit').hide();
         }
     </script>
-<style>
-    #id-header-readonly .form-group > .control-label {
-        padding-top: 2px;!important;
-    }
-    #id-header-readonly .form-group .form-control-static {
-        padding-top: 2px;!important;
-        min-height: 24px;!important;
-    }
-    #id-header-readonly .form-group {
-        margin-bottom: 5px;
-    }
-</style>
+
       {# To jest nagłówek zbioru danych w trybie READONLY #}
       <div id="id-header-readonly">
           <div class="form-group">
@@ -232,7 +296,9 @@
   <div class="panel-heading"><h4>{{ file_type.desc }}</h4></div>
   <div class="panel-body">
     <div class="col-sm-12">
+{#
            <p>Proszę wgrywać: {{ file_type.formats }}</p>
+#}
 
             {% if (not file_type.only_one) or dataset.files_by_type(file_type.name)|length == 0 %}
                 {{ render_upload_new(file_type) }}
@@ -240,6 +306,7 @@
 
             <table class="table">
                 {% if not file_type.only_one and dataset.files_by_type(file_type.name)|length > 0 -%}
+{#
                 <thead><tr>
                     <th>L.p.</th>
                     <th>Operacje</th>
@@ -247,33 +314,36 @@
                     <th>Opcjonalny komentarz</th>
                     <th>Ostatnia modyfikacja</th>
                 </tr></thead>
+#}
                 {% endif -%}
                 <tbody>
                 {% set idx = 1 %}
                 {% for file in dataset.files_by_type(file_type.name) %}
                 <tr>
                     {% if not file_type.only_one -%}
-                        <td>{{idx}}</td>
+                        <td class="col1">{{idx}}</td>
                     {% endif -%}
-                    <td>
+                    <td class="col2">
                         <a href="/fs/{{file.uid}}">(Pobierz)</a>
                         <a href="/data/delete/{{file.uid}}">(Usuń)</a>
                     </td>
-                    <td><b>{{file.name}}</b></td>
-                    <td>{{file.description}}</td>
-                    <td>{{file.stored_at|datetime}} przez {{file.stored_by.username}}</td>
+                    <td class="col3"><b>{{file.name}}</b></td>
+                    <td class="col4">{{file.description}}</td>
+                    <td class="col5">{{file.stored_at|datetime}} przez {{file.stored_by.username}}</td>
                 </tr>
-                <tr>
-                    <td>
-                    </td>
-                    <td colspan="4">
-                        <div class="panel panel-default">
-                            <div class="panel-body">
-                                {{ render_inner_files(file_type, dataset) }}
+                {% if dataset.type.file_types_list(parent=file_type.name)|length > 0 %}
+                    <tr>
+                        <td>
+                        </td>
+                        <td colspan="4">
+                            <div class="panel panel-default">
+                                <div class="panel-body">
+                                    {{ render_inner_files(file_type, dataset, file.uid) }}
+                                </div>
                             </div>
-                        </div>
-                    </td>
-                </tr>
+                        </td>
+                    </tr>
+                {% endif  %}
                 {% set idx = idx + 1 %}
                 {% endfor %}
                 </tbody>

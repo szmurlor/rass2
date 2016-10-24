@@ -15,45 +15,88 @@ db.session.add(u)
 db.session.commit()
 
 dt = database.DatasetType('CT / ROI Structures / RT Plan / Pareto results')
-file_types = {
-    "types": [
-        {"name": "ct",
-         "desc": "Dane CT",
-         "formats": "Archiwum zip z plikami DICOM rozpoczynającymi się od znaków CT. Można wgrać tylko jeden plik z zestawem danych CT.",
-         "only_one": True,
-         "parent_type": None,
-         "order": 10},
-        {"name": "roi",
-         "desc": "Dane o strukturach ROI",
-         "formats": "Pojedynczy plik DICOM, lub archiwum zip z plikiem. Nazwa pliku DICOM zaczyna się od znaków RS. Można wgrać tylko jeden plik.",
-         "only_one": True,
-         "parent_type": None,
-         "order": 20},
-        {"name": "rt",
-         "desc": "Plany RT",
-         "formats": "Archiwum zip z plikami DICOM o nazwie zaczynającej się od znaków RP. Można wgarać wiele różnych planów.",
-         "only_one": False,
-         "parent_type": None,
-         "order": 30},
-        {"name": "beamlets",
-         "desc": "Dane do optymalizacji",
-         "formats": "Archiwum zip z plikami przetworzonymi do optymalizacji (obliczone dawki z podziałem na beamlety)",
-         "only_one": False,
-         "parent_type": "rt",
-         "order": 40},
-        {"name": "pareto",
-         "desc": "Wyniki pareto",
-         "formats": "Archiwum zip z wynikami Pareto",
-         "only_one": False,
-         "parent_type": "rt",
-         "order": 50},
-        {"name": "fluences",
-         "desc": "Mapy fluencji po optymalizacji",
-         "formats": "Archiwum z fluencjami poszczególnych wiązek uzyskane z optymalizacji",
-         "only_one": False,
-         "parent_type": "rt",
-         "order": 60}
-    ]
+file_types = {"types": [
+  {
+   "name": "ct",
+   "parent_type": None,
+   "formats": "Archiwum zip z plikami DICOM rozpoczynaj\u0105cymi si\u0119 od znak\u00f3w CT. Mo\u017cna wgra\u0107 tylko jeden plik z zestawem danych CT.",
+   "desc": "Dane CT",
+   "order": 10,
+   "only_one": True,
+   "responsible": "COI",
+   "allowed_extensions": "*.zip"
+  },
+  {
+   "name": "roi",
+   "parent_type": None,
+   "formats": "Pojedynczy plik DICOM, lub archiwum zip z plikiem. Nazwa pliku DICOM zaczyna si\u0119 od znak\u00f3w RS. Mo\u017cna wgra\u0107 tylko jeden plik.",
+   "desc": "Dane o strukturach ROI",
+   "order": 20,
+   "only_one": True,
+   "responsible": "COI",
+   "allowed_extensions": "*.zip|RS*.dcm"
+  },
+  {
+   "name": "rt",
+   "parent_type": None,
+   "formats": "Archiwum zip z plikami DICOM o nazwie zaczynaj\u0105cej si\u0119 od znak\u00f3w RP. Mo\u017cna wgra\u0107 wiele r\u00f3\u017cnych plan\u00f3w.",
+   "desc": "Plany radioterapii",
+   "order": 30,
+   "only_one": False,
+   "responsible": "COI",
+   "allowed_extensions": "*.zip|RP*.dcm"
+  },
+  {
+   "name": "beamlets",
+   "parent_type": "rt",
+   "formats": "Archiwum zip z plikami przetworzonymi do optymalizacji (obliczone dawki z podzia\u0142em na beamlety)",
+   "desc": "Dane do optymalizacji",
+   "order": 40,
+   "only_one": False,
+   "responsible": "PW",
+   "allowed_extensions": "*.zip|x_*.txt"
+  },
+  {
+   "name": "optdesc",
+   "parent_type": "rt",
+   "formats": "Arkusz Excel",
+   "desc": "Opis optymalizacji",
+   "order": 45,
+   "only_one": True,
+   "responsible": "COI",
+   "allowed_extensions": "*.xls|*.xlsx"
+  },
+  {
+   "name": "pareto",
+   "parent_type": "rt",
+   "formats": "Archiwum zip z wynikami Pareto",
+   "desc": "Wyniki pareto",
+   "order": 50,
+   "only_one": False,
+   "responsible": "PAN",
+   "allowed_extensions": "*.zip"
+  },
+  {
+   "name": "fluences",
+   "parent_type": "pareto",
+   "formats": "Archiwum zip z fluencjami poszczeg\u00f3lnych wi\u0105zek uzyskane z optymalizacji",
+   "desc": "Mapy fluencji po optymalizacji",
+   "order": 60,
+   "only_one": True,
+   "responsible": "PW",
+   "allowed_extensions": "*.zip"
+  },
+  {
+   "name": "other",
+   "parent_type": None,
+   "formats": "Dowolne pliki",
+   "desc": "Inne",
+   "order": 70,
+   "only_one": True,
+   "responsible": "Wszyscy",
+   "allowed_extensions": "*"
+  }
+ ]
 }
 sftypes = json.dumps(file_types, indent=True)
 dt.file_types = sftypes
