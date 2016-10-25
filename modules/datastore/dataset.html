@@ -25,8 +25,8 @@
   <h1>Zbiór danych</h1>
 
 {% macro render_upload_new(file_type, parent_uid) -%}
-    <a href="#" id="id-show-upload-{{file_type.name}}" onclick="show_upload_file('{{file_type.name}}'); return false;">(Prześlij nowy plik)</a>
-    <div id="id-upload-file-{{file_type.name}}" class="panel panel-default" style="display: none;" >
+    <a href="#" id="id-show-upload-{{file_type.name}}-{{parent_uid}}" onclick="show_upload_file('{{file_type.name}}-{{parent_uid}}'); return false;">(Prześlij nowy plik)</a>
+    <div id="id-upload-file-{{file_type.name}}-{{parent_uid}}" class="panel panel-default" style="display: none;" >
       <div class="panel-body">
         <form action="/data/upload/" enctype="multipart/form-data" method="POST">
             <input type="hidden" name="dataset_id" value="{{ dataset.id }}" />
@@ -38,8 +38,8 @@
                     <p class="help-block">Proszę wgrywać: {{file_type.formats}}</p>
                 </div>
                 <div class="form-group">
-                    <label for="id-upload-file-comment-{{file_type.name}}">Opcjonalny komentarz</label>
-                    <input class="form-control" type="text" name="description" id="id-upload-file-comment-{{file_type.name}}" maxlength="512" />
+                    <label for="id-upload-file-comment-{{file_type.name}}-{{parent_uid}}">Opcjonalny komentarz</label>
+                    <input class="form-control" type="text" name="description" id="id-upload-file-comment-{{file_type.name}}-{{parent_uid}}" maxlength="512" />
                 </div>
                 <input type="submit" formmethod="POST" name="upload_{{file_type.name}}" class="btn btn-success" value="Wyślij" />
                 <a href="#" onclick="hide_upload_file('{{file_type.name}}'); return false;">(Anuluj)</a>
@@ -86,6 +86,7 @@
                     <td class="col2">
                         <a href="/fs/{{file.uid}}">(Pobierz)</a>
                         <a href="/data/delete/{{file.uid}}">(Usuń)</a>
+                        <a href="#" onclick="showModalEditComment( {{ file.uid }}, '{{ file.description }}'); return false;">(Zmień komentarz)</a>
                     </td>
                     <td class="col3"><b>{{file.name}}</b></td>
                     <td class="col4">{{file.description}}</td>
@@ -114,20 +115,6 @@
                 {% endif %}
 
                 <table class="table">
-
-                {% if not file_type_inner.only_one and dataset.files_by_type(file_type_inner.name, parent_uid = parent_uid)|length > 0 -%}
-{#
-                    <thead><tr>
-                        {% if not file_type_inner.only_one -%}
-                            <th>L.p.</th>
-                        {% endif -%}
-                        <th>Operacje</th>
-                        <th>Nazwa oryginalna</th>
-                        <th>Opcjonalny komentarz</th>
-                        <th>Ostatnia modyfikacja</th>
-                    </tr></thead>
-#}
-                {% endif %}
                 <tbody>
                 {% set idx = 1 %}
                 {% for file in dataset.files_by_type(file_type_inner.name, parent_uid = parent_uid) %}
@@ -138,6 +125,7 @@
                     <td class="col2">
                         <a href="/fs/{{file.uid}}">(Pobierz)</a>
                         <a href="/data/delete/{{file.uid}}">(Usuń)</a>
+                        <a href="#" onclick="showModalEditComment( {{ file.uid }}, '{{ file.description }}'); return false;">(Zmień komentarz)</a>
                     </td>
                     <td class="col3"><b>{{file.name}}</b></td>
                     <td class="col4">{{file.description}}</td>
@@ -291,31 +279,52 @@
     </form>
 
 
+<!-- Modal -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">Edycja komentarza</h4>
+      </div>
+      <form class="form" action="/data/update_comment"  method="POST">
+          <div class="modal-body">
+            <div class="form-group">
+                <label class="form-control-label">Nowy komentarz:</label>
+                <input class="form-control" type="text" id="modal_comment" name="comment" size="50" />
+                <input type="hidden" id="modal_file_id" name="file_id" />
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Anuluj</button>
+            <button type="submit" class="btn btn-primary">Zapisz</button>
+          </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script language="JavaScript">
+function showModalEditComment(id_file, value) {
+    $('#modal_file_id').val(id_file);
+    $('#modal_comment').val(value);
+    $('#myModal').modal({keyboard: false});
+    $('#myModal').modal('show');
+    setTimeout(function() {$('#modal_comment').focus();}, 500);
+}
+</script>
+
 {% for file_type in dataset.type.file_types_list(parent=None) %}
 <div class="panel panel-default">
   <div class="panel-heading"><h4>{{ file_type.desc }}</h4></div>
   <div class="panel-body">
     <div class="col-sm-12">
-{#
-           <p>Proszę wgrywać: {{ file_type.formats }}</p>
-#}
 
             {% if (not file_type.only_one) or dataset.files_by_type(file_type.name)|length == 0 %}
                 {{ render_upload_new(file_type) }}
             {% endif %}
 
             <table class="table">
-                {% if not file_type.only_one and dataset.files_by_type(file_type.name)|length > 0 -%}
-{#
-                <thead><tr>
-                    <th>L.p.</th>
-                    <th>Operacje</th>
-                    <th>Nazwa oryginalna</th>
-                    <th>Opcjonalny komentarz</th>
-                    <th>Ostatnia modyfikacja</th>
-                </tr></thead>
-#}
-                {% endif -%}
                 <tbody>
                 {% set idx = 1 %}
                 {% for file in dataset.files_by_type(file_type.name) %}
@@ -326,6 +335,7 @@
                     <td class="col2">
                         <a href="/fs/{{file.uid}}">(Pobierz)</a>
                         <a href="/data/delete/{{file.uid}}">(Usuń)</a>
+                        <a href="#" onclick="showModalEditComment( {{ file.uid }}, '{{ file.description }}'); return false;">(Zmień komentarz)</a>
                     </td>
                     <td class="col3"><b>{{file.name}}</b></td>
                     <td class="col4">{{file.description}}</td>
