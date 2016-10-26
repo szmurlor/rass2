@@ -1,28 +1,5 @@
 {% extends "base.html" %}
-
 {% block content %}
-<style>
-    #id-header-readonly .form-group > .control-label {
-        padding-top: 2px;!important;
-    }
-    #id-header-readonly .form-group .form-control-static {
-        padding-top: 2px;!important;
-        min-height: 24px;!important;
-    }
-    #id-header-readonly .form-group {
-        margin-bottom: 5px;
-    }
-
-    .col1 { width: 2em; max-width: 2em;}
-    .col2 { width: 11em; max-width: 11em;}
-    .col3 { width: 20em; max-width: 20em;}
-    .col4 { width: 20em; max-width: 20em;}
-    .col5 { width: 10em; max-width: 10em;}
-    .table {word-wrap: break-word;}
-</style>
-
-  <div class="pull-right"><small>Ostatnia modyfikacja: {{dataset.date_modified|datetime}} przez {{dataset.user_modified.username}}</small></div>
-  <h1>Zbiór danych</h1>
 
 {% macro render_upload_new(file_type, parent_uid) -%}
     <a href="#" id="id-show-upload-{{file_type.name}}-{{parent_uid}}" onclick="show_upload_file('{{file_type.name}}-{{parent_uid}}'); return false;">(Prześlij nowy plik)</a>
@@ -42,7 +19,7 @@
                     <input class="form-control" type="text" name="description" id="id-upload-file-comment-{{file_type.name}}-{{parent_uid}}" maxlength="512" />
                 </div>
                 <input type="submit" formmethod="POST" name="upload_{{file_type.name}}" class="btn btn-success" value="Wyślij" />
-                <a href="#" onclick="hide_upload_file('{{file_type.name}}'); return false;">(Anuluj)</a>
+                <a href="#" onclick="hide_upload_file('{{file_type.name}}-{{parent_uid}}'); return false;">(Anuluj)</a>
             </div>
         </form>
       </div>
@@ -171,114 +148,7 @@
 </div>
 {% endmacro -%}
 
-  <form class="form-horizontal" action="/data/update" method="POST">
-      <input type="hidden" name="dataset_id" value="{{dataset.id}}" />
-
-    <script language="JavaScript">
-        function show_header_edit() {
-            $('#id-header-readonly').hide();
-            $('#id-header-edit').show();
-            $('#id-date-created').focus();
-        }
-        function hide_header_edit() {
-            $('#id-header-readonly').show();
-            $('#id-header-edit').hide();
-        }
-    </script>
-
-      {# To jest nagłówek zbioru danych w trybie READONLY #}
-      <div id="id-header-readonly">
-          <div class="form-group">
-            <div class="col-sm-8"></div>
-            <div class="col-sm-2">
-                <a href="#" onclick="show_header_edit();">(Zmień)</a>
-            </div>
-          </div>
-          {{form_control_static('Data utworzenia:', dataset.date_created|date )}}
-          {{form_control_static('Nazwa:', dataset.name )}}
-          {{form_control_static('Właściciel:', dataset.user_created.username )}}
-          {{form_control_static('Krótkie uwagi:', dataset.short_notes )}}
-      </div>
-
-      {# To jest nagłówek zbioru danych w trybie EDIT #}
-      <div id="id-header-edit" style="display: none">
-          <div class="form-group">
-            <div class="col-sm-8"></div>
-            <div class="col-sm-2">
-            </div>
-          </div>
-
-          {{input_text('Data utworzenia:', dataset.date_created|date, 'date_created', 'id-date-created')}}
-          {{input_text('Nazwa:', dataset.name, 'name', 'id-name')}}
-          {{form_control_static('Właściciel:', dataset.user_created.username)}}
-          {{input_text('Krótkie uwagi:', dataset.short_notes, 'short_notes', 'id-short-notes')}}
-
-          <div class="form-group">
-            <div class="col-sm-2"></div>
-            <div class="col-sm-6">
-                <button type="submit" name="save_header" class="btn btn-success">Zapisz</button>
-                <a href="#" onclick="hide_header_edit()">(Anuluj)</a>
-            </div>
-          </div>
-      </div>
-
-        <script language="JavaScript">
-            function change_notes() {
-                $('#id-notes-readonly').hide();
-                $('#id-notes-edit').show();
-                $('#id-long-notes').focus();
-            }
-            function hide_notes() {
-                $('#id-notes-readonly').show();
-                $('#id-notes-edit').hide();
-            }
-        </script>
-      {# To jest wyświetlenie notatek w trybie READONLY.
-         Notatki te zostaną przepasowane przez Markdown.
-         JavaScript jest dołączony w skrypcie poniżej.
-      #}
-      <div id="id-notes-readonly">
-          <div class="form-group">
-            <label class="control-label col-sm-2">Dłuższy komentarz / notatki:</label>
-            <div class="col-sm-6">
-                {% if dataset.long_notes != None -%}
-                    <div id="id-long-notes-readonly"></div>
-                {% else -%}
-                    <div>-</div>
-                {% endif -%}
-
-              <script lang="javascript">
-                var converter = new showdown.Converter(),
-                html = converter.makeHtml(`{{ dataset.long_notes }}`);
-                $("#id-long-notes-readonly").html(html);
-              </script>
-
-            </div>
-            <div class="col-sm-1">
-                <a href="#" onclick="change_notes()">(Zmień)</a>
-            </div>
-        </div>
-      </div>
-
-
-      {# To są notatki w trybie EDIT. #}
-      <div id="id-notes-edit" style="display: none;">
-          <div class="form-group">
-            <label class="control-label col-sm-2" for="id-long-notes">Dłuższy komentarz / notatki:</label>
-            <div class="col-sm-6">
-                <textarea id="id-long-notes" cols="100" rows="20" name="long_notes">{{dataset.long_notes}}</textarea>
-                <p class="help-block">Tekst może być wpisywany zgodnie ze składnią <a target="_blank" href="https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet">Markdown</a></p>
-            </div>
-        </div>
-        <div class="form-group">
-            <div class="col-sm-2"></div>
-            <button name="save" type="submit" class="btn btn-success">Zapisz</button>
-            <a href="#" onclick="hide_notes()">(Anuluj)</a>
-        </div>
-      </div>
-    </form>
-
-
+{%- macro modal_comment() -%}
 <!-- Modal -->
 <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
   <div class="modal-dialog" role="document">
@@ -290,7 +160,7 @@
       <form class="form" action="/data/update_comment"  method="POST">
           <div class="modal-body">
             <div class="form-group">
-                <label class="form-control-label">Nowy komentarz:</label>
+                <label class="form-control-label" for="modal_comment">Nowy komentarz:</label>
                 <input class="form-control" type="text" id="modal_comment" name="comment" size="50" />
                 <input type="hidden" id="modal_file_id" name="file_id" />
             </div>
@@ -307,12 +177,154 @@
 <script language="JavaScript">
 function showModalEditComment(id_file, value) {
     $('#modal_file_id').val(id_file);
-    $('#modal_comment').val(value);
-    $('#myModal').modal({keyboard: false});
-    $('#myModal').modal('show');
-    setTimeout(function() {$('#modal_comment').focus();}, 500);
+    var modal_comment = $('#modal_comment');
+    modal_comment.val(value);
+
+    var myModal = $('#myModal');
+    myModal.modal({keyboard: false});
+    myModal.modal('show');
+    setTimeout(function() {modal_comment.focus();}, 500);
 }
 </script>
+{%- endmacro -%}
+
+
+{% macro dataset_header(dataset) %}
+<form class="form-horizontal" action="/data/update" method="POST">
+    <input type="hidden" name="dataset_id" value="{{dataset.id}}" />
+
+    <script language="JavaScript">
+        function show_header_edit() {
+            $('#id-header-readonly').hide();
+            $('#id-header-edit').show();
+            $('#id-date-created').focus();
+        }
+        function hide_header_edit() {
+            $('#id-header-readonly').show();
+            $('#id-header-edit').hide();
+        }
+    </script>
+
+    {# To jest nagłówek zbioru danych w trybie READONLY #}
+    <div id="id-header-readonly">
+      <div class="form-group">
+        <div class="col-sm-8"></div>
+        <div class="col-sm-2">
+            <a href="#" onclick="show_header_edit();">(Zmień)</a>
+        </div>
+      </div>
+      {{form_control_static('Data utworzenia:', dataset.date_created|date )}}
+      {{form_control_static('Nazwa:', dataset.name )}}
+      {{form_control_static('Właściciel:', dataset.user_created.username )}}
+      {{form_control_static('Krótkie uwagi:', dataset.short_notes )}}
+    </div>
+
+    {# To jest nagłówek zbioru danych w trybie EDIT #}
+    <div id="id-header-edit" style="display: none">
+      <div class="form-group">
+        <div class="col-sm-8"></div>
+        <div class="col-sm-2">
+        </div>
+      </div>
+
+      {{input_text('Data utworzenia:', dataset.date_created|date, 'date_created', 'id-date-created')}}
+      {{input_text('Nazwa:', dataset.name, 'name', 'id-name')}}
+      {{form_control_static('Właściciel:', dataset.user_created.username)}}
+      {{input_text('Krótkie uwagi:', dataset.short_notes, 'short_notes', 'id-short-notes')}}
+
+      <div class="form-group">
+        <div class="col-sm-2"></div>
+        <div class="col-sm-6">
+            <button type="submit" name="save_header" class="btn btn-success">Zapisz</button>
+            <a href="#" onclick="hide_header_edit()">(Anuluj)</a>
+        </div>
+      </div>
+    </div>
+
+    <script language="JavaScript">
+        function change_notes() {
+            $('#id-notes-readonly').hide();
+            $('#id-notes-edit').show();
+            $('#id-long-notes').focus();
+        }
+        function hide_notes() {
+            $('#id-notes-readonly').show();
+            $('#id-notes-edit').hide();
+        }
+    </script>
+    {# To jest wyświetlenie notatek w trybie READONLY.
+     Notatki te zostaną przepasowane przez Markdown.
+     JavaScript jest dołączony w skrypcie poniżej.
+    #}
+    <div id="id-notes-readonly">
+      <div class="form-group">
+        <label class="control-label col-sm-2">Dłuższy komentarz / notatki:</label>
+        <div class="col-sm-6">
+            {% if dataset.long_notes != None -%}
+                <div id="id-long-notes-readonly"></div>
+            {% else -%}
+                <div>-</div>
+            {% endif -%}
+
+          <script lang="javascript">
+            var converter = new showdown.Converter(),
+            html = converter.makeHtml(`{{ dataset.long_notes }}`);
+            $("#id-long-notes-readonly").html(html);
+          </script>
+
+        </div>
+        <div class="col-sm-1">
+            <a href="#" onclick="change_notes()">(Zmień)</a>
+        </div>
+    </div>
+    </div>
+
+
+    {# To są notatki w trybie EDIT. #}
+    <div id="id-notes-edit" style="display: none;">
+      <div class="form-group">
+        <label class="control-label col-sm-2" for="id-long-notes">Dłuższy komentarz / notatki:</label>
+        <div class="col-sm-6">
+            <textarea id="id-long-notes" cols="100" rows="20" name="long_notes">{{dataset.long_notes}}</textarea>
+            <p class="help-block">Tekst może być wpisywany zgodnie ze składnią <a target="_blank" href="https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet">Markdown</a></p>
+        </div>
+      </div>
+      <div class="form-group">
+          <div class="col-sm-2"></div>
+        <button name="save" type="submit" class="btn btn-success">Zapisz</button>
+        <a href="#" onclick="hide_notes()">(Anuluj)</a>
+      </div>
+    </div>
+</form>
+{% endmacro %}
+
+
+<style>
+    #id-header-readonly .form-group > .control-label {
+        padding-top: 2px;!important;
+    }
+    #id-header-readonly .form-group .form-control-static {
+        padding-top: 2px;!important;
+        min-height: 24px;!important;
+    }
+    #id-header-readonly .form-group {
+        margin-bottom: 5px;
+    }
+
+    .col1 { width: 2em; max-width: 2em;}
+    .col2 { width: 11em; max-width: 11em;}
+    .col3 { width: 20em; max-width: 20em;}
+    .col4 { width: 20em; max-width: 20em;}
+    .col5 { width: 10em; max-width: 10em;}
+    .table {word-wrap: break-word;}
+</style>
+
+  <div class="pull-right"><small>Ostatnia modyfikacja: {{dataset.date_modified|datetime}} przez {{dataset.user_modified.username}}</small></div>
+  <h1>Zbiór danych</h1>
+
+  {{ modal_comment() }}
+  {{ dataset_header(dataset) }}
+
 
 {% for file_type in dataset.type.file_types_list(parent=None) %}
 <div class="panel panel-default">
@@ -363,5 +375,6 @@ function showModalEditComment(id_file, value) {
   </div>
 </div>
 {% endfor %}
+
 {% endblock %}
 
