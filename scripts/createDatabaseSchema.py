@@ -1,9 +1,9 @@
 import sys, os
 import json
-import database
 
 sys.path.append(os.getcwd())
 
+import database
 from database import db
 # db.drop_all()
 db.create_all()

@@ -1,7 +1,8 @@
 # -*- coding: utf-8
 from flask import Flask
 
-UPLOAD_FOLDER = "/home/data/"
+UPLOAD_FOLDER = "/opt/rass2/data/"
+
 LONG_NOTES = u"""#### 1. Krótki opis przypadku COI
 
 1. ...
