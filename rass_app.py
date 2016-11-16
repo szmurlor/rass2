@@ -3,17 +3,7 @@ from flask import Flask
 
 UPLOAD_FOLDER = "/opt/rass2/data/"
 
-LONG_NOTES = u"""#### 1. Krótki opis przypadku COI
-
-1. ...
-
-#### 2. Uwagi PAN
-
-1. ...
-
-#### 3. Komentarz COI
-
-1. ...
+LONG_NOTES = u"""...
 """
 
 app = Flask('rass', template_folder='modules')

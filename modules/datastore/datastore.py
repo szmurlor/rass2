@@ -17,7 +17,7 @@ def datastore():
     if not g.user_id:
         abort(401)
 
-    datasets = database.Dataset.query.order_by(database.Dataset.date_created)
+    datasets = database.Dataset.query.filter_by(deleted=False).order_by(database.Dataset.date_created)
     dataset_types = database.DatasetType.query.order_by(database.DatasetType.name)
     return render_template('datastore/datastore.html', scenarios=g.scenarios, uid=None, datasets=datasets,
                            now=datetime.utcnow(), dataset_types=dataset_types)
@@ -90,6 +90,9 @@ def upload_file():
     user = database.User.query.filter_by(id=g.user_id).one()
     dataset = database.Dataset.query.filter_by(id=int(args['dataset_id'])).one()
     file_type = args['file_type']
+    parent_uid = None
+    if args['parent_id'] is not None and len(args['parent_id']) > 0:
+        parent_uid = int(args['parent_id'])
 
     # check if the post request has the file part
     if 'file' not in request.files:
@@ -107,9 +110,19 @@ def upload_file():
         # Zapisuje plik w repozytorium plików pod 'bezpieczną' nazwą:
         # nazwa_oryginalna_uuid4
         # repozytorium plików to zdefiniowany folder w rass_app.
+        if parent_uid is not None:
+            parent_file = database.StoredFile.query.filter_by(uid=parent_uid).one_or_none()
+        else:
+            parent_file = None
+
         filename = secure_filename("%s_%s" % (file.filename, str(uuid.uuid4())))
-        file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-        fullpath_filename = "%s%s" % (app.config['UPLOAD_FOLDER'], filename)
+        datefolder = datetime.utcnow().strftime('%Y-%m-%d')
+        uploadpath = os.path.join(app.config['UPLOAD_FOLDER'], datefolder)
+        if not os.path.isdir(uploadpath):
+            os.mkdir(uploadpath)
+        fullpath_filename = os.path.join(uploadpath, filename)
+        file.save(fullpath_filename)
+
 
         # Zapamiętuję plik w bazie danych
         stored_file = database.StoredFile(fullpath_filename, None)
@@ -119,12 +132,14 @@ def upload_file():
         stored_file.description = args['description']
         stored_file.stored_at = datetime.utcnow()
         stored_file.stored_by = user
+        stored_file.parent = parent_file
         database.db.session.add(stored_file)
         database.db.session.commit()
 
         flash(u'Pobrałem plik o nazwie: %s' % file.filename, 'success')
 
     return render_template('datastore/dataset.html', scenarios=g.scenarios, uid=dataset.id, dataset=dataset)
+
 
 @app.route('/data/delete/<uid>', methods=['GET'])
 def delete_file(uid):
@@ -135,13 +150,41 @@ def delete_file(uid):
 
     stored_file = database.StoredFile.query.filter_by(uid=uid).one()
     if stored_file is not None:
-        file_name = stored_file.name
-        os.remove(stored_file.path)
         dataset = stored_file.dataset
-        database.db.session.delete(stored_file)
+
+        file_name = stored_file.name
+        #os.remove(stored_file.path)
+        #database.db.session.delete(stored_file)
+
+        stored_file.deleted = True
+        database.db.session.add(stored_file)
         database.db.session.commit()
 
         flash(u"Poprawnie usunąłem plik %s" % file_name, 'success')
+
+    return render_template('datastore/dataset.html', scenarios=g.scenarios, uid=dataset.id, dataset=dataset)
+
+@app.route('/data/update_comment', methods=['POST', 'GET'])
+def update_comment():
+    if not g.user_id:
+        abort(401)
+
+    dataset = None
+
+    args = merge_http_request_arguments(True)
+    file_id = int(args['file_id'])
+    new_comment = args['comment']
+
+    stored_file = database.StoredFile.query.filter_by(uid=file_id).one()
+    if stored_file is not None:
+        dataset = stored_file.dataset
+
+        file_name = stored_file.name
+        stored_file.description = new_comment
+        database.db.session.add(stored_file)
+        database.db.session.commit()
+
+        flash(u"Zakrualizowałem komentarz do pliku %s na wartość: '%s'" % (file_name, new_comment), 'success')
 
     return render_template('datastore/dataset.html', scenarios=g.scenarios, uid=dataset.id, dataset=dataset)
 
