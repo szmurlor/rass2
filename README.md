@@ -1,6 +1,10 @@
 Zależności
 ==========
 
+Hasła użytkowników:
+coi: COI+PW+PAN
+
+
 $ sudo apt-get install unzip unrar
 $ sudo apt-get install python-pip
 $ sudo apt-get install gcc make python2.7-dev
