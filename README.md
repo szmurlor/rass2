@@ -1,6 +1,10 @@
 Zależności
 ==========
 
+Hasła użytkowników:
+coi: COI+PW+PAN
+
+```
 $ sudo apt-get install unzip unrar
 $ sudo apt-get install python-pip
 $ sudo apt-get install gcc make python2.7-dev
@@ -22,6 +26,7 @@ $ mkdir -p tmp/pids
 $ mkdir -p tmp/sockets
 
 $ cp config/uwsgi.ini.sample config/uwsgi.ini
+```
 
 Utworzenie bazy danych
 ==============================
@@ -29,13 +34,16 @@ Utworzenie bazy danych
 * Uruchomić skrypt: python scripts/createDatabaseSchema.py
 * Dodać użytkownika: python scripts/addNewUser.py
 
+```
 $ python
 >>> from database import db
 >>> db.create_all()
+```
 
 Wdrożenie na rass.iem.pw.edu.pl
 ===============================
 
+```
 $ ssh rass.iem.pw.edu.pl
 user@rass$ sudo su -l rass
 rass@rass$ cd rass
@@ -44,10 +52,12 @@ rass@rass$ git pull
 rass@rass$ exit
 user@rass$ sudo /etc/init.d/rass stop
 user@rass$ sudo /etc/init.d/rass start
+```
 
 Dodanie nowego użytkownika
 ==========================
 
+```
 $ ssh rass.iem.pw.edu.pl
 user@rass$ sudo su -l rass
 rass@rass$ cd rass
@@ -58,3 +68,4 @@ rass@rass$ python
 >>> u.set_password('*******')
 >>> db.session.add(u)
 >>> db.session.commit()
+```

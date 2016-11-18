@@ -1,20 +1,9 @@
 # -*- coding: utf-8
 from flask import Flask
 
-UPLOAD_FOLDER = "/home/data/"
+UPLOAD_FOLDER = "/opt/rass2/data/"
+
 LONG_NOTES = u"""...
-"""
-LONG_NOTES_WITH_EXAMPLE = u"""#### 1. Krótki opis przypadku COI
-
-1. ...
-
-#### 2. Uwagi PAN
-
-1. ...
-
-#### 3. Komentarz COI
-
-1. ...
 """
 
 app = Flask('rass', template_folder='modules')
