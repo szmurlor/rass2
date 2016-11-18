@@ -40,7 +40,7 @@
 {% for file_type_inner in dataset.type.file_types_list(parent=file_type.name) %}
         <div class="row">
            <div class="col-sm-12">
-                <h4 title="{{ file_type_inner.formats }}">{{ file_type_inner.desc }}</h4>
+                <h4 title="{{ file_type_inner.formats }}">{{ file_type_inner.desc }} ({{ file_type_inner.responsible }})</h4>
            </div>
         </div>
         <div class="row">
@@ -82,7 +82,7 @@
 {% for file_type_inner in dataset.type.file_types_list(parent=file_type.name) %}
         <div class="row">
            <div class="col-sm-12">
-                <h4 title="{{ file_type_inner.formats }}">{{ file_type_inner.desc }}</h4>
+                <h4 title="{{ file_type_inner.formats }}">{{ file_type_inner.desc }} ({{ file_type_inner.responsible }})</h4>
            </div>
         </div>
         <div class="row">
@@ -214,7 +214,7 @@ function showModalEditComment(id_file, value) {
         </div>
       </div>
       {{form_control_static('Data utworzenia:', dataset.date_created|date )}}
-      {{form_control_static('Nazwa:', dataset.name )}}
+      {{form_control_static('Nazwa (PID):', dataset.name )}}
       {{form_control_static('Właściciel:', dataset.user_created.username )}}
       {{form_control_static('Krótkie uwagi:', dataset.short_notes )}}
     </div>
@@ -228,7 +228,7 @@ function showModalEditComment(id_file, value) {
       </div>
 
       {{input_text('Data utworzenia:', dataset.date_created|date, 'date_created', 'id-date-created')}}
-      {{input_text('Nazwa:', dataset.name, 'name', 'id-name')}}
+      {{input_text('Nazwa (PID):', dataset.name, 'name', 'id-name')}}
       {{form_control_static('Właściciel:', dataset.user_created.username)}}
       {{input_text('Krótkie uwagi:', dataset.short_notes, 'short_notes', 'id-short-notes')}}
 
@@ -328,7 +328,7 @@ function showModalEditComment(id_file, value) {
 
 {% for file_type in dataset.type.file_types_list(parent=None) %}
 <div class="panel panel-default">
-  <div class="panel-heading"><h4>{{ file_type.desc }}</h4></div>
+  <div class="panel-heading"><h4>{{ file_type.desc }} ({{ file_type.responsible }})</h4></div>
   <div class="panel-body">
     <div class="col-sm-12">
 
