@@ -1,6 +1,7 @@
 # -*- coding: utf-8
 import json
 import os.path
+import uuid
 
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql.sqltypes import DateTime
@@ -140,6 +141,8 @@ class StoredFile(db.Model):
 
     deleted = db.Column(db.Boolean, default=False)
 
+    token = db.Column(db.String(128))
+
     def __init__(self, file_path, content_type=None):
         directory, name = os.path.split(file_path)
 
@@ -199,3 +202,10 @@ class TemporaryStoredFile(StoredFile):
 
     def __repr__(self):
         return '<TemporaryStoredFile %s supposed to be written in %r (%s)>' % (self.name, self.path, self.content_type)
+
+
+for _file in StoredFile.query.filter_by(token=None).all():
+    _file.token = str(uuid.uuid4()).replace("-", "")
+    print "Generated token '%s' for file '%s'" % (_file.token, _file.path)
+    db.session.add(_file)
+    db.session.commit()

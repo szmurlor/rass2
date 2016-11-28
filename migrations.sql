@@ -1,0 +1,1 @@
+ALTER TABLE stored_file ADD token TEXT NULL;

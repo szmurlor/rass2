@@ -184,7 +184,7 @@ def update_comment():
         database.db.session.add(stored_file)
         database.db.session.commit()
 
-        flash(u"Zakrualizowałem komentarz do pliku %s na wartość: '%s'" % (file_name, new_comment), 'success')
+        flash(u"Zaktualizowałem komentarz do pliku %s na wartość: '%s'" % (file_name, new_comment), 'success')
 
     return render_template('datastore/dataset.html', scenarios=g.scenarios, uid=dataset.id, dataset=dataset)
 
@@ -208,9 +208,21 @@ def download(uid):
     if stored_file is None:
         return render_template("no_file.html", uid=uid), 404
 
-    file_name = os.path.basename(stored_file.path)
     content = stored_file.read(charset=None)
     return content, 200, {
         'Content-Type': stored_file.content_type,
         'Content-Disposition': "attachment; filename=" + stored_file.name
+    }
+
+@app.route('/fs/token/<token>')
+def download_token(token):
+    stored_file = storage.find_file_by_token(token)
+
+    if stored_file is None:
+        return render_template("no_file.html", uid=token), 404
+
+    content = stored_file.read(charset=None)
+    return content, 200, {
+        'Content-Type': stored_file.content_type,
+        'Content-Disposition': "attachment; filename=" + stored_file.name.encode('utf-8')
     }
