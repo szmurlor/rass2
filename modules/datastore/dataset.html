@@ -356,7 +356,7 @@ function showModalEditComment(id_file, value) {
                     <td class="col3"><b>{{file.name}}</b></td>
                     <td class="col4">{{file.description}}</td>
                     <td class="col5">{{file.stored_at|datetime}} przez {{file.stored_by.username}}
-                        <a href="/fs/token/{{ file.token }}" title="Private, without authentication file download ({{ url_for("download_token", _external=True, token=file.token) }})"><span class="glyphicon glyphicon-share" aria-hidden="true"></span></a>
+                        <a href="/fs/token/{{ file.token }}" title="Private, without authentication file download ( {{ url_for('download_token', token=file.token, _external=True) }} )"><span class="glyphicon glyphicon-share" aria-hidden="true"></span></a>
                     </td>
                 </tr>
                 {% if dataset.type.file_types_list(parent=file_type.name)|length > 0 %}

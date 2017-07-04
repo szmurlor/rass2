@@ -133,6 +133,10 @@ def upload_file():
         stored_file.stored_at = datetime.utcnow()
         stored_file.stored_by = user
         stored_file.parent = parent_file
+
+        # Generate token
+        stored_file.token = str(uuid.uuid4()).replace("-", "")
+
         database.db.session.add(stored_file)
         database.db.session.commit()
 
