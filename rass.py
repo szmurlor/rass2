@@ -2,6 +2,9 @@
 from flask import g, session, request, flash
 from flask import render_template, redirect, url_for
 from datetime import datetime
+
+from flask import send_from_directory
+
 from rass_app import app
 import logger
 import database
@@ -11,6 +14,9 @@ import database
 ##################################
 scenarios = None
 
+import sys
+reload(sys)
+sys.setdefaultencoding('utf8')
 
 def init_scenarios():
     import modules.scenarios.roi.roi
@@ -32,6 +38,10 @@ def create_scenario(module_name, scenario_class):
 
 init_scenarios()
 
+
+@app.route('/doc/<path:path>')
+def send_js(path):
+    return send_from_directory('doc', path)
 
 @app.errorhandler(401)
 def unauthorized(error):
@@ -78,6 +88,8 @@ import authentication
 import modules.datastore.datastore
 # noinspection PyUnresolvedReferences
 import modules.scenarios.scenarios
+# noinspection PyUnresolvedReferences
+import modules.help.help
 
 
 @app.template_filter('datetime')
@@ -91,6 +103,12 @@ def _jinja2_filter_date(date, fmt=None):
     dformat = '%d.%m.%Y'
     return date.strftime(dformat)
 
+
+@app.template_filter('markdown')
+def markdown_filter(data):
+    from flask import Markup
+    from markdown import markdown
+    return Markup(markdown(data, extensions=['markdown.extensions.attr_list']))
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0')

@@ -18,6 +18,19 @@
 		padding-top: 60px;
 		padding-bottom: 40px;
 		}
+
+		.shadow {
+			width: 250px;
+			box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+			text-align: center;
+		}
+
+		.doc_img {
+			margin-left: 4em;
+			width: 600px;
+			box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+			text-align: center;
+		}
 	</style>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.js"></script>
@@ -37,6 +50,9 @@
                     </li>
                     <li>
                         <a href="/data">Magazyn danych</a>
+                    </li>
+                    <li>
+                        <a href="/help">Pomoc</a>
                     </li>
                     <li>
                         {% if not session.user_id %}
