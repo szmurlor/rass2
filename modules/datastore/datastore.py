@@ -18,9 +18,10 @@ def datastore():
         abort(401)
 
     datasets = database.Dataset.query.filter_by(deleted=False).order_by(database.Dataset.date_created)
+    archived_datasets = database.Dataset.query.filter_by(deleted=True).order_by(database.Dataset.date_created)
     dataset_types = database.DatasetType.query.order_by(database.DatasetType.name)
     return render_template('datastore/datastore.html', scenarios=g.scenarios, uid=None, datasets=datasets,
-                           now=datetime.utcnow(), dataset_types=dataset_types)
+                           now=datetime.utcnow(), dataset_types=dataset_types, archived_datasets=archived_datasets)
 
 
 @app.route('/data/update', methods=['POST'])
@@ -65,11 +66,31 @@ def new_dataset():
     return render_template('datastore/dataset.html', scenarios=g.scenarios, uid=dataset.id, dataset=dataset)
 
 
-@app.route('/data/delete/')
-def delete_dataset(uid):
+@app.route('/data/archive/<id>')
+def delete_dataset(id):
     if not g.user_id:
         abort(401)
-    return render_template('datastore/datastore.html', scenarios=g.scenarios, uid=uid)
+
+    dataset = database.Dataset.query.filter_by(id=int(id)).one()
+    dataset.deleted = True
+
+    database.db.session.add(dataset)
+    database.db.session.commit()
+
+    return datastore()
+
+@app.route('/data/unarchive/<id>')
+def undelete_dataset(id):
+    if not g.user_id:
+        abort(401)
+
+    dataset = database.Dataset.query.filter_by(id=int(id)).one()
+    dataset.deleted = False
+
+    database.db.session.add(dataset)
+    database.db.session.commit()
+
+    return datastore()
 
 def allowed_file(filename):
 #    return '.' in filename and \
@@ -230,3 +251,6 @@ def download_token(token):
         'Content-Type': stored_file.content_type,
         'Content-Disposition': "attachment; filename=" + stored_file.name.encode('utf-8')
     }
+
+
+

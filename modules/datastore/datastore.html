@@ -51,6 +51,7 @@
   </tbody>
   </table>
 
+
   <div>
     <a class="btn btn-success" id="new_dataset_btn" href="#" onclick="show_new_dataset()">Nowy zbiór danych</a>
 
@@ -96,32 +97,79 @@
               <a href="#" onclick="hide_new_dataset();">(Anuluj)</a>
           </div>
         </form>
-        <script lang="javascript">
-            function hide_new_dataset() {
-                $("#new_dataset").hide();
-                $("#new_dataset_btn").show();
-            }
-            function show_new_dataset() {
-                $("#new_dataset").show();
-                $("#new_dataset_btn").hide();
-            }
-            function validate_add() {
-                var fg_Data_utworzenia = $('#fg_Data_utworzenia');
-                fg_Data_utworzenia.removeClass("has-error");
-                if (!$("#Data_utworzenia").val()) {
-                    fg_Data_utworzenia.addClass("has-error");
-                    alert('Pole Data utworzenia jest wymagane.');
-                    return false;
-                }
-                if (!$("#Nazwa").val()) {
-                    alert('Pole Nazwa jest wymagane.');
-                    return false;
-                }
-            }
-            hide_new_dataset();
-
-        </script>
-
   </div>
+
+
+<a class="float-right" href="#" onclick="show_archived(); return false;" id="cmd-show-archived">(Pokaż archiwalne)</a>
+<a class="float-right" href="#" onclick="hide_archived(); return false;" id="cmd-hide-archived">(Ukryj archiwalne)</a>
+
+<div class="alert alert-secondary" id="archived">
+  <h3>Archiwalne zbiory danych</h3>
+  <p>Tabela zbiorów danych, które zostały przeniesione do archiwum (usunięte?).</p>
+  <table class="table">
+  <thead>
+    <tr>
+        <th>L.p.</th>
+        <th>Operacje</th>
+        <th>Data utworzenia</th>
+        <th>Nazwa</th>
+        <th>Uwagi</th>
+        <th>Ostatnia modyfikacja</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% set idx = 1 -%}
+    {% for ds in archived_datasets -%}
+    <tr>
+        <td>{{ idx }}.</td>
+        <td><a href="/data/unarchive/{{ds.id}}">(Wyjmij z archiwum)</a></td>
+        <td>{{ ds.date_created }}</td>
+        <td>{{ ds.name }}</td>
+        <td>{{ ds.short_notes }}</td>
+        <td>{{ ds.date_modified|datetime }} przez {{ ds.user_modified.username if ds.user_modified else '-' }}</td>
+    </tr>
+    {% set idx = idx + 1 -%}
+    {% endfor -%}
+
+  </tbody>
+  </table>
+</div>
+
+    <script lang="javascript">
+        function hide_new_dataset() {
+            $("#new_dataset").hide();
+            $("#new_dataset_btn").show();
+        }
+        function show_new_dataset() {
+            $("#new_dataset").show();
+            $("#new_dataset_btn").hide();
+        }
+        function hide_archived() {
+            $("#archived").hide();
+            $("#cmd-hide-archived").hide();
+            $("#cmd-show-archived").show();
+        }
+        function show_archived() {
+            $("#archived").show();
+            $("#cmd-hide-archived").show();
+            $("#cmd-show-archived").hide();
+        }
+        function validate_add() {
+            var fg_Data_utworzenia = $('#fg_Data_utworzenia');
+            fg_Data_utworzenia.removeClass("has-error");
+            if (!$("#Data_utworzenia").val()) {
+                fg_Data_utworzenia.addClass("has-error");
+                alert('Pole Data utworzenia jest wymagane.');
+                return false;
+            }
+            if (!$("#Nazwa").val()) {
+                alert('Pole Nazwa jest wymagane.');
+                return false;
+            }
+        }
+        hide_new_dataset();
+        hide_archived();
+
+    </script>
 
 {% endblock %}
