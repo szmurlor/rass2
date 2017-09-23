@@ -49,7 +49,7 @@ file_types = {"types": [
   {
    "name": "beamlets",
    "parent_type": "rt",
-   "formats": "Archiwum zip z plikami przetworzonymi do optymalizacji (obliczone dawki z podzia\u0142em na beamlety)",
+   "formats": "Archiwum zip z plikami przetworzonymi do optymalizacji (obliczone dawki z podziałem na beamlety)",
    "desc": "Dane do optymalizacji",
    "order": 40,
    "only_one": False,
@@ -79,7 +79,7 @@ file_types = {"types": [
   {
    "name": "fluences",
    "parent_type": "pareto",
-   "formats": "Archiwum zip z fluencjami poszczeg\u00f3lnych wi\u0105zek uzyskane z optymalizacji",
+   "formats": "Archiwum zip z fluencjami poszczególnych wiązek uzyskane z optymalizacji",
    "desc": "Mapy fluencji po optymalizacji",
    "order": 60,
    "only_one": True,
@@ -92,7 +92,7 @@ file_types = {"types": [
    "formats": "Dowolne pliki",
    "desc": "Inne",
    "order": 70,
-   "only_one": True,
+   "only_one": False,
    "responsible": "Wszyscy",
    "allowed_extensions": "*"
   }
