@@ -77,6 +77,8 @@ def delete_dataset(id):
     database.db.session.add(dataset)
     database.db.session.commit()
 
+    modify_dataset(dataset)
+
     return datastore()
 
 @app.route('/data/unarchive/<id>')
@@ -84,11 +86,14 @@ def undelete_dataset(id):
     if not g.user_id:
         abort(401)
 
+
     dataset = database.Dataset.query.filter_by(id=int(id)).one()
     dataset.deleted = False
 
     database.db.session.add(dataset)
     database.db.session.commit()
+
+    modify_dataset(dataset)
 
     return datastore()
 
@@ -110,6 +115,7 @@ def upload_file():
 
     user = database.User.query.filter_by(id=g.user_id).one()
     dataset = database.Dataset.query.filter_by(id=int(args['dataset_id'])).one()
+
     file_type = args['file_type']
     parent_uid = None
     if args['parent_id'] is not None and len(args['parent_id']) > 0:
@@ -158,12 +164,22 @@ def upload_file():
         # Generate token
         stored_file.token = str(uuid.uuid4()).replace("-", "")
 
+        modify_dataset(dataset)
+
         database.db.session.add(stored_file)
         database.db.session.commit()
 
         flash(u'Pobrałem plik o nazwie: %s' % file.filename, 'success')
 
     return render_template('datastore/dataset.html', scenarios=g.scenarios, uid=dataset.id, dataset=dataset)
+
+
+def modify_dataset(dataset):
+    user = database.User.query.filter_by(id=g.user_id).one()
+    dataset.date_modified = datetime.utcnow()
+    dataset.user_modified = user
+    database.db.session.add(dataset)
+    database.db.session.commit()
 
 
 @app.route('/data/delete/<uid>', methods=['GET'])
@@ -176,6 +192,7 @@ def delete_file(uid):
     stored_file = database.StoredFile.query.filter_by(uid=uid).one()
     if stored_file is not None:
         dataset = stored_file.dataset
+        modify_dataset(dataset)
 
         file_name = stored_file.name
         #os.remove(stored_file.path)
@@ -185,6 +202,7 @@ def delete_file(uid):
         database.db.session.add(stored_file)
         database.db.session.commit()
 
+        modify_dataset(dataset)
         flash(u"Poprawnie usunąłem plik %s" % file_name, 'success')
 
     return render_template('datastore/dataset.html', scenarios=g.scenarios, uid=dataset.id, dataset=dataset)
@@ -209,6 +227,7 @@ def update_comment():
         database.db.session.add(stored_file)
         database.db.session.commit()
 
+        modify_dataset(dataset)
         flash(u"Zaktualizowałem komentarz do pliku %s na wartość: '%s'" % (file_name, new_comment), 'success')
 
     return render_template('datastore/dataset.html', scenarios=g.scenarios, uid=dataset.id, dataset=dataset)
