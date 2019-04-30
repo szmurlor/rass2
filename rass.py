@@ -15,8 +15,8 @@ import database
 scenarios = None
 
 import sys
-reload(sys)
-sys.setdefaultencoding('utf8')
+#reload(sys)
+#sys.setdefaultencoding('utf8')
 
 def init_scenarios():
     import modules.scenarios.roi.roi
@@ -72,7 +72,7 @@ def before_request():
             g.user_home = user.home
             g.scenarios = scenarios
         # logger.debug("Authorized to %s" % g.user_id)
-        except Exception, e:
+        except Exception as e:
             logger.debug('Could not find the user with id=%s' % user_id)
             logger.debug('Cause: %s' % e)
 

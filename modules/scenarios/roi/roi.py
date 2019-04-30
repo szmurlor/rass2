@@ -8,7 +8,7 @@ import content_type_helper
 import filesystem_helper
 import storage
 import session
-import dicom
+import pydicom as dicom
 import os
 
 def rgbhex(rgb):
@@ -96,7 +96,7 @@ def process(rtss):
 				if c.RefdROINumber == r.ROINumber:
 					try:
 						roiName = r.ROIName.decode('utf-8')
-					except ValueError, e:
+					except ValueError as e:
 						roiName = r.ROIName.decode('latin2')
 
 					roi = {'name':roiName, 'rsname': f.filename, 'id':roiName + '@' + f.filename + '@' + label, 'color':rgbhex(c.ROIDisplayColor), 'resolution':res}
@@ -175,7 +175,7 @@ def transform_roi(roi, rtss, rotation_mode, dz, dx, dy, rx, ry, rz, tx, ty, tz, 
 		new_roi_img = new_roi + '.png'
 	"""
 
-	print "Calling %s" % (' '.join(cmd))
+	print("Calling %s" % (' '.join(cmd)))
 	if call(cmd, env=env) != 0:
 		raise ValueError(u"Błąd przy próbie transformacji")
 

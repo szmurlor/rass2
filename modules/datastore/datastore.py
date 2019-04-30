@@ -109,7 +109,7 @@ def upload_file():
         abort(401)
 
     args = {}
-    for key, value in request.form.iteritems():
+    for key, value in request.form.items():
         args[key] = value  # it is OK to overwrite QueryString parameters
         app.logger.info("[POST]: %s -> %s" % (key, value))
 

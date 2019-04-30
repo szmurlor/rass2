@@ -13,7 +13,7 @@ Wygrzebuje różne informacje z pliku DICOM RS (RT Structure Set)
 
 '''
 
-import dicom
+import pydicom as dicom
 import sys
 import os.path
 
@@ -32,7 +32,7 @@ def frames( st, path ):
 				xyz = map( lambda x: float(x) , tmp.ImagePositionPatient ) if hasattr( tmp, 'ImagePositionPatient' ) else (0.0, 0.0, 0.0 )
 				z = float(tmp.SliceLocation) if hasattr( tmp, 'SliceLocation' ) else 0.0
 				if z != xyz[2]:
-					print "UWAGA: w pliku",filename," wartość ImagePositionPatient jest inna niż SliceLocation!"
+					print("UWAGA: w pliku",filename," wartość ImagePositionPatient jest inna niż SliceLocation!")
 				res = map( lambda x: float(x) , tmp.PixelSpacing ) if hasattr( tmp, 'PixelSpacing' ) else (0.0, 0.0 )	
 				res.append( float(tmp.SliceThickness) if hasattr( tmp, 'SliceThickness' ) else 0.0 )
 				pix =  [ int(tmp.Columns) if hasattr( tmp, 'Columns' ) else 0, int(tmp.Rows) if hasattr( tmp, 'Rows' ) else 0 ]	
@@ -68,7 +68,7 @@ def framesForROI( roiname, st, path ):
 										xyz = map( lambda x: float(x) , tmp.ImagePositionPatient ) if hasattr( tmp, 'ImagePositionPatient' ) else (0.0, 0.0, 0.0 )
 										z = float(tmp.SliceLocation) if hasattr( tmp, 'SliceLocation' ) else 0.0
 										if z != xyz[2]:
-											print "UWAGA: w pliku",filename," wartość ImagePositionPatient jest inna niż SliceLocation!"
+											print("UWAGA: w pliku",filename," wartość ImagePositionPatient jest inna niż SliceLocation!")
 										res = map( lambda x: float(x) , tmp.PixelSpacing ) if hasattr( tmp, 'PixelSpacing' ) else (0.0, 0.0 )	
 										res.append( float(tmp.SliceThickness) if hasattr( tmp, 'SliceThickness' ) else 0.0 )
 										pix =  [ int(tmp.Columns) if hasattr( tmp, 'Columns' ) else 0, int(tmp.Rows) if hasattr( tmp, 'Rows' ) else 0 ]	
@@ -82,8 +82,8 @@ def framesForROI( roiname, st, path ):
 
 def listROI( st, path ):
         if hasattr( st, 'StructureSetROIs' ):
-                print "\t  #   Name                # of contours                         BBox [mm]                           resolution [mm]"
-                print "\t  -------------------------------------------------------------------------------------------------------------------"
+                print("\t  #   Name                # of contours                         BBox [mm]                           resolution [mm]")
+                print("\t  -------------------------------------------------------------------------------------------------------------------")
                 for i,r in enumerate(st.StructureSetROIs):
                         nc = 0
                         for c in st.ROIContours:
@@ -101,9 +101,9 @@ def listROI( st, path ):
                                                         bbox[5] = z if z > bbox[5] else bbox[5]
                         res = resForROI( r.ROIName, st, path )
                         if res != None:
-                                print "\t%3d   %-20s   %5d        [%7.2f:%7.2f]x[%7.2f:%7.2f]x[%7.2f:%7.2f]   [%5.2f,%5.2f,%5.2f]" % ( r.ROINumber, r.ROIName, nc, bbox[0], bbox[1], bbox[2], bbox[3], bbox[4], bbox[5], res[0], res[1], res[2] )
+                                print("\t%3d   %-20s   %5d        [%7.2f:%7.2f]x[%7.2f:%7.2f]x[%7.2f:%7.2f]   [%5.2f,%5.2f,%5.2f]" % ( r.ROINumber, r.ROIName, nc, bbox[0], bbox[1], bbox[2], bbox[3], bbox[4], bbox[5], res[0], res[1], res[2] ))
                         else:
-                                print "\t%3d   %-20s   %5d        [%7.2f:%7.2f]x[%7.2f:%7.2f]x[%7.2f:%7.2f]   unknown" % ( r.ROINumber, r.ROIName, nc, bbox[0], bbox[1], bbox[2], bbox[3], bbox[4], bbox[5] )
+                                print("\t%3d   %-20s   %5d        [%7.2f:%7.2f]x[%7.2f:%7.2f]x[%7.2f:%7.2f]   unknown" % ( r.ROINumber, r.ROIName, nc, bbox[0], bbox[1], bbox[2], bbox[3], bbox[4], bbox[5] ))
 
 def coords(c, p):
   x = c.ContourData[3*p+0]
@@ -134,6 +134,7 @@ def resForROI( roiname, st, path ):
 	return None
 
 def resForROIPersistent( roiname, st, path ):
+
         # wygrzebuje informacje o rozdzielczości obrazków pod które jest podpięty ROI o nazwie roiname, zawarty w st
 	try:
 		if hasattr( st, 'StructureSetROIs' ) and hasattr( st, 'ReferencedFrameofReferences'):
@@ -144,24 +145,25 @@ def resForROIPersistent( roiname, st, path ):
 						if f.FrameofReferenceUID == refFrame:
 							for st in f.RTReferencedStudies:
 								for sr in st.RTReferencedSeries:
-                                                                        for f in sr.ContourImages:
-										seriesUID = sr.SeriesInstanceUID
-										prefix = "CT"
-										if "MR" in f.ReferencedSOPClassUID.name:
-											prefix = "MR"
-										imagefilename = os.path.dirname(path) + "/" + prefix + "." + f.ReferencedSOPInstanceUID + ".dcm"
-										try:
-											img = dicom.read_file(imagefilename)
-											return [ float(img.PixelSpacing[0]), float(img.PixelSpacing[1]), float(img.SliceThickness) ]
-										except:
-											continue
+									pass
+#                                    for f in sr.ContourImages:
+										#seriesUID = sr.SeriesInstanceUID
+#										prefix = "CT"
+#										if "MR" in f.ReferencedSOPClassUID.name:
+#											prefix = "MR"
+#										imagefilename = os.path.dirname(path) + "/" + prefix + "." + f.ReferencedSOPInstanceUID + ".dcm"
+#										try:
+#											img = dicom.read_file(imagefilename)
+#											return [ float(img.PixelSpacing[0]), float(img.PixelSpacing[1]), float(img.SliceThickness) ]
+#										except:
+#											continue
 	except:
 		pass
 	return None
 
 if __name__ == "__main__":
 	if len(sys.argv) < 2:
-		print help % ( sys.argv[0] )
+		print(help % ( sys.argv[0] ))
 		sys.exit(1)
 
 	if os.path.isdir( sys.argv[1] ):
@@ -180,8 +182,7 @@ if __name__ == "__main__":
 		if not hasattr( st, 'StructureSetROIs'):
 			#print "\t HAS NO ROIs"
 			continue
-
-                print "\nFILE ", fname,':'
+		print("\nFILE ", fname,':')
 
 		if len(sys.argv) < 3:
 			listROI( st, fname )
@@ -189,18 +190,18 @@ if __name__ == "__main__":
 
 		if len(sys.argv) == 3 and sys.argv[2] == '-f':
 			frames = frames( st, fname )
- 			for fn in frames:
-				print "\t", fn[0], "\t", fn[1:]
+			for fn in frames:
+				print("\t", fn[0], "\t", fn[1:])
 			continue
 
 		roiname = sys.argv[2]
 		frames = framesForROI( roiname, st, fname )
 		if frames == None:
-			print "Nie znaleziono obrazów dla", roiname, "w pliku", fname
+			print("Nie znaleziono obrazów dla", roiname, "w pliku", fname)
 			continue
 
-		print len(frames), " sekwencji obrazów dla", roiname 
+		print(len(frames), " sekwencji obrazów dla", roiname)
 		for i,s in enumerate(frames):
-			print "Sekwencja nr %d, %d obrazów:" % (i+1,len(s))
+			print("Sekwencja nr %d, %d obrazów:" % (i+1,len(s)))
 			for fn in s:
-				print "\t", fn[0], "\t", fn[1:]
+				print("\t", fn[0], "\t", fn[1:])

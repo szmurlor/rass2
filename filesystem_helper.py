@@ -26,11 +26,11 @@ def list_path(pattern):
 def convert_to_unicode(raw_string):
 	try:
 		return raw_string.decode('utf-8') # converts to unicode
-	except UnicodeDecodeError, e:
+	except UnicodeDecodeError as e:
 		pass
 	try:
 		return raw_string.decode('latin2') # converts to unicode
-	except Exception, e:
+	except Exception as e:
 		pass
 	
 	logger.debug("Could not convert %r using neither utf-8 nor latin2 decoder" % raw_string[:10])

@@ -12,7 +12,7 @@ from hashlib import sha512
 from random import choice
 from string import ascii_lowercase, digits
 from datetime import datetime
-from flask.ext.sqlalchemy import SQLAlchemy
+from flask_sqlalchemy import SQLAlchemy
 from rass_app import app
 
 db = SQLAlchemy(app)
@@ -34,7 +34,7 @@ class User(db.Model):
     def set_password(self, password, salt=None):
         if salt is None:
             salt = ''.join(choice(ascii_lowercase + digits) for x in range(10))
-        self.password = sha512(salt + password).hexdigest()
+        self.password = sha512((salt + password).encode("utf-8")).hexdigest()
         self.salt = salt
 
     def __repr__(self):

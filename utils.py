@@ -12,17 +12,17 @@ def merge_http_request_arguments(log_args=False):
                  "\n- Files: %s" % request.files)
 
     args = {}
-    for key, value in request.args.iteritems():
+    for key, value in request.args.items():
         args[key] = value
         if log_args:
             app.logger.info("[GET]: %s -> %s" % (key, value))
 
-    for key, value in request.form.iteritems():
+    for key, value in request.form.items():
         args[key] = value  # it is OK to overwrite QueryString parameters
         if log_args:
             app.logger.info("[POST]: %s -> %s" % (key, value))
 
-    for key, value in request.files.iteritems():
+    for key, value in request.files.items():
         if log_args:
             app.logger.info("[FILE]: %s -> %s" % (key, value))
         content = convert_to_unicode(value.read())

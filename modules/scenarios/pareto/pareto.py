@@ -6,7 +6,7 @@ import content_type_helper
 import filesystem_helper
 import storage
 import session
-import dicom
+import pydicom as dicom
 import os
 
 def rgbhex(rgb):
@@ -51,7 +51,7 @@ def process(archive):
 	env["PYTHONIOENCODING"] = 'utf-8'  # inaczej nie można robić "print" w programach wywoływanych "call"
 	cmd = [ 'python', create_pareto_script, directory, directory, '-fixNT']
 
-	print "Calling %s" % (' '.join(cmd))
+	print("Calling %s" % (' '.join(cmd)))
 	if call(cmd, env=env) != 0:
 		raise ValueError(u"Błąd przy próbie transformacji")
 

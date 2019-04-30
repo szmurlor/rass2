@@ -1,5 +1,5 @@
 import collections
-import cPickle as pickle
+import _pickle as pickle
 from sqlalchemy.orm.exc import NoResultFound, MultipleResultsFound
 from database import db, UserSessionData, User
 from rass_app import app
@@ -39,7 +39,7 @@ class UserSession(collections.MutableMapping):
 			user_session_data = UserSessionData.query.filter_by(key=key, user_id=self.user_id).one()
 			value = pickle.loads(user_session_data.value)
 			return value
-		except NoResultFound, e:
+		except NoResultFound as e:
 			return default
 		
 	def store_in_database(self, key, value):
@@ -51,7 +51,7 @@ class UserSession(collections.MutableMapping):
 			user_session_data.value = pickle.dumps(value)
 			db.session.add(user_session_data)
 			db.session.commit()
-		except Exception, e:
+		except Exception as e:
 			logger.exception("Error while saving %r -> %r" % (key, value))
 
 	def delete_from_database(self, key):
@@ -59,7 +59,7 @@ class UserSession(collections.MutableMapping):
 			user_session_data = UserSessionData.query.filter_by(key=key, user_id=self.user_id).one()
 			db.session.delete(user_session_data)
 			db.session.commit()
-		except NoResultFound, e:
+		except NoResultFound as e:
 			logger.exception("Error while removing %r" % (key))
 
 	def __getitem__(self, key):
