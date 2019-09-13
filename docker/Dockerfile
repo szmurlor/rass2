@@ -21,6 +21,8 @@ RUN apt-get install -y iproute2
 EXPOSE 5000 
 
 WORKDIR /rass2-flask
+ENV LC_ALL C.UTF-8
+ENV LANG C.UTF-8
 
 CMD ["bash"]
 #CMD ["sh", "-c", "ip a|grep inet; python3 rass.py"]
