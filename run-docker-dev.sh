@@ -2,7 +2,9 @@
 IMAGE_NAME=szmurlor/rass2:0.1
 USAGE="./run-docker-dev.sh [-h] [--name IMAGE_NAME] 
 
-First script checks if a docker image with name IMAGE_NAME exists. If not then it builds a new image using docker/Dockerfile specification. Then the IMAGE_NAME is run with interactive mode and with an attached current folder into /rass2-dev folder.
+First script checks if a docker image with name IMAGE_NAME exists. If not then it 
+builds a new image using docker/Dockerfile specification. Then the IMAGE_NAME is 
+run with interactive mode and with an attached current folder into /rass2-dev folder.
 
 Arguments:
   -h            displays this help
