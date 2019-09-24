@@ -6,6 +6,10 @@ from filesystem_helper import convert_to_unicode
 
 
 def merge_http_request_arguments(log_args=False):
+    # Parameters with the same name are overriten with the order:
+    # QueryString
+    # Form (POST)
+    # File
     logger.debug("Merging following HTTP data:"
                  "\n- QueryString: %s" % request.args +
                  "\n- Form: %s" % request.form +
@@ -15,10 +19,10 @@ def merge_http_request_arguments(log_args=False):
     for key, value in request.args.items():
         args[key] = value
         if log_args:
-            app.logger.info("[GET]: %s -> %s" % (key, value))
+            app.logger.info("[GET]: %s -> %s" % (key, value)) if log_args
 
     for key, value in request.form.items():
-        args[key] = value  # it is OK to overwrite QueryString parameters
+        args[key] = value
         if log_args:
             app.logger.info("[POST]: %s -> %s" % (key, value))
 
@@ -31,7 +35,6 @@ def merge_http_request_arguments(log_args=False):
         content_length = len(content)
 
         if key not in args or content_length > 0:
-            # it is OK to overwrite Form parameters if we have sent a file
             args[key] = storage.new_file_from_raw_bytes(content, file_name, content_type)
 
         if key in args and content_length is 0:

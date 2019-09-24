@@ -1,35 +1,42 @@
-import logger
-import os, errno
-import content_type_helper
+import errno
+import os
 from glob import glob
+
+import content_type_helper
+import logger
+
 
 class UnknownEncoding(Exception):
 	pass
+
 
 def mkdir_directories_for(path):
 	directory, name = os.path.split(path)
 	try:
 		os.makedirs(directory)
-	except OSError as exc: # Python >2.5
+	except OSError as exc:  # Python >2.5
 		if exc.errno == errno.EEXIST and os.path.isdir(directory):
 			pass
 		else:
 			raise
 
+
 def extract_archive(file_path, content_type):
 	extractor = content_type_helper.get_archive_extractor(content_type)
 	return extractor().extract(file_path)
 
+
 def list_path(pattern):
 	return glob(pattern)
-		
+
+
 def convert_to_unicode(raw_string):
 	try:
-		return raw_string.decode('utf-8') # converts to unicode
+		return raw_string.decode('utf-8')  # converts to unicode
 	except UnicodeDecodeError as e:
 		pass
 	try:
-		return raw_string.decode('latin2') # converts to unicode
+		return raw_string.decode('latin2')  # converts to unicode
 	except Exception as e:
 		pass
 	

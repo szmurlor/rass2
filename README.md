@@ -3,6 +3,7 @@ Zależności
 
 Hasła użytkowników:
 coi: COI+PW+PAN
+szmurlor: wld
 
 ```
 $ sudo apt-get install unzip unrar
