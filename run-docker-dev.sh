@@ -1,4 +1,8 @@
 #/bin/bash
+#
+# Author: R.Szmurlo 2019
+#
+
 IMAGE_NAME=szmurlor/rass2:0.1
 USAGE="./run-docker-dev.sh [-h] [--name IMAGE_NAME] 
 
