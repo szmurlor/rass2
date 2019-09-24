@@ -122,7 +122,7 @@
     {% for ds in archived_datasets -%}
     <tr>
         <td>{{ idx }}.</td>
-        <td><a href="/data/unarchive/{{ds.id}}">(Wyjmij z archiwum)</a></td>
+        <td><a href="{{url_for('undelete_dataset',id=ds.id)}}">(Wyjmij z archiwum)</a></td>
         <td>{{ ds.date_created }}</td>
         <td>{{ ds.name }}</td>
         <td>{{ ds.short_notes }}</td>

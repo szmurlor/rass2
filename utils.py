@@ -19,7 +19,7 @@ def merge_http_request_arguments(log_args=False):
     for key, value in request.args.items():
         args[key] = value
         if log_args:
-            app.logger.info("[GET]: %s -> %s" % (key, value)) if log_args
+            app.logger.info("[GET]: %s -> %s" % (key, value))
 
     for key, value in request.form.items():
         args[key] = value
