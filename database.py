@@ -203,6 +203,33 @@ class TemporaryStoredFile(StoredFile):
     def __repr__(self):
         return '<TemporaryStoredFile %s supposed to be written in %r (%s)>' % (self.name, self.path, self.content_type)
 
+class ProcessingTask(db.Model):
+    __tablename__ = 'processing_task'
+    id = db.Column(db.Integer, primary_key=True)
+
+    key = db.Column(db.String(128))
+    storedfile_1_id = db.Column(db.Integer, db.ForeignKey("stored_file.uid"))
+    storedfile_1 = relationship("StoredFile", foreign_keys=[storedfile_1_id])
+
+    storedfile_2_id = db.Column(db.Integer, db.ForeignKey("stored_file.uid"))
+    storedfile_2 = relationship("StoredFile", foreign_keys=[storedfile_2_id])
+    
+    status = db.Column(db.String(128))
+    processing_meta = db.Column(db.String(1024))
+    date_created = db.Column(db.DateTime())
+    user_created_id = db.Column(db.Integer, db.ForeignKey("user.id"))
+    user_created = relationship("User", foreign_keys=[user_created_id])
+
+    date_modified = db.Column(db.DateTime())
+    date_requested = db.Column(db.DateTime())
+
+    taskdata = db.Column(db.String(8192))
+
+    def __init__(self, name):
+        self.name = name
+
+
+
 
 #for _file in StoredFile.query.filter_by(token=None).all():
 #    _file.token = str(uuid.uuid4()).replace("-", "")
