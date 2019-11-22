@@ -9,6 +9,15 @@ from rass_app import app
 import logger
 import database
 
+
+try:
+    for f in database.StoredFile.query.filter_by(token=None):
+        pass
+except:
+    database.get_engine().execute('ALTER TABLE stored_file ADD COLUMN meta VARCHAR(4096)')
+
+
+
 ##################################
 # Global variables
 ##################################

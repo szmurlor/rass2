@@ -242,6 +242,20 @@ def dataset(dsid):
 
     return render_template('datastore/dataset.html', scenarios=g.scenarios, uid=dsid, dataset=dataset)
 
+@app.route('/set-meta/<fuid>')
+def set_meta(fuid):
+    if not g.user_id:
+        abort(401)
+
+    file = database.StoredFile.query.filter_by(uid=fuid).one()
+    file.set_meta_value("archived", "true")
+    database.db.session.add(file)
+    database.db.session.commit()
+
+    dataset = file.dataset
+    dsid = file.dataset_id
+
+    return render_template('datastore/dataset.html', scenarios=g.scenarios, uid=dsid, dataset=dataset)
 
 @app.route('/fs/<uid>')
 def download(uid):

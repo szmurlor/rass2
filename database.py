@@ -14,9 +14,14 @@ from string import ascii_lowercase, digits
 from datetime import datetime
 from flask_sqlalchemy import SQLAlchemy
 from rass_app import app
+import flask_sqlalchemy 
 
+print(dir(flask_sqlalchemy))
 db = SQLAlchemy(app)
 db.session.expire_on_commit = False
+
+def get_engine():
+    return db.get_engine()
 
 
 class User(db.Model):
@@ -142,6 +147,7 @@ class StoredFile(db.Model):
     deleted = db.Column(db.Boolean, default=False)
 
     token = db.Column(db.String(128))
+    meta = db.Column(db.String(4096))
 
     def __init__(self, file_path, content_type=None):
         directory, name = os.path.split(file_path)
@@ -173,6 +179,33 @@ class StoredFile(db.Model):
 
     def __str__(self):
         return self.path
+
+    def _get_meta(self):
+        res = {}
+        if self.meta is not None:
+            try:
+                res.update(json.loads(self.meta))
+            except e:
+                app.logger.info("[ERROR]: Error converting meta data for StoreFile id: %d" % self.uid)
+        return res
+            
+    def _update_meta(self, meta_as_dict):
+        self.meta = json.dumps(meta_as_dict);
+
+    def has_meta_value(self, key):
+        m = self._get_meta()
+        return key in m
+
+    def get_meta_value(self, key):
+        m = self._get_meta()
+        if key in m:
+            return m[key]
+        return None
+
+    def set_meta_value(self, key, value):
+        m = self._get_meta()
+        m[key] = value
+        self._update_meta(m)
 
 
 Dataset.files = relationship("StoredFile", order_by=StoredFile.uid, back_populates="dataset")
@@ -227,7 +260,6 @@ class ProcessingTask(db.Model):
 
     def __init__(self, name):
         self.name = name
-
 
 
 

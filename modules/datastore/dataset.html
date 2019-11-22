@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% block content %}
-
+{# To jest komentarz? #}
 {% macro render_upload_new(file_type, parent_uid) -%}
     <a href="#" id="id-show-upload-{{file_type.name}}-{{parent_uid}}" onclick="show_upload_file('{{file_type.name}}-{{parent_uid}}'); return false;">(Prześlij nowy plik)</a>
     <div id="id-upload-file-{{file_type.name}}-{{parent_uid}}" class="panel panel-default" style="display: none;" >
@@ -178,7 +178,7 @@
   </div>
 </div>
 
-<script language="JavaScript">
+<script lang="JavaScript">
 function showModalEditComment(id_file, value) {
     $('#modal_file_id').val(id_file);
     var modal_comment = $('#modal_comment');
@@ -349,6 +349,10 @@ function showModalEditComment(id_file, value) {
                         <td class="col1">{{idx}}</td>
                     {% endif -%}
                     <td class="col2">
+                        {% if file.get_meta_value("archived") == "true" -%}
+                        (Zarchiwizowany)
+                        {% endif -%}
+                        <a href="/set-meta/{{file.uid}}">(Set meta)</a>
                         <a href="/fs/{{file.uid}}">(Pobierz)</a>
                         <a href="/data/delete/{{file.uid}}">(Usuń)</a>
                         <a href="#" onclick="showModalEditComment( {{ file.uid }}, '{{ file.description }}'); return false;">(Zmień komentarz)</a>
