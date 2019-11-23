@@ -349,21 +349,42 @@ function showModalEditComment(id_file, value) {
                         <td class="col1">{{idx}}</td>
                     {% endif -%}
                     <td class="col2">
-                        {% if file.get_meta_value("archived") == "true" -%}
-                        (Zarchiwizowany)
-                        {% endif -%}
-                        <a href="/set-meta/{{file.uid}}">(Set meta)</a>
-                        <a href="/fs/{{file.uid}}">(Pobierz)</a>
-                        <a href="/data/delete/{{file.uid}}">(Usuń)</a>
-                        <a href="#" onclick="showModalEditComment( {{ file.uid }}, '{{ file.description }}'); return false;">(Zmień komentarz)</a>
+                        {% if file.is_archived() -%}<span title="The file was archived." class="glyphicon glyphicon-save"></span>&nbsp;{% endif -%}
+                        <div class="btn-group">
+                                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                                        Operacje <span class="caret"></span>
+                                </button>
+                                <ul class="dropdown-menu">
+                                <li><a href="/fs/{{file.uid}}">Pobierz</a></li>
+                                <li><a href="#" onclick="showModalEditComment( {{ file.uid }}, '{{ file.description }}'); return false;">Zmień komentarz</a></li>
+                                <li role="separator" class="divider"></li>
+                                <li><a href="/fs/delete/{{file.uid}}">Usuń</a></li>
+                                {% if file.can_archive() -%}
+                                <li>                                    
+                                    {% if file.is_archived() -%}
+                                        <a href="/fs/unarchive/{{file.uid}}">Przywróć z archiwum</a>
+                                    {% else -%}
+                                        <a href="/fs/archive/{{file.uid}}">Zarchiwizuj</a>
+                                    {% endif -%}
+                                </li>
+                                {% endif -%}
+                                </ul>
+                        </div>
+
                     </td>
-                    <td class="col3"><b>{{file.name}}</b></td>
+                    <td class="col3">
+                        {% if file.is_archived() -%}
+                        <del>{{file.name}}</del> (Plik zarchiwizowany.)
+                        {% else -%}
+                        <b>{{file.name}}</b>
+                        {% endif -%}
+                    </td>
                     <td class="col4">{{file.description}}</td>
                     <td class="col5">{{file.stored_at|datetime}} przez {{file.stored_by.username}}
                         <a href="/fs/token/{{ file.token }}" title="Private, without authentication file download ( {{ url_for('download_token', token=file.token, _external=True) }} )"><span class="glyphicon glyphicon-share" aria-hidden="true"></span></a>
                     </td>
                 </tr>
-                {% if dataset.type.file_types_list(parent=file_type.name)|length > 0 %}
+                {% if dataset.type.file_types_list(parent=file_type.name)|length > 0  and not file.is_archived() %}
                     <tr>
                         <td>
                         </td>

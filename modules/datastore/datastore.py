@@ -182,7 +182,7 @@ def modify_dataset(dataset):
     database.db.session.commit()
 
 
-@app.route('/data/delete/<uid>', methods=['GET'])
+@app.route('/fs/delete/<uid>', methods=['GET'])
 def delete_file(uid):
     if not g.user_id:
         abort(401)
@@ -242,13 +242,31 @@ def dataset(dsid):
 
     return render_template('datastore/dataset.html', scenarios=g.scenarios, uid=dsid, dataset=dataset)
 
-@app.route('/set-meta/<fuid>')
-def set_meta(fuid):
+@app.route('/fs/archive/<fuid>')
+def archive(fuid):
+    if not g.user_id:
+        abort(401)
+
+    app.logger.info(fuid)
+
+    file = database.StoredFile.query.filter_by(uid=fuid).one()
+    file.set_archived(True)
+    database.db.session.add(file)
+    database.db.session.commit()
+
+    dataset = file.dataset
+    dsid = file.dataset_id
+
+    return render_template('datastore/dataset.html', scenarios=g.scenarios, uid=dsid, dataset=dataset)
+
+
+@app.route('/fs/unarchive/<fuid>')
+def unarchive(fuid):
     if not g.user_id:
         abort(401)
 
     file = database.StoredFile.query.filter_by(uid=fuid).one()
-    file.set_meta_value("archived", "true")
+    file.set_archived(False)
     database.db.session.add(file)
     database.db.session.commit()
 

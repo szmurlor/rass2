@@ -16,6 +16,21 @@ try:
 except:
     database.get_engine().execute('ALTER TABLE stored_file ADD COLUMN meta VARCHAR(4096)')
 
+try:
+    for dstype in database.DatasetType.query.all():
+        if dstype.name == "CT / ROI Structures / RT Plan / Pareto results":
+            file_types = dstype.get_file_types()            
+            for t in file_types["types"]:
+                if t["name"] == 'rt':
+                    import json
+                    t["CAN_ARCHIVE"] = True
+                    sftypes = json.dumps(file_types, indent=True)
+                    dstype.file_types = sftypes
+                    database.db.session.add(dstype)
+                    database.db.session.commit()
+
+except:
+    raise Error("Nie mogę zaktualizować struktury bazy danych!")
 
 
 ##################################

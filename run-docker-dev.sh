@@ -36,4 +36,4 @@ else
 	echo "Found docker image $IMAGE_NAME with ID: $IMAGE_ID"
 fi
 echo "Starting image $IMAGE_NAME with ID: $IMAGE_ID"
-docker run -ti -v $(pwd):/rass2-dev $IMAGE_ID
+docker run -ti -w="/rass2-dev" -v $(pwd):/rass2-dev $IMAGE_ID 

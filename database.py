@@ -99,11 +99,11 @@ class Dataset(db.Model):
 
         return result
 
+    def get_file_type(self, type_name):       
+        return self.type.get_file_type(type_name)
 
-User.datasets_modified = relationship("Dataset", order_by=Dataset.id, back_populates="user_modified",
-                                      foreign_keys=[Dataset.user_modified_id])
-User.datasets_created = relationship("Dataset", order_by=Dataset.id, back_populates="user_created",
-                                     foreign_keys=[Dataset.user_created_id])
+User.datasets_modified = relationship("Dataset", order_by=Dataset.id, back_populates="user_modified", foreign_keys=[Dataset.user_modified_id])
+User.datasets_created = relationship("Dataset", order_by=Dataset.id, back_populates="user_created", foreign_keys=[Dataset.user_created_id])
 
 
 class DatasetType(db.Model):
@@ -123,6 +123,16 @@ class DatasetType(db.Model):
             if 'parent_type' not in type or type['parent_type'] == parent:
                 res.append(type)
         return res
+
+    def get_file_types(self):
+        return json.loads(self.file_types)
+
+    def get_file_type(self, type_name):        
+        config = json.loads(self.file_types)
+        for type in config['types']:
+            if type["name"] == type_name:
+                return type
+        return None
 
 
 DatasetType.datasets = relationship("Dataset", order_by=Dataset.id, back_populates="type",
@@ -206,6 +216,26 @@ class StoredFile(db.Model):
         m = self._get_meta()
         m[key] = value
         self._update_meta(m)
+
+    def is_archived(self):
+        m = self.get_meta_value("archived")
+        if m is not None and m == "true":
+            return True
+        return False
+
+    def set_archived(self, archived):
+        if archived:
+            self.set_meta_value("archived", "true")
+        else:
+            self.set_meta_value("archived", "false")
+
+    def can_archive(self):
+        ft = self.dataset.get_file_type(self.type)
+        app.logger.info(ft)
+        app.logger.info(type)
+        if ft is not None:
+            return ft["CAN_ARCHIVE"] if "CAN_ARCHIVE" in ft else False
+        return False
 
 
 Dataset.files = relationship("StoredFile", order_by=StoredFile.uid, back_populates="dataset")
