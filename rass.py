@@ -5,7 +5,7 @@ from datetime import datetime
 
 from flask import send_from_directory
 
-from rass_app import app
+from rass_app import app, set_upload_folder
 import logger
 import database
 
@@ -120,4 +120,15 @@ def markdown_filter(data):
     return Markup(markdown(data, extensions=['markdown.extensions.attr_list']))
 
 if __name__ == '__main__':
+    import sys, getopt
+
+    try:
+        opts, args = getopt.getopt(sys.argv[1:], "d:",["datafolder="])
+    except getopt.GetoptError:
+        print('rass.py -datafolder <absolute path to file storage location>')
+        sys.exit(2)
+    for opt, arg in opts:
+        if opt in ("-d", "--datafolder"):
+            set_upload_folder(arg)            
+
     app.run(host='0.0.0.0')

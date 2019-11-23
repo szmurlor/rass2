@@ -1,8 +1,8 @@
 # -*- coding: utf-8
 from flask import Flask
+import os
 
 UPLOAD_FOLDER = "/opt/rass2/data/"
-
 LONG_NOTES = u"""...
 """
 
@@ -17,4 +17,12 @@ import logging
 FORMAT = '%(asctime)-15s- %(message)s'
 #logging.basicConfig(format=FORMAT, filename='log/production.log', level=logging.DEBUG)
 logging.basicConfig(format=FORMAT, level=logging.DEBUG)
+
+def set_upload_folder(folder):
+    global app
+    app.config['UPLOAD_FOLDER'] = folder
+
+if "RASS_DATAFOLDER" in os.environ:
+    set_upload_folder( os.environ["RASS_DATAFOLDER"])
+
 
