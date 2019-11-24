@@ -231,8 +231,6 @@ class StoredFile(db.Model):
 
     def can_archive(self):
         ft = self.dataset.get_file_type(self.type)
-        app.logger.info(ft)
-        app.logger.info(type)
         if ft is not None:
             return ft["CAN_ARCHIVE"] if "CAN_ARCHIVE" in ft else False
         return False

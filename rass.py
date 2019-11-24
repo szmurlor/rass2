@@ -21,7 +21,7 @@ try:
         if dstype.name == "CT / ROI Structures / RT Plan / Pareto results":
             file_types = dstype.get_file_types()            
             for t in file_types["types"]:
-                if t["name"] == 'rt':
+                if t["name"] in ['rt', 'beamlets', 'optdesc', 'pareto' , 'fluences', 'other']:
                     import json
                     t["CAN_ARCHIVE"] = True
                     sftypes = json.dumps(file_types, indent=True)
