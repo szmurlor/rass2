@@ -1,0 +1,119 @@
+{# 
+    Rysowanie prostej kontrolki. 
+#}
+{% macro form_control_static(label, value) -%}
+<div class="form-group">
+    <label class="control-label col-sm-2">{{label}}</label>
+    <div class="col-sm-6">
+        <p class="form-control-static">{{value}}</p>
+    </div>
+</div>
+{% endmacro -%}
+
+
+{# 
+    Rysowanie pola tekstowego
+#}
+{% macro input_text(label, value, name, id, info) -%}
+<div class="form-group">
+    <label class="control-label col-sm-2" for="{{id}}">{{label}}</label>
+    <div class="col-sm-6">
+        <input type="text" class="form-control" id="{{id}}" name="{{name}}" value="{{ value }}"/>
+        <small>{{info}}</small>
+    </div>
+</div>
+{% endmacro -%}
+
+
+{# 
+    Wspólne menu dla plików w repozytorium. Jako argumentu potrzebuje tylko pliku.
+    Menu zachowuje się różnie gdy plik zarchiwizowany lub nie.
+#}
+{% macro file_menu(file) -%}
+    {% if file.is_archived() -%}
+        <span class="text-muted">Zarchiwizowany</span>
+    {% else -%}
+        <div class="btn-group">
+                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                        Operacje <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu">
+                {% if not file.is_archived() %}<li><a href="/fs/{{file.uid}}">Pobierz</a></li>{% endif %}
+                <li><a href="#" onclick="showModalEditComment( {{ file.uid }}, '{{ file.description }}'); return false;">Zmień komentarz</a></li>
+                <li role="separator" class="divider"></li>
+                {% if not file.is_archived() %}<li><a href="/fs/delete/{{file.uid}}">Usuń</a></li>{% endif %}
+                {% if file.can_archive() -%}
+                <li>                                    
+                    {% if file.is_archived() -%}
+                        <a href="/fs/unarchive/{{file.uid}}">Przywróć z archiwum</a>
+                    {% else -%}
+                        <a href="/fs/archive/{{file.uid}}">Zarchiwizuj</a>
+                    {% endif -%}
+                </li>
+                {% endif -%}
+                </ul>
+        </div>
+    {% endif %}
+{% endmacro %}
+
+
+{#
+    Renderowanie jednego wiersza tabeli z informacjami o pliku.
+#}
+{% macro file_row(file, idx) %}
+<tr>
+        {% if not file.type.only_one %}
+            <td class="col1">{{idx}}.</td>
+        {% endif -%}
+        <td class="col2">
+            {{ file_menu(file) }}
+        </td>
+
+        {% if file.is_archived() -%}
+        <td class="col3">
+            <span class="text-muted">
+                <del>{{file.name}}</del> 
+            </span>
+        </td>
+        <td class="col4">
+            <span class="text-muted">
+                {{file.description}}
+            </span>
+        </td>
+        <td class="col5">
+            <span class="text-muted">
+                    {{file.stored_at|datetime}} przez {{file.stored_by.username}}                                 
+                    <a href="/fs/unarchive/{{file.uid}}"><span title="The file was archived." class="glyphicon glyphicon-open"></span>&nbsp; Przywróć z archiwum</a>
+            </span>
+        </td>
+        {% else -%}
+        <td class="col3">
+            <b>{{file.name}}</b>
+        </td>
+        <td class="col4">{{file.description}}</td>
+        <td class="col5">{{file.stored_at|datetime}} przez {{file.stored_by.username}}
+            <a href="/fs/token/{{ file.token }}" title="Private, without authentication file download ( {{ url_for('download_token', token=file.token, _external=True) }} )"><span class="glyphicon glyphicon-share" aria-hidden="true"></span></a>
+        </td>
+        {% endif -%}
+    </tr>    
+{% endmacro %}    
+
+
+{#
+    Renderowanie ewentualnych plików podrzędnych - oczekuje, że dostanie w argumencie inner_files 
+    gotowy template do wyrendrowania w miejscu plików.
+#}
+{% macro file_children_row(dataset, file, inner_files) %}
+{% if dataset.type.file_types_list(parent=file.type)|length > 0 and not file.is_archived() %}
+    <tr>
+        <td></td>
+        <td colspan="4">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    {{ inner_files }}
+                </div>
+            </div>
+        </td>
+    </tr>
+{% endif %}
+{% endmacro %}

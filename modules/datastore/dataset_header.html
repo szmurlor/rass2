@@ -1,0 +1,110 @@
+{% import 'datastore/dataset_controls.html' as controls %}
+
+{% macro dataset_header(dataset) %}
+<form class="form-horizontal" action="/data/update" method="POST">
+    <input type="hidden" name="dataset_id" value="{{dataset.id}}" />
+
+    <script language="JavaScript">
+        function show_header_edit() {
+            $('#id-header-readonly').hide();
+            $('#id-header-edit').show();
+            $('#id-date-created').focus();
+        }
+        function hide_header_edit() {
+            $('#id-header-readonly').show();
+            $('#id-header-edit').hide();
+        }
+    </script>
+
+    {# To jest nagłówek zbioru danych w trybie READONLY #}
+    <div id="id-header-readonly">
+      <div class="form-group">
+        <div class="col-sm-8"></div>
+        <div class="col-sm-2">
+            <a href="#" onclick="show_header_edit();">(Zmień)</a>
+        </div>
+      </div>
+      {{controls.form_control_static('Data utworzenia:', dataset.date_created|date )}}
+      {{controls.form_control_static('Nazwa (PID):', dataset.name )}}
+      {{controls.form_control_static('Właściciel:', dataset.user_created.username )}}
+      {{controls.form_control_static('Krótkie uwagi:', dataset.short_notes )}}
+    </div>
+
+    {# To jest nagłówek zbioru danych w trybie EDIT #}
+    <div id="id-header-edit" style="display: none">
+      <div class="form-group">
+        <div class="col-sm-8"></div>
+        <div class="col-sm-2">
+        </div>
+      </div>
+
+      {{controls.input_text('Data utworzenia:', dataset.date_created|date, 'date_created', 'id-date-created')}}
+      {{controls.input_text('Nazwa (PID):', dataset.name, 'name', 'id-name')}}
+      {{controls.form_control_static('Właściciel:', dataset.user_created.username)}}
+      {{controls.input_text('Krótkie uwagi:', dataset.short_notes, 'short_notes', 'id-short-notes')}}
+
+      <div class="form-group">
+        <div class="col-sm-2"></div>
+        <div class="col-sm-6">
+            <button type="submit" name="save_header" class="btn btn-success">Zapisz</button>
+            <a href="#" onclick="hide_header_edit()">(Anuluj)</a>
+        </div>
+      </div>
+    </div>
+
+    <script language="JavaScript">
+        function change_notes() {
+            $('#id-notes-readonly').hide();
+            $('#id-notes-edit').show();
+            $('#id-long-notes').focus();
+        }
+        function hide_notes() {
+            $('#id-notes-readonly').show();
+            $('#id-notes-edit').hide();
+        }
+    </script>
+    {# To jest wyświetlenie notatek w trybie READONLY.
+     Notatki te zostaną przepasowane przez Markdown.
+     JavaScript jest dołączony w skrypcie poniżej.
+    #}
+    <div id="id-notes-readonly">
+      <div class="form-group">
+        <label class="control-label col-sm-2">Dłuższy komentarz / notatki:</label>
+        <div class="col-sm-6">
+            {% if dataset.long_notes != None -%}
+                <div id="id-long-notes-readonly"></div>
+            {% else -%}
+                <div>-</div>
+            {% endif -%}
+
+          <script lang="javascript">
+            var converter = new showdown.Converter(),
+            html = converter.makeHtml(`{{ dataset.long_notes }}`);
+            $("#id-long-notes-readonly").html(html);
+          </script>
+
+        </div>
+        <div class="col-sm-1">
+            <a href="#" onclick="change_notes()">(Zmień)</a>
+        </div>
+    </div>
+    </div>
+
+
+    {# To są notatki w trybie EDIT. #}
+    <div id="id-notes-edit" style="display: none;">
+      <div class="form-group">
+        <label class="control-label col-sm-2" for="id-long-notes">Dłuższy komentarz / notatki:</label>
+        <div class="col-sm-6">
+            <textarea id="id-long-notes" cols="100" rows="20" name="long_notes">{{dataset.long_notes}}</textarea>
+            <p class="help-block">Tekst może być wpisywany zgodnie ze składnią <a target="_blank" href="https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet">Markdown</a></p>
+        </div>
+      </div>
+      <div class="form-group">
+          <div class="col-sm-2"></div>
+        <button name="save" type="submit" class="btn btn-success">Zapisz</button>
+        <a href="#" onclick="hide_notes()">(Anuluj)</a>
+      </div>
+    </div>
+</form>
+{% endmacro %}

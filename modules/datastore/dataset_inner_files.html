@@ -1,0 +1,34 @@
+{% import 'datastore/dataset_new_file.html' as new_file %}
+{% import 'datastore/dataset_controls.html' as controls %}
+
+{% macro render_inner_files(file_type, dataset, parent_uid) %}
+{% for file_type_inner in dataset.type.file_types_list(parent=file_type.name) %}
+        <div class="row">
+           <div class="col-sm-12">
+                <h4 title="{{ file_type_inner.formats }}">
+                    {{ file_type_inner.desc }} ({{ file_type_inner.responsible }}) 
+                    <small>
+                    {% if not file_type_inner.only_one or dataset.files_by_type(file_type_inner.name, parent_uid = parent_uid)|length == 0 %}
+                    {{ new_file.render_upload_new(dataset, file_type_inner, parent_uid) }}
+                    </small>
+                {% endif %}
+                </h4>
+           </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-12">
+                
+
+                <table class="table">
+                <tbody>
+                {% for file in dataset.files_by_type(file_type_inner.name, parent_uid = parent_uid) %}
+                {{ controls.file_row(file, loop.index) }}
+                {% set inner_files = render_inner_files(file_type_inner, dataset, file.uid ) %}
+                {{ controls.file_children_row(dataset, file, inner_files) }}                
+                {% endfor %}
+                </tbody>
+                </table>
+            </div>
+        </div>
+    {% endfor %}
+{%- endmacro %}

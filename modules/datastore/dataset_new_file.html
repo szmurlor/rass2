@@ -1,0 +1,34 @@
+{% macro render_upload_new(dataset, file_type, parent_uid) -%}
+    <a href="#" id="id-show-upload-{{file_type.name}}-{{parent_uid}}" onclick="show_upload_file('{{file_type.name}}-{{parent_uid}}'); return false;">(Prześlij nowy plik)</a>
+    <div id="id-upload-file-{{file_type.name}}-{{parent_uid}}" class="panel panel-default" style="display: none;" >
+      <div class="panel-body">
+        <form action="/data/upload/" enctype="multipart/form-data" method="POST">
+            <input type="hidden" name="dataset_id" value="{{ dataset.id }}" />
+            <input type="hidden" name="parent_id" value="{{ parent_uid }}" />
+            <input type="hidden" name="file_type" value="{{ file_type.name }}" />
+            <div>
+                <div class="form-group">
+                    <input type="file" name="file"/>
+                    <p class="help-block">Proszę wgrywać: {{file_type.formats}}</p>
+                </div>
+                <div class="form-group">
+                    <label for="id-upload-file-comment-{{file_type.name}}-{{parent_uid}}">Opcjonalny komentarz</label>
+                    <input class="form-control" type="text" name="description" id="id-upload-file-comment-{{file_type.name}}-{{parent_uid}}" maxlength="512" />
+                </div>
+                <input type="submit" formmethod="POST" name="upload_{{file_type.name}}" class="btn btn-success" value="Wyślij" />
+                <a href="#" onclick="hide_upload_file('{{file_type.name}}-{{parent_uid}}'); return false;">(Anuluj)</a>
+            </div>
+        </form>
+      </div>
+    </div>
+    <script language="JavaScript">
+        function show_upload_file(name) {
+            $('#id-upload-file-'+name).show();
+            $('#id-show-upload-'+name).hide();
+        }
+        function hide_upload_file(name) {
+            $('#id-upload-file-'+name).hide();
+            $('#id-show-upload-'+name).show();
+        }
+    </script>
+{% endmacro %}

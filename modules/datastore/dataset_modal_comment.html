@@ -1,0 +1,39 @@
+{%- macro modal_comment() -%}
+<!-- Modal -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">Edycja komentarza</h4>
+      </div>
+      <form class="form" action="/data/update_comment"  method="POST">
+          <div class="modal-body">
+            <div class="form-group">
+                <label class="form-control-label" for="modal_comment">Nowy komentarz:</label>
+                <input class="form-control" type="text" id="modal_comment" name="comment" size="50" />
+                <input type="hidden" id="modal_file_id" name="file_id" />
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Anuluj</button>
+            <button type="submit" class="btn btn-primary">Zapisz</button>
+          </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script lang="JavaScript">
+function showModalEditComment(id_file, value) {
+    $('#modal_file_id').val(id_file);
+    var modal_comment = $('#modal_comment');
+    modal_comment.val(value);
+
+    var myModal = $('#myModal');
+    myModal.modal({keyboard: false});
+    myModal.modal('show');
+    setTimeout(function() {modal_comment.focus();}, 500);
+}
+</script>
+{%- endmacro -%}
