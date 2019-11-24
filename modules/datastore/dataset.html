@@ -342,48 +342,66 @@ function showModalEditComment(id_file, value) {
 
             <table class="table">
                 <tbody>
-                {% set idx = 1 %}
                 {% for file in dataset.files_by_type(file_type.name) %}
                 <tr>
                     {% if not file_type.only_one -%}
-                        <td class="col1">{{idx}}</td>
+                        <td class="col1">{{loop.index}}.</td>
                     {% endif -%}
                     <td class="col2">
-                        {% if file.is_archived() -%}<span title="The file was archived." class="glyphicon glyphicon-save"></span>&nbsp;{% endif -%}
-                        <div class="btn-group">
-                                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-                                        Operacje <span class="caret"></span>
-                                </button>
-                                <ul class="dropdown-menu">
-                                <li><a href="/fs/{{file.uid}}">Pobierz</a></li>
-                                <li><a href="#" onclick="showModalEditComment( {{ file.uid }}, '{{ file.description }}'); return false;">Zmień komentarz</a></li>
-                                <li role="separator" class="divider"></li>
-                                <li><a href="/fs/delete/{{file.uid}}">Usuń</a></li>
-                                {% if file.can_archive() -%}
-                                <li>                                    
-                                    {% if file.is_archived() -%}
-                                        <a href="/fs/unarchive/{{file.uid}}">Przywróć z archiwum</a>
-                                    {% else -%}
-                                        <a href="/fs/archive/{{file.uid}}">Zarchiwizuj</a>
+                        {% if file.is_archived() -%}
+                            <span class="text-muted">Zarchiwizowany</span>
+                        {% else -%}
+                            <div class="btn-group">
+                                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                                            Operacje <span class="caret"></span>
+                                    </button>
+                                    <ul class="dropdown-menu">
+                                    {% if not file.is_archived() %}<li><a href="/fs/{{file.uid}}">Pobierz</a></li>{% endif %}
+                                    <li><a href="#" onclick="showModalEditComment( {{ file.uid }}, '{{ file.description }}'); return false;">Zmień komentarz</a></li>
+                                    <li role="separator" class="divider"></li>
+                                    {% if not file.is_archived() %}<li><a href="/fs/delete/{{file.uid}}">Usuń</a></li>{% endif %}
+                                    {% if file.can_archive() -%}
+                                    <li>                                    
+                                        {% if file.is_archived() -%}
+                                            <a href="/fs/unarchive/{{file.uid}}">Przywróć z archiwum</a>
+                                        {% else -%}
+                                            <a href="/fs/archive/{{file.uid}}">Zarchiwizuj</a>
+                                        {% endif -%}
+                                    </li>
                                     {% endif -%}
-                                </li>
-                                {% endif -%}
-                                </ul>
-                        </div>
+                                    </ul>
+                            </div>
+                        {% endif %}
 
                     </td>
+
+                    {% if file.is_archived() -%}
                     <td class="col3">
-                        {% if file.is_archived() -%}
-                        <del>{{file.name}}</del> (Plik zarchiwizowany.)
-                        {% else -%}
+                        <span class="text-muted">
+                            <del>{{file.name}}</del> 
+                        </span>
+                    </td>
+                    <td class="col4">
+                        <span class="text-muted">
+                            {{file.description}}
+                        </span>
+                    </td>
+                    <td class="col5">
+                        <span class="text-muted">
+                                {{file.stored_at|datetime}} przez {{file.stored_by.username}}                                 
+                                <a href="/fs/unarchive/{{file.uid}}"><span title="The file was archived." class="glyphicon glyphicon-open"></span>&nbsp; Przywróć z archiwum</a>
+                        </span>
+                    </td>
+                    {% else -%}
+                    <td class="col3">
                         <b>{{file.name}}</b>
-                        {% endif -%}
                     </td>
                     <td class="col4">{{file.description}}</td>
                     <td class="col5">{{file.stored_at|datetime}} przez {{file.stored_by.username}}
                         <a href="/fs/token/{{ file.token }}" title="Private, without authentication file download ( {{ url_for('download_token', token=file.token, _external=True) }} )"><span class="glyphicon glyphicon-share" aria-hidden="true"></span></a>
                     </td>
-                </tr>
+                    {% endif -%}
+            </tr>
                 {% if dataset.type.file_types_list(parent=file_type.name)|length > 0  and not file.is_archived() %}
                     <tr>
                         <td>
@@ -397,7 +415,6 @@ function showModalEditComment(id_file, value) {
                         </td>
                     </tr>
                 {% endif  %}
-                {% set idx = idx + 1 %}
                 {% endfor %}
                 </tbody>
             </table>
