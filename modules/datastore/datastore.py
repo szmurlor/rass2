@@ -21,10 +21,6 @@ def datastore():
     if not g.user_id:
         abort(401)
 
-    logger.info("Session object is: %r" % session)
-    logger.info("Session object has obbjects: %r" % dir(session))
-    logger.info("Session object type: %r" % type(session))
-
     scol = session.get(DATASET_SORT_COL)
     logger.info(scol)
     logger.info(session.get(DATASET_SORT_COL))
