@@ -3,7 +3,7 @@
 # Author: R.Szmurlo 2019
 #
 
-IMAGE_NAME=szmurlor/rass2:0.1
+IMAGE_NAME=szmurlor/rass2:0.3
 USAGE="./run-docker-dev.sh [-h] [--name IMAGE_NAME] 
 
 First script checks if a docker image with name IMAGE_NAME exists. If not then it 

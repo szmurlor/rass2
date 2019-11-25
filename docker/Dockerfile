@@ -11,16 +11,19 @@ RUN apt-get update \
 RUN pip3 install flask \
   flask-sqlalchemy \
   uwsgi \
-  pydicom
+  pydicom \
+  redis \
+  rq
 
-RUN git clone https://goope.ee.pw.edu.pl/goope/rass2-flask.git \
-  && cd rass2-flask 
+RUN git clone https://github.com/szmurlor/rass2.git \
+  && cd rass2 
 
 RUN apt-get install -y iproute2
+RUN apt-get install -y redis
 
 EXPOSE 5000 
 
-WORKDIR /rass2-flask
+WORKDIR /rass2
 ENV LC_ALL C.UTF-8
 ENV LANG C.UTF-8
 
