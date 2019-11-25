@@ -22,14 +22,11 @@ def datastore():
         abort(401)
 
     scol = session.get(DATASET_SORT_COL)
-    logger.info(scol)
-    logger.info(session.get(DATASET_SORT_COL))
     if scol == None:
         scol = CN_MODIFED_DATE
         session[DATASET_SORT_COL] = scol
         session[DATASET_SORT_ASC] = False
 
-    logger.info(session.get(DATASET_SORT_ASC))
     sort_by = database.Dataset.date_modified
     if scol == CN_MODIFED_DATE:
         sort_by = database.Dataset.date_modified
