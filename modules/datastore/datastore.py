@@ -110,8 +110,7 @@ def upload_file():
 
     args = {}
     for key, value in request.form.items():
-        args[key] = value  # it is OK to overwrite QueryString parameters
-        # app.logger.info("[POST]: %s -> %s" % (key, value))
+        args[key] = value  # it is OK to overwrite QueryString parameters        
 
     user = database.User.query.filter_by(id=g.user_id).one()
     dataset = database.Dataset.query.filter_by(id=int(args['dataset_id'])).one()

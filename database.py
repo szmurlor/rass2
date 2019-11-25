@@ -97,7 +97,7 @@ class Dataset(db.Model):
                     if f.parent is not None and f.parent.uid == parent_uid:
                         result.append(f)
 
-        return result
+        return sorted(result, key=lambda x: x.is_archived())
 
     def get_file_type(self, type_name):       
         return self.type.get_file_type(type_name)

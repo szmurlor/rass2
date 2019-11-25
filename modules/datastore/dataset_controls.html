@@ -83,7 +83,7 @@
         <td class="col5">
             <span class="text-muted">
                     {{file.stored_at|datetime}} przez {{file.stored_by.username}}                                 
-                    <a href="/fs/unarchive/{{file.uid}}"><span title="The file was archived." class="glyphicon glyphicon-open"></span>&nbsp; Przywróć z archiwum</a>
+                    <a class="link-muted" href="/fs/unarchive/{{file.uid}}"><span title="The file was archived." class="glyphicon glyphicon-open"></span>&nbsp; Przywróć z archiwum</a>
             </span>
         </td>
         {% else -%}

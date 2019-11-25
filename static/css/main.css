@@ -25,3 +25,7 @@ input[type="file"] {
 .float-none {
   float: none !important;
 }
+
+.link-muted {
+  color: #464a4e;
+}
