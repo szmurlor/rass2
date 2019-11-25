@@ -2,7 +2,7 @@
 import os
 
 from datetime import datetime
-from flask import g, abort, render_template, flash, redirect, session
+from flask import g, abort, render_template, flash, redirect, session, jsonify
 from werkzeug.utils import secure_filename
 
 import database
@@ -10,6 +10,10 @@ import rass_app
 from rass_app import app
 from utils import *
 import uuid
+
+import redis
+from rq import Queue, Connection
+
 
 DATASET_SORT_COL="DATASET_SORT_COL"
 DATASET_SORT_ASC="DATASET_SORT_ASC"
@@ -336,5 +340,26 @@ def download_token(token):
         'Content-Disposition': "attachment; filename=" + stored_file.name.encode('utf-8')
     }
 
+def do_something(cos):
+    print("Uruchomilem zadanie z argumentem %s " % cos)
+    app.logger.info("Uruchomilem zadanie z argumentem %s " % cos)
+    dataset = database.Dataset.query.filter_by(id=int(cos)).one()
+    app.logger.info("Pobrałem dataset: %s " % dataset.name)
+    import time 
+    time.sleep(4)
+    print("Zakonczylem...")
+
+@app.route('/data/run_task/<did>')
+def run_task(did):
+    with Connection(redis.from_url(app.config['REDIS_URL'])):
+        q = Queue('rass2-worker')
+        task = q.enqueue(do_something, did)
+    response = {
+        'status': 'success',
+        'data': {
+            'task_id': task.get_id()
+        }
+    }
+    return jsonify(response), 202
 
 

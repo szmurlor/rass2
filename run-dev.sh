@@ -9,10 +9,15 @@ if [ ! -z "$REDIS_PID"  ]; then
     kill -9 $REDIS_PID
 fi
 
-echo "Staring redis-server..."
+echo "Starting redis-server..."
 redis-server&
 sleep 1
 echo "Redis started in background..."
+
+echo "Starting worker in background..."
+python task_worker.py&
+sleep 1
+echo "Worker started in background..."
 
 set +x 
 

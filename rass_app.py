@@ -11,6 +11,8 @@ app.secret_key = '\x81~\x88\r\xc95\xe3\xf9\xeb\xa8\x08h\xc2-\x063\x92\x93\x8ev\x
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///data/rass.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config['REDIS_URL'] = "redis://localhost:6379/0"
+app.config['QUEUES'] = "rass2-worker"
 
 import logging
 

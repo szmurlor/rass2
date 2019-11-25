@@ -16,7 +16,6 @@ from flask_sqlalchemy import SQLAlchemy
 from rass_app import app
 import flask_sqlalchemy 
 
-print(dir(flask_sqlalchemy))
 db = SQLAlchemy(app)
 db.session.expire_on_commit = False
 
