@@ -2,7 +2,7 @@
 import os
 
 from datetime import datetime
-from flask import g, abort, render_template, flash, redirect
+from flask import g, abort, render_template, flash, redirect, session
 from werkzeug.utils import secure_filename
 
 import database
@@ -11,14 +11,39 @@ from rass_app import app
 from utils import *
 import uuid
 
+DATASET_SORT_COL="DATASET_SORT_COL"
+DATASET_SORT_ASC="DATASET_SORT_ASC"
+CN_MODIFED_DATE="MODIFIED_DATE"
+CN_NAME="NAME"
 
 @app.route('/data/')
 def datastore():
     if not g.user_id:
         abort(401)
 
-    datasets = database.Dataset.query.filter_by(deleted=False).order_by(database.Dataset.date_created)
-    archived_datasets = database.Dataset.query.filter_by(deleted=True).order_by(database.Dataset.date_created)
+    logger.info("Session object is: %r" % session)
+    logger.info("Session object has obbjects: %r" % dir(session))
+    logger.info("Session object type: %r" % type(session))
+
+    scol = session.get(DATASET_SORT_COL)
+    logger.info(scol)
+    logger.info(session.get(DATASET_SORT_COL))
+    if scol == None:
+        scol = CN_MODIFED_DATE
+        session[DATASET_SORT_COL] = scol
+        session[DATASET_SORT_ASC] = False
+
+    logger.info(session.get(DATASET_SORT_ASC))
+    sort_by = database.Dataset.date_modified
+    if scol == CN_MODIFED_DATE:
+        sort_by = database.Dataset.date_modified
+    if scol == CN_NAME:
+        sort_by = database.Dataset.name
+    
+    sort_by = sort_by.asc() if session.get(DATASET_SORT_ASC) else sort_by.desc()
+
+    datasets = database.Dataset.query.filter_by(deleted=False).order_by(sort_by)        
+    archived_datasets = database.Dataset.query.filter_by(deleted=True).order_by(database.Dataset.date_modified)
     dataset_types = database.DatasetType.query.order_by(database.DatasetType.name)
     return render_template('datastore/datastore.html', scenarios=g.scenarios, uid=None, datasets=datasets,
                            now=datetime.utcnow(), dataset_types=dataset_types, archived_datasets=archived_datasets)
@@ -102,6 +127,24 @@ def allowed_file(filename):
 #           filename.rsplit('.', 1)[1] in ALLOWED_EXTENSIONS
     return True
 
+
+
+@app.route('/data/dataset_order_by/<col>', methods=['GET'])
+def order_dataset_by(col=None):
+    cols = { 
+        'modified_date' : CN_MODIFED_DATE, 
+        'name': CN_NAME 
+    }
+    if col is not None:
+        c = cols[col]
+        if col is not None and c == session.get(DATASET_SORT_COL):
+            session[DATASET_SORT_ASC] = not session[DATASET_SORT_ASC]
+        session[DATASET_SORT_COL] = c
+    else:
+        session[DATASET_SORT_ASC] = True
+
+
+    return datastore()
 
 @app.route('/data/upload/', methods=['POST', 'GET'])
 def upload_file():
