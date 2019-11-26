@@ -324,7 +324,7 @@ def download(uid):
     content = stored_file.read(charset=None)
     return content, 200, {
         'Content-Type': stored_file.content_type,
-        'Content-Disposition': "attachment; filename=" + stored_file.name
+        'Content-Disposition': "attachment; filename=%s" % urllib.parse.quote(stored_file.name)
     }
 
 @app.route('/fs/token/<token>')

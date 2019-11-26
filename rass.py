@@ -5,9 +5,10 @@ from datetime import datetime
 
 from flask import send_from_directory
 
-from rass_app import app, set_upload_folder
+from rass_app import app, set_upload_folder, babel
 import logger
 import database
+from flask_babel import gettext, refresh
 
 
 try:
@@ -30,7 +31,7 @@ try:
                     database.db.session.commit()
 
 except:
-    raise Error("Nie mogę zaktualizować struktury bazy danych!")
+    raise Error(gettext("Nie mogę zaktualizować struktury bazy danych!"))
 
 
 ##################################
@@ -61,7 +62,6 @@ def create_scenario(module_name, scenario_class):
 
 
 init_scenarios()
-
 
 @app.route('/doc/<path:path>')
 def send_js(path):
@@ -105,6 +105,10 @@ def before_request():
 def index():
     return render_template('index.html', scenarios=scenarios)
 
+@app.route('/lang/<lang>')
+def set_language(lang):
+    session['lang'] = lang
+    return index()
 
 # noinspection PyUnresolvedReferences
 import authentication
@@ -133,6 +137,16 @@ def markdown_filter(data):
     from flask import Markup
     from markdown import markdown
     return Markup(markdown(data, extensions=['markdown.extensions.attr_list']))
+
+@babel.localeselector
+def get_locale():
+    if "lang" in session:
+        print(f"returning {session.get('lang')}")
+        refresh()
+        return session.get('lang')
+    return 'pl'
+
+app.jinja_env.globals['get_locale'] = get_locale
 
 if __name__ == '__main__':
     import sys, getopt

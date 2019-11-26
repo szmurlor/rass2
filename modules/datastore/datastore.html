@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block content %}
-  <h1>Magazyn danych</h1>
+  <h1>{{ _("Magazyn danych") }}</h1>
   <p>Tutaj możesz zarządząć zbiorami danych (zbiorami plików), które posiadają nazwę, datę utworzenia oraz właściciela. Zbiory
   danych mogą być wykkorzystywane przez scenariusze. Zbiory danych mogą również służyć do wymiany plików między członkami zespołów.</p>
 <!--
@@ -21,20 +21,20 @@
 
     <p>W ciągu całej pracy, zbiór danych może być opatrzony dowolnym komentarzem testowym w nagłówku całego zbioru danych.</p>
 
-  <h3>Zbiory danych</h3>
-  <p>Tabela zbiorów danych do których masz uprawnienia.</p>
+  <h3>{{ _("Zbiory danych") }}</h3>
+  <p>{{ _("Tabela zbiorów danych do których masz uprawnienia.") }}</p>
   <table class="table">
   <thead>
     <tr>
-        <th>L.p.</th>
-        <th>Operacje</th>
-        <th>Data utworzenia</th>
+        <th>{{ _("L.p.") }}</th>
+        <th>{{ _("Operacje") }}</th>
+        <th>{{ _("Data utworzenia") }}</th>
         <th>
-            <a href="{{ url_for('order_dataset_by', col='name') }} ">Nazwa</a>
+            <a href="{{ url_for('order_dataset_by', col='name') }} ">{{ _("Nazwa") }}</a>
         </th>
-        <th>Uwagi</th>
+        <th>{{ _("Uwagi") }}</th>
         <th>
-          <a href="{{ url_for('order_dataset_by', col='modified_date') }} ">Ostatnia modyfikacja</a>
+          <a href="{{ url_for('order_dataset_by', col='modified_date') }} ">{{ _("Ostatnia modyfikacja") }}</a>
         </th>
     </tr>
   </thead>
@@ -42,11 +42,11 @@
     {% for ds in datasets -%}
     <tr>
         <td>{{ loop.index }}.</td>
-        <td><a href="/data/{{  ds.id }}">(Otwórz)</a></td>
+        <td><a href="/data/{{  ds.id }}">({{ _("Otwórz") }})</a></td>
         <td>{{ ds.date_created }}</td>
         <td>{{ ds.name }}</td>
         <td>{{ ds.short_notes }}</td>
-        <td>{{ ds.date_modified|datetime }} przez {{ ds.user_modified.username if ds.user_modified else '-' }}</td>
+        <td>{{ ds.date_modified|datetime }} {{ _("przez") }} {{ ds.user_modified.username if ds.user_modified else '-' }}</td>
     </tr>
     {% endfor -%}
 
@@ -55,7 +55,7 @@
 
 
   <div>
-    <a class="btn btn-success" id="new_dataset_btn" href="#" onclick="show_new_dataset()">Nowy zbiór danych</a>
+    <a class="btn btn-success" id="new_dataset_btn" href="#" onclick="show_new_dataset()">{{ _("Nowy zbiór danych") }}</a>
 
       <form id="new_dataset" class="form-horizontal" action="/data/add" method="POST">
           <div class="form-group" id="fg_Rodzaj">
@@ -102,11 +102,11 @@
   </div>
 
 
-<a class="float-right" href="#" onclick="show_archived(); return false;" id="cmd-show-archived">(Pokaż archiwalne)</a>
-<a class="float-right" href="#" onclick="hide_archived(); return false;" id="cmd-hide-archived">(Ukryj archiwalne)</a>
+<a class="float-right" href="#" onclick="show_archived(); return false;" id="cmd-show-archived">({{ _("Pokaż archiwalne") }})</a>
+<a class="float-right" href="#" onclick="hide_archived(); return false;" id="cmd-hide-archived">({{ _("Ukryj archiwalne") }})</a>
 
 <div class="alert alert-secondary" id="archived">
-  <h3>Archiwalne zbiory danych</h3>
+  <h3>{{ _("Archiwalne zbiory danych") }}</h3>
   <p>Tabela zbiorów danych, które zostały przeniesione do archiwum (usunięte?).</p>
   <table class="table">
   <thead>

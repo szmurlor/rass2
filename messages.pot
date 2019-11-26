@@ -1,0 +1,135 @@
+# Translations template for PROJECT.
+# Copyright (C) 2019 ORGANIZATION
+# This file is distributed under the same license as the PROJECT project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2019.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2019-11-26 17:29+0100\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.4.0\n"
+
+#: rass.py:34
+msgid "Nie mogę zaktualizować struktury bazy danych!"
+msgstr ""
+
+#: modules/base.html:51
+msgid "Scenariusze"
+msgstr ""
+
+#: modules/base.html:54 modules/datastore/datastore.html:4
+msgid "Magazyn danych"
+msgstr ""
+
+#: modules/base.html:57
+msgid "Pomoc"
+msgstr ""
+
+#: modules/base.html:77 modules/login.html:22
+msgid "Zaloguj"
+msgstr ""
+
+#: modules/base.html:79
+msgid "Wyloguj"
+msgstr ""
+
+#: modules/base.html:90
+msgid "Komunikat"
+msgstr ""
+
+#: modules/base.html:100
+msgid "Wydział Elektryczny PW, IETiSIP 2019"
+msgstr ""
+
+#: modules/login.html:3
+msgid "Logowanie"
+msgstr ""
+
+#: modules/login.html:7 modules/login.html:9
+msgid "Nazwa użytkownika"
+msgstr ""
+
+#: modules/login.html:13 modules/login.html:15
+msgid "Hasło"
+msgstr ""
+
+#: modules/datastore/dataset.html:31
+msgid "Zbiór danych"
+msgstr ""
+
+#: modules/datastore/dataset_header.html:24
+msgid "Zmień"
+msgstr ""
+
+#: modules/datastore/dataset_header.html:27 modules/datastore/datastore.html:31
+msgid "Data utworzenia"
+msgstr ""
+
+#: modules/datastore/dataset_header.html:28 modules/datastore/datastore.html:33
+msgid "Nazwa"
+msgstr ""
+
+#: modules/datastore/dataset_header.html:29
+msgid "Właściciel"
+msgstr ""
+
+#: modules/datastore/dataset_header.html:30
+msgid "Krótkie uwagi"
+msgstr ""
+
+#: modules/datastore/datastore.html:24
+msgid "Zbiory danych"
+msgstr ""
+
+#: modules/datastore/datastore.html:25
+msgid "Tabela zbiorów danych do których masz uprawnienia."
+msgstr ""
+
+#: modules/datastore/datastore.html:29
+msgid "L.p."
+msgstr ""
+
+#: modules/datastore/datastore.html:30
+msgid "Operacje"
+msgstr ""
+
+#: modules/datastore/datastore.html:35
+msgid "Uwagi"
+msgstr ""
+
+#: modules/datastore/datastore.html:37
+msgid "Ostatnia modyfikacja"
+msgstr ""
+
+#: modules/datastore/datastore.html:45
+msgid "Otwórz"
+msgstr ""
+
+#: modules/datastore/datastore.html:49
+msgid "przez"
+msgstr ""
+
+#: modules/datastore/datastore.html:58
+msgid "Nowy zbiór danych"
+msgstr ""
+
+#: modules/datastore/datastore.html:105
+msgid "Pokaż archiwalne"
+msgstr ""
+
+#: modules/datastore/datastore.html:106
+msgid "Ukryj archiwalne"
+msgstr ""
+
+#: modules/datastore/datastore.html:109
+msgid "Archiwalne zbiory danych"
+msgstr ""
+

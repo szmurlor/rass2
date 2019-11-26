@@ -21,13 +21,13 @@
       <div class="form-group">
         <div class="col-sm-8"></div>
         <div class="col-sm-2">
-            <a href="#" onclick="show_header_edit();">(Zmień)</a>
+            <a href="#" onclick="show_header_edit();">({{ _("Zmień") }})</a>
         </div>
       </div>
-      {{controls.form_control_static('Data utworzenia:', dataset.date_created|date )}}
-      {{controls.form_control_static('Nazwa (PID):', dataset.name )}}
-      {{controls.form_control_static('Właściciel:', dataset.user_created.username )}}
-      {{controls.form_control_static('Krótkie uwagi:', dataset.short_notes )}}
+      {{controls.form_control_static(gettext("Data utworzenia") + ":", dataset.date_created|date )}}
+      {{controls.form_control_static(gettext("Nazwa") + " (PID):", dataset.name )}}
+      {{controls.form_control_static(gettext('Właściciel') + ":", dataset.user_created.username )}}
+      {{controls.form_control_static(gettext('Krótkie uwagi') + ":", dataset.short_notes )}}
     </div>
 
     {# To jest nagłówek zbioru danych w trybie EDIT #}

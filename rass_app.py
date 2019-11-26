@@ -1,5 +1,6 @@
 # -*- coding: utf-8
-from flask import Flask
+from flask import Flask, g
+from flask_babel import Babel
 import os
 
 UPLOAD_FOLDER = "/opt/rass2/data/"
@@ -13,6 +14,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///data/rass.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['REDIS_URL'] = "redis://localhost:6379/0"
 app.config['QUEUES'] = "rass2-worker"
+babel = Babel(app)
 
 import logging
 
@@ -26,5 +28,4 @@ def set_upload_folder(folder):
 
 if "RASS_DATAFOLDER" in os.environ:
     set_upload_folder( os.environ["RASS_DATAFOLDER"])
-
 

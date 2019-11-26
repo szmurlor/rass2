@@ -13,7 +13,8 @@ RUN pip3 install flask \
   uwsgi \
   pydicom \
   redis \
-  rq
+  rq \
+  Flask-Babel
 
 RUN git clone https://github.com/szmurlor/rass2.git \
   && cd rass2 
