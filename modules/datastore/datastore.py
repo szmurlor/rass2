@@ -13,7 +13,7 @@ import uuid
 
 import redis
 from rq import Queue, Connection
-
+import urllib.parse
 
 DATASET_SORT_COL="DATASET_SORT_COL"
 DATASET_SORT_ASC="DATASET_SORT_ASC"
@@ -329,6 +329,7 @@ def download(uid):
 
 @app.route('/fs/token/<token>')
 def download_token(token):
+
     stored_file = storage.find_file_by_token(token)
 
     if stored_file is None:
@@ -337,7 +338,7 @@ def download_token(token):
     content = stored_file.read(charset=None)
     return content, 200, {
         'Content-Type': stored_file.content_type,
-        'Content-Disposition': "attachment; filename=" + stored_file.name.encode('utf-8')
+        'Content-Disposition': "attachment; filename=%s" % urllib.parse.quote(stored_file.name)
     }
 
 def do_something(cos):
