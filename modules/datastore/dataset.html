@@ -1,61 +1,71 @@
-{% extends "base.html" %}
-{% block content %}
-
-{% import 'datastore/dataset_new_file.html' as new_file %}
-{% import 'datastore/dataset_header.html' as header %}
-{% import 'datastore/dataset_inner_files.html' as ifiles %}
-{% import 'datastore/dataset_modal_comment.html' as modal %}
-{% import 'datastore/dataset_controls.html' as controls %}
+{% extends "base.html" %} {% block content %} {% import 'datastore/dataset_new_file.html' as new_file %} {% import 'datastore/dataset_header.html' as header %} {% import 'datastore/dataset_inner_files.html' as ifiles %} {% import 'datastore/dataset_modal_comment.html'
+as modal %} {% import 'datastore/dataset_controls.html' as controls %}
 
 <style>
-    #id-header-readonly .form-group > .control-label {
-        padding-top: 2px;!important;
+    #id-header-readonly .form-group>.control-label {
+        padding-top: 2px !important;
     }
+    
     #id-header-readonly .form-group .form-control-static {
-        padding-top: 2px;!important;
-        min-height: 24px;!important;
+        padding-top: 2px !important;
+        min-height: 24px !important;
     }
+    
     #id-header-readonly .form-group {
         margin-bottom: 5px;
     }
-
-    .col1 { width: 2em; max-width: 2em;}
-    .col2 { width: 11em; max-width: 11em;}
-    .col3 { width: 20em; max-width: 20em;}
-    .col4 { width: 20em; max-width: 20em;}
-    .col5 { width: 10em; max-width: 10em;}
-    .table {word-wrap: break-word;}
+    
+    .col1 {
+        width: 2em;
+        max-width: 2em;
+    }
+    
+    .col2 {
+        width: 11em;
+        max-width: 11em;
+    }
+    
+    .col3 {
+        width: 20em;
+        max-width: 20em;
+    }
+    
+    .col4 {
+        width: 20em;
+        max-width: 20em;
+    }
+    
+    .col5 {
+        width: 10em;
+        max-width: 10em;
+    }
+    
+    .table {
+        word-wrap: break-word;
+    }
 </style>
 
-  <div class="pull-right"><small>Ostatnia modyfikacja: {{dataset.date_modified|datetime}} przez {{dataset.user_modified.username}}</small></div>
-  <h1>{{ _("Zbiór danych") }}</h1>
+<div class="pull-right"><small>Ostatnia modyfikacja: {{dataset.date_modified|datetime}} przez {{dataset.user_modified.username}}</small></div>
+<h1>{{ _("Zbiór danych") }}</h1>
 
-  {{ modal.modal_comment() }}
-  {{ header.dataset_header(dataset) }}
-
-
-{% for file_type in dataset.type.file_types_list(parent=None) %}
+{{ modal.modal_comment() }} {{ header.dataset_header(dataset) }} {% for file_type in dataset.type.file_types_list(parent=None) %}
 <div class="panel panel-default">
-  <div class="panel-heading"><h4>{{ file_type.desc }} ({{ file_type.responsible }})</h4></div>
-  <div class="panel-body">
-    <div class="col-sm-12">
+    <div class="panel-heading">
+        <h4>{{ file_type.desc }} ({{ file_type.responsible }})</h4>
+    </div>
+    <div class="panel-body">
+        <div class="col-sm-12">
 
-            {% if (not file_type.only_one) or dataset.files_by_type(file_type.name)|length == 0 %}
-                {{ new_file.render_upload_new(dataset, file_type) }}
-            {% endif %}
+            {% if (not file_type.only_one) or dataset.files_by_type(file_type.name)|length == 0 %} {{ new_file.render_upload_new(dataset, file_type) }} {% endif %}
 
             <table class="table">
                 <tbody>
-                {% for file in dataset.files_by_type(file_type.name) %}
-                {{ controls.file_row(file, loop.index) }}
-                {% set inner_files = ifiles.render_inner_files(file_type, dataset, file.uid) %}
-                {{ controls.file_children_row(dataset, file, inner_files) }}
-                {% endfor %}
+                    {% for file in dataset.files_by_type(file_type.name) %} {{ controls.file_row(file, loop.index) }} {% set inner_files = ifiles.render_inner_files(file_type, dataset, file.uid) %} {{ controls.file_children_row(dataset, file, inner_files) }} {% endfor %}
                 </tbody>
             </table>
         </div>
 
-  </div>
+    </div>
 </div>
 {% endfor %}
 
@@ -63,4 +73,3 @@
     <a href="/data/archive/{{dataset.id}}">(Przenieś zbiór danych do archiwum)</a>
 </div>
 {% endblock %}
-

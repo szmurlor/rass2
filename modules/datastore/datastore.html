@@ -1,64 +1,61 @@
-{% extends "base.html" %}
+{% extends "base.html" %} {% block content %}
 
-{% block content %}
-  <h1>{{ _("Magazyn danych") }}</h1>
-  <p>Tutaj możesz zarządząć zbiorami danych (zbiorami plików), które posiadają nazwę, datę utworzenia oraz właściciela. Zbiory
-  danych mogą być wykkorzystywane przez scenariusze. Zbiory danych mogą również służyć do wymiany plików między członkami zespołów.</p>
-<!--
-  <p>Here you can manage datasets (sets with files) which have name, date of creation and an owner. The datasets will be later used by scenarios.
-      The datasets can also be used as a storage for file exchange between members of the teams.</p>
--->
+<h1>{{ _("Magazyn danych") }}</h1>
 
-  <h4>Scenariusz pracy</h4>
+{% filter markdown %}
 
-    <ul>
-        <li>COI tworzy nowy Zbiór danych</li>
-        <li>PW opracowuje dane (przelicza dawki od beamletów i udostępnia je w Zbiorze danych opatrzone komentarzem)</li>
-        <li>PAN optymalizuje dawki i zapisuje je w formacie x_....</li>
-        <li>RasS przelicza dane z optymalizacji PAN do postaci DICOM</li>
-        <li>COI pobiera dane DICOM i przeprowadza ich ewaluację w swoim systemie</li>
-    </ul>
+Tutaj możesz zarządząć zbiorami danych (zbiorami plików), które posiadają nazwę, datę utworzenia oraz właściciela. Zbiory danych mogą być wykkorzystywane przez scenariusze. Zbiory danych mogą również służyć do wymiany plików między członkami zespołów.  
 
-    <p>W ciągu całej pracy, zbiór danych może być opatrzony dowolnym komentarzem testowym w nagłówku całego zbioru danych.</p>
+#### Scenariusz pracy  
 
-  <h3>{{ _("Zbiory danych") }}</h3>
-  <p>{{ _("Tabela zbiorów danych do których masz uprawnienia.") }}</p>
-  <table class="table">
-  <thead>
-    <tr>
-        <th>{{ _("L.p.") }}</th>
-        <th>{{ _("Operacje") }}</th>
-        <th>{{ _("Data utworzenia") }}</th>
-        <th>
-            <a href="{{ url_for('order_dataset_by', col='name') }} ">{{ _("Nazwa") }}</a>
-        </th>
-        <th>{{ _("Uwagi") }}</th>
-        <th>
-          <a href="{{ url_for('order_dataset_by', col='modified_date') }} ">{{ _("Ostatnia modyfikacja") }}</a>
-        </th>
-    </tr>
-  </thead>
-  <tbody>
-    {% for ds in datasets -%}
-    <tr>
-        <td>{{ loop.index }}.</td>
-        <td><a href="/data/{{  ds.id }}">({{ _("Otwórz") }})</a></td>
-        <td>{{ ds.date_created }}</td>
-        <td>{{ ds.name }}</td>
-        <td>{{ ds.short_notes }}</td>
-        <td>{{ ds.date_modified|datetime }} {{ _("przez") }} {{ ds.user_modified.username if ds.user_modified else '-' }}</td>
-    </tr>
-    {% endfor -%}
+ * COI tworzy nowy Zbiór danych  
+ * PW opracowuje dane (przelicza dawki od beamletów i udostępnia je w Zbiorze danych opatrzone komentarzem)
+ * PAN optymalizuje dawki i zapisuje je w formacie x_....
+ * RasS przelicza dane z optymalizacji PAN do postaci DICOM<
+ * COI pobiera dane DICOM i przeprowadza ich ewaluację w swoim systemie
 
-  </tbody>
-  </table>
+W ciągu całej pracy, zbiór danych może być opatrzony dowolnym komentarzem testowym w nagłówku całego zbioru danych.
+
+{% endfilter %}
+
+<h3>{{ _("Zbiory danych") }}</h3>
+<p>{{ _("Tabela zbiorów danych do których masz uprawnienia.") }}</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>{{ _("L.p.") }}</th>
+            <th>{{ _("Operacje") }}</th>
+            <th>{{ _("Data utworzenia") }}</th>
+            <th>
+                <a href="{{ url_for('order_dataset_by', col='name') }} ">{{ _("Nazwa") }}</a>
+            </th>
+            <th>{{ _("Uwagi") }}</th>
+            <th>
+                <a href="{{ url_for('order_dataset_by', col='modified_date') }} ">{{ _("Ostatnia modyfikacja") }}</a>
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for ds in datasets -%}
+        <tr>
+            <td>{{ loop.index }}.</td>
+            <td><a href="/data/{{  ds.id }}">({{ _("Otwórz") }})</a></td>
+            <td>{{ ds.date_created }}</td>
+            <td>{{ ds.name }}</td>
+            <td>{{ ds.short_notes }}</td>
+            <td>{{ ds.date_modified|datetime }} {{ _("przez") }} {{ ds.user_modified.username if ds.user_modified else '-' }}</td>
+        </tr>
+        {% endfor -%}
+
+    </tbody>
+</table>
 
 
-  <div>
+<div>
     <a class="btn btn-success" id="new_dataset_btn" href="#" onclick="show_new_dataset()">{{ _("Nowy zbiór danych") }}</a>
 
-      <form id="new_dataset" class="form-horizontal" action="/data/add" method="POST">
-          <div class="form-group" id="fg_Rodzaj">
+    <form id="new_dataset" class="form-horizontal" action="/data/add" method="POST">
+        <div class="form-group" id="fg_Rodzaj">
             <label class="control-label col-sm-2" for="Rodzaj">Rodzaj zbioru:</label>
             <div class="col-sm-4">
                 <select id="Rodzaj" class="form-control" name="dataset_type">
@@ -72,104 +69,107 @@
                 </select>
                 <small>(Format: dd.mm.YYYY, np. 29.10.2016)</small>
             </div>
-          </div>
-          <div class="form-group" id="fg_Data_utworzenia">
+        </div>
+        <div class="form-group" id="fg_Data_utworzenia">
             <label class="control-label col-sm-2" for="Data_utworzenia">Data utworzenia:</label>
             <div class="col-sm-4">
                 <input id="Data_utworzenia" class="form-control" name="date_created" type="text" value="{{ now|date }}" />
                 <small>(Format: dd.mm.YYYY, np. 29.10.2016)</small>
             </div>
-          </div>
-          <div class="form-group">
+        </div>
+        <div class="form-group">
             <label class="control-label col-sm-2" for="Nazwa">Nazwa (PID):</label>
             <div class="col-sm-4">
                 <input class="form-control" name="name" id="Nazwa" type="text" value="" />
                 <small>(Nazwa przypadku)</small>
             </div>
-          </div>
-          <div class="form-group">
+        </div>
+        <div class="form-group">
             <label class="control-label col-sm-2" for="notes">Krótkie uwagi:</label>
             <div class="col-sm-4">
                 <input class="form-control" id="notes" name="short_notes" type="text" value="" /> <small>(Krótkie adnotacje, widoczne na liście ze zbiorami danych.)</small>
             </div>
-          </div>
+        </div>
 
-          <div class="form-group">
-              <button class="btn btn-success" onclick="return validate_add()" type="submit">Dodaj</button>
-              <a href="#" onclick="hide_new_dataset();">(Anuluj)</a>
-          </div>
-        </form>
-  </div>
+        <div class="form-group">
+            <button class="btn btn-success" onclick="return validate_add()" type="submit">Dodaj</button>
+            <a href="#" onclick="hide_new_dataset();">(Anuluj)</a>
+        </div>
+    </form>
+</div>
 
 
 <a class="float-right" href="#" onclick="show_archived(); return false;" id="cmd-show-archived">({{ _("Pokaż archiwalne") }})</a>
 <a class="float-right" href="#" onclick="hide_archived(); return false;" id="cmd-hide-archived">({{ _("Ukryj archiwalne") }})</a>
 
 <div class="alert alert-secondary" id="archived">
-  <h3>{{ _("Archiwalne zbiory danych") }}</h3>
-  <p>Tabela zbiorów danych, które zostały przeniesione do archiwum (usunięte?).</p>
-  <table class="table">
-  <thead>
-    <tr>
-        <th>L.p.</th>
-        <th>Operacje</th>
-        <th>Data utworzenia</th>
-        <th>Nazwa</th>
-        <th>Uwagi</th>
-        <th>Ostatnia modyfikacja</th>
-    </tr>
-  </thead>
-  <tbody>
-    {% for ds in archived_datasets -%}
-    <tr>
-        <td>{{ loop.index }}.</td>
-        <td><a href="{{url_for('undelete_dataset',id=ds.id)}}">(Wyjmij z archiwum)</a></td>
-        <td>{{ ds.date_created }}</td>
-        <td>{{ ds.name }}</td>
-        <td>{{ ds.short_notes }}</td>
-        <td>{{ ds.date_modified|datetime }} przez {{ ds.user_modified.username if ds.user_modified else '-' }}</td>
-    </tr>
-    {% endfor -%}
+    <h3>{{ _("Archiwalne zbiory danych") }}</h3>
+    <p>Tabela zbiorów danych, które zostały przeniesione do archiwum (usunięte?).</p>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>L.p.</th>
+                <th>Operacje</th>
+                <th>Data utworzenia</th>
+                <th>Nazwa</th>
+                <th>Uwagi</th>
+                <th>Ostatnia modyfikacja</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for ds in archived_datasets -%}
+            <tr>
+                <td>{{ loop.index }}.</td>
+                <td><a href="{{url_for('undelete_dataset',id=ds.id)}}">(Wyjmij z archiwum)</a></td>
+                <td>{{ ds.date_created }}</td>
+                <td>{{ ds.name }}</td>
+                <td>{{ ds.short_notes }}</td>
+                <td>{{ ds.date_modified|datetime }} przez {{ ds.user_modified.username if ds.user_modified else '-' }}</td>
+            </tr>
+            {% endfor -%}
 
-  </tbody>
-  </table>
+        </tbody>
+    </table>
 </div>
 
-    <script lang="javascript">
-        function hide_new_dataset() {
-            $("#new_dataset").hide();
-            $("#new_dataset_btn").show();
-        }
-        function show_new_dataset() {
-            $("#new_dataset").show();
-            $("#new_dataset_btn").hide();
-        }
-        function hide_archived() {
-            $("#archived").hide();
-            $("#cmd-hide-archived").hide();
-            $("#cmd-show-archived").show();
-        }
-        function show_archived() {
-            $("#archived").show();
-            $("#cmd-hide-archived").show();
-            $("#cmd-show-archived").hide();
-        }
-        function validate_add() {
-            var fg_Data_utworzenia = $('#fg_Data_utworzenia');
-            fg_Data_utworzenia.removeClass("has-error");
-            if (!$("#Data_utworzenia").val()) {
-                fg_Data_utworzenia.addClass("has-error");
-                alert('Pole Data utworzenia jest wymagane.');
-                return false;
-            }
-            if (!$("#Nazwa").val()) {
-                alert('Pole Nazwa jest wymagane.');
-                return false;
-            }
-        }
-        hide_new_dataset();
-        hide_archived();
+<script lang="javascript">
+    function hide_new_dataset() {
+        $("#new_dataset").hide();
+        $("#new_dataset_btn").show();
+    }
 
-    </script>
+    function show_new_dataset() {
+        $("#new_dataset").show();
+        $("#new_dataset_btn").hide();
+    }
+
+    function hide_archived() {
+        $("#archived").hide();
+        $("#cmd-hide-archived").hide();
+        $("#cmd-show-archived").show();
+    }
+
+    function show_archived() {
+        $("#archived").show();
+        $("#cmd-hide-archived").show();
+        $("#cmd-show-archived").hide();
+    }
+
+    function validate_add() {
+        var fg_Data_utworzenia = $('#fg_Data_utworzenia');
+        fg_Data_utworzenia.removeClass("has-error");
+        if (!$("#Data_utworzenia").val()) {
+            fg_Data_utworzenia.addClass("has-error");
+            alert('Pole Data utworzenia jest wymagane.');
+            return false;
+        }
+        if (!$("#Nazwa").val()) {
+            alert('Pole Nazwa jest wymagane.');
+            return false;
+        }
+    }
+    hide_new_dataset();
+    hide_archived();
+</script>
 
 {% endblock %}

@@ -141,7 +141,6 @@ def markdown_filter(data):
 @babel.localeselector
 def get_locale():
     if "lang" in session:
-        print(f"returning {session.get('lang')}")
         refresh()
         return session.get('lang')
     return 'pl'
