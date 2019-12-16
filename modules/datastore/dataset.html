@@ -1,5 +1,22 @@
-{% extends "base.html" %} {% block content %} {% import 'datastore/dataset_new_file.html' as new_file %} {% import 'datastore/dataset_header.html' as header %} {% import 'datastore/dataset_inner_files.html' as ifiles %} {% import 'datastore/dataset_modal_comment.html'
-as modal %} {% import 'datastore/dataset_controls.html' as controls %}
+{% extends "base.html" %} 
+{% block content %} 
+{% import 'datastore/dataset_new_file.html' as new_file %} 
+{% import 'datastore/dataset_header.html' as header %} 
+{% import 'datastore/dataset_inner_files.html' as ifiles %} 
+{% import 'datastore/dataset_modal_comment.html'as modal %} 
+{% import 'datastore/dataset_controls.html' as controls %}
+
+<script src="{{ url_for('static', filename='js/dataset.js') }}"></script>
+
+{#
+<div id="dataset-fixed" class="fixed-bottom" style="display: none;">
+    <p>Witaj w świecie dolnym.</p>
+    <ul>
+        <li></li>
+    </ul>
+    <a href="#" onclick="Dataset.closeFixed(event);">({{ _("Zamknij") }})</a>
+</div>
+#}
 
 <style>
     #id-header-readonly .form-group>.control-label {
@@ -48,7 +65,9 @@ as modal %} {% import 'datastore/dataset_controls.html' as controls %}
 <div class="pull-right"><small>Ostatnia modyfikacja: {{dataset.date_modified|datetime}} przez {{dataset.user_modified.username}}</small></div>
 <h1>{{ _("Zbiór danych") }}</h1>
 
-{{ modal.modal_comment() }} {{ header.dataset_header(dataset) }} {% for file_type in dataset.type.file_types_list(parent=None) %}
+{{ modal.modal_comment() }} {{ header.dataset_header(dataset) }} 
+
+{% for file_type in dataset.type.file_types_list(parent=None) %}
 <div class="panel panel-default">
     <div class="panel-heading">
         <h4>{{ file_type.desc }} ({{ file_type.responsible }})</h4>
@@ -56,11 +75,17 @@ as modal %} {% import 'datastore/dataset_controls.html' as controls %}
     <div class="panel-body">
         <div class="col-sm-12">
 
-            {% if (not file_type.only_one) or dataset.files_by_type(file_type.name)|length == 0 %} {{ new_file.render_upload_new(dataset, file_type) }} {% endif %}
+            {% if (not file_type.only_one) or dataset.files_by_type(file_type.name)|length == 0 %} 
+                {{ new_file.render_upload_new(dataset, file_type) }} 
+            {% endif %}
 
             <table class="table">
                 <tbody>
-                    {% for file in dataset.files_by_type(file_type.name) %} {{ controls.file_row(file, loop.index) }} {% set inner_files = ifiles.render_inner_files(file_type, dataset, file.uid) %} {{ controls.file_children_row(dataset, file, inner_files) }} {% endfor %}
+                    {% for file in dataset.files_by_type(file_type.name) %} 
+                        {{ controls.file_row(file, loop.index) }} 
+                        {% set inner_files = ifiles.render_inner_files(file_type, dataset, file.uid) %} 
+                        {{ controls.file_children_row(dataset, file, inner_files) }} 
+                    {% endfor %}
                 </tbody>
             </table>
         </div>

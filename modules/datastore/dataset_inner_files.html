@@ -16,15 +16,14 @@
            </div>
         </div>
         <div class="row">
-            <div class="col-sm-12">
-                
+            <div class="col-sm-12">                
 
                 <table class="table">
                 <tbody>
                 {% for file in dataset.files_by_type(file_type_inner.name, parent_uid = parent_uid) %}
-                {{ controls.file_row(file, loop.index) }}
-                {% set inner_files = render_inner_files(file_type_inner, dataset, file.uid ) %}
-                {{ controls.file_children_row(dataset, file, inner_files) }}                
+                    {{ controls.file_row(file, loop.index) }} 
+                    {% set inner_files = render_inner_files(file_type_inner, dataset, file.uid ) %}
+                    {{ controls.file_children_row(dataset, file, inner_files) }}                
                 {% endfor %}
                 </tbody>
                 </table>

@@ -1,15 +1,16 @@
 # -*- encoding: utf-8
-from flask import g, session, request, flash
+from flask import g, session, request, flash, send_from_directory
 from flask import render_template, redirect, url_for
 from datetime import datetime
-
-from flask import send_from_directory
-
 from rass_app import app, set_upload_folder, babel
 import logger
 import database
 from flask_babel import gettext, refresh
 
+import authentication
+import modules.datastore.datastore
+import modules.scenarios.scenarios
+import modules.help.help
 
 try:
     for f in database.StoredFile.query.filter_by(token=None):
@@ -40,8 +41,6 @@ except:
 scenarios = None
 
 import sys
-#reload(sys)
-#sys.setdefaultencoding('utf8')
 
 def init_scenarios():
     import modules.scenarios.roi.roi
@@ -110,16 +109,6 @@ def set_language(lang):
     session['lang'] = lang
     return index()
 
-# noinspection PyUnresolvedReferences
-import authentication
-# noinspection PyUnresolvedReferences
-import modules.datastore.datastore
-# noinspection PyUnresolvedReferences
-import modules.scenarios.scenarios
-# noinspection PyUnresolvedReferences
-import modules.help.help
-
-
 @app.template_filter('datetime')
 def _jinja2_filter_datetime(date, fmt=None):
     dformat = '%d.%m.%Y %H:%M:%S'
@@ -130,7 +119,6 @@ def _jinja2_filter_datetime(date, fmt=None):
 def _jinja2_filter_date(date, fmt=None):
     dformat = '%d.%m.%Y'
     return date.strftime(dformat)
-
 
 @app.template_filter('markdown')
 def markdown_filter(data):
@@ -147,16 +135,23 @@ def get_locale():
 
 app.jinja_env.globals['get_locale'] = get_locale
 
+
+from modules.histograms.dash_histograms import init_dash
+init_dash(app)
+
+
 if __name__ == '__main__':
     import sys, getopt
 
     try:
-        opts, args = getopt.getopt(sys.argv[1:], "d:",["datafolder="])
+        opts, args = getopt.getopt(sys.argv[1:], "d:p:",["datafolder=","processing="])
     except getopt.GetoptError:
         print('rass.py -datafolder <absolute path to file storage location>')
         sys.exit(2)
     for opt, arg in opts:
         if opt in ("-d", "--datafolder"):
-            set_upload_folder(arg)            
+            set_upload_folder(arg)
+        if opt in ("-p", "--processing"):
+            set_processing_folder(arg)
 
     app.run(host='0.0.0.0')

@@ -29,3 +29,23 @@ input[type="file"] {
 .link-muted {
   color: #464a4e;
 }
+
+/* Poniższe dwa style sa używane w dataset aby sprawnie wyświetlać na dole strony
+   wybrane pliki do obróki.
+*/
+body {
+  position: relative;
+}
+
+.fixed-bottom {
+  position: fixed;
+  right: 0;
+  bottom: 0;
+  left: 50%;
+  padding: 1rem;
+  background-color: #efefef;
+  text-align: center;
+  border: 2px solid #afafaf;
+  border-top-left-radius: 10px;
+  z-index: 1000;
+}
