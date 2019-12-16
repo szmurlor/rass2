@@ -13,7 +13,7 @@ Wygrzebuje różne informacje z pliku DICOM RS (RT Structure Set)
 
 '''
 
-import pydicom as dicom
+import dicom as dicom
 import sys
 import os.path
 
