@@ -58,9 +58,7 @@ def init_dash(app):
                     [dash.dependencies.Input('my-interval', 'n_intervals')],          
                     state = [dash.dependencies.State('my-store','data')])
     def display_interval(value, data):
-        print("insiide timer callback: %s" % value)
         job = hworker.get_job(data['task_id'])
-        print(job)
         return f"Witaj świecie {data} {job['status']}", 
 
     

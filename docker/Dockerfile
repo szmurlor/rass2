@@ -3,7 +3,10 @@
 FROM ubuntu:bionic
 
 RUN apt-get update \
-  && apt-get install -y python3-pip python3-dev wget unzip unrar gcc make openssl ca-certificates apt-transport-https git iputils-ping iproute2 \
+  && apt-get install -y python3-pip python3-dev \
+     wget unzip unrar gcc make openssl ca-certificates \
+     apt-transport-https \
+     git iputils-ping iproute2 redis \
   && cd /usr/local/bin \
   && ln -s /usr/bin/python3 python \
   && pip3 install --upgrade pip
@@ -15,13 +18,11 @@ RUN pip3 install flask \
   redis \
   rq \
   Flask-Babel \
-  markdown
+  markdown \
+  dash
 
 RUN git clone https://github.com/szmurlor/rass2.git \
   && cd rass2 
-
-RUN apt-get install -y iproute2
-RUN apt-get install -y redis
 
 EXPOSE 5000 
 

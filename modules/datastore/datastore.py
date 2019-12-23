@@ -341,26 +341,3 @@ def download_token(token):
         'Content-Disposition': "attachment; filename=%s" % urllib.parse.quote(stored_file.name)
     }
 
-def do_something(cos):
-    print("Uruchomilem zadanie z argumentem %s " % cos)
-    app.logger.info("Uruchomilem zadanie z argumentem %s " % cos)
-    dataset = database.Dataset.query.filter_by(id=int(cos)).one()
-    app.logger.info("Pobrałem dataset: %s " % dataset.name)
-    import time 
-    time.sleep(4)
-    print("Zakonczylem...")
-
-@app.route('/data/run_task/<did>')
-def run_task(did):
-    with Connection(redis.from_url(app.config['REDIS_URL'])):
-        q = Queue('rass2-worker')
-        task = q.enqueue(do_something, did)
-    response = {
-        'status': 'success',
-        'data': {
-            'task_id': task.get_id()
-        }
-    }
-    return jsonify(response), 202
-
-

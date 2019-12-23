@@ -6,58 +6,19 @@ import os
 import json
 from datetime import datetime as dt
 
-def _task_calculate_histogram(datauid, fluence_maps=None):
-    import rass_app
-    from rass_app import app
-    datafile = database.StoredFile.query.filter_by(uid=datauid).one()    
-    app.logger.info("Uruchomilem zadanie, które powinno obliczyć histogram dla pliku %s o nazwie %s" % (datauid, datafile.name))
-    stamp = datafile.stored_at.strftime('%Y%m%d_%H%M%S')
-    dirname = f'{app.config["PROCESSING_FOLDER"]}/{stamp}_{datafile.uid}';
-    app.logger.info(dirname)
-
-    if not os.path.isdir(dirname):
-        os.mkdir(dirname)
-    
-    state = {
-        'finished': False
-    }
-    if os.path.isfile(f"{dirname}/state.json"):
-        with open(f"{dirname}/state.json") as f:
-            state.update(json.load(f))
-
-    if state['finished']:
-        print("Zadanie skończone.")
-        return {
-            "status": "finished",
-            "folder": dirname
-        }
-
-    state['started_at'] = dt.now().strftime('%Y%m%d %H:%M:%S');
-    with open(f"{dirname}/state.json", "w") as f:
-        json.dump(state,f)
-
-    import time 
-    time.sleep(4)
-    print("Zakonczylem...")
-
+def _task_calculate_histogram(processing_folder):
+    print("TASK CALCULATE!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
     return {
-        "status": "started"
+        "status": "finished"
     }
 
 
-def calculate_histogram(datauid, fluence_maps=None):
+def calculate_histogram(processing_folder):
     from rass_app import app
-    print("Ala: %s" % app.config["PROCESSING_FOLDER"])
     with Connection(redis.from_url(app.config['REDIS_URL'])):
         q = Queue(app.config['REDIS_WORKER'])
-        task = q.enqueue(_task_calculate_histogram, datauid, fluence_maps)
-        response = {
-            'status': 'success',
-            'data': {
-                'task_id': task.get_id()
-            }
-        }
-        return response
+        task = q.enqueue(_task_calculate_histogram, processing_folder)
+        return task.get_id()
 
 def get_job(task_id):
     from rass_app import app

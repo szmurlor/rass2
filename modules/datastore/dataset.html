@@ -8,15 +8,18 @@
 
 <script src="{{ url_for('static', filename='js/dataset.js') }}"></script>
 
-{#
+
 <div id="dataset-fixed" class="fixed-bottom" style="display: none;">
     <p>Witaj w świecie dolnym.</p>
-    <ul>
-        <li></li>
+    <ul style="text-align: left;" id="dataset-fixed-items">
+        <li>
+            ???
+        </li>
     </ul>
+    <a href="#" onclick="Dataset.histogram(event);">({{ _("Histogram") }})</a>
     <a href="#" onclick="Dataset.closeFixed(event);">({{ _("Zamknij") }})</a>
 </div>
-#}
+
 
 <style>
     #id-header-readonly .form-group>.control-label {

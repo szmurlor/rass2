@@ -36,4 +36,32 @@ function showModalEditComment(id_file, value) {
     setTimeout(function() {modal_comment.focus();}, 500);
 }
 </script>
+
+
+<!-- Modal Info -->
+<div class="modal fade" id="myModalInfo" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalInfoLabel">Komunikat</h4>
+      </div>
+      <div class="modal-body">
+        <p id="modal-info-message"></p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">{{ _('Zamknij') }}</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script lang="JavaScript">
+function showModalInfo(value) {
+    $('#modal-info-message').text(value);
+    var myModal = $('#myModalInfo');
+    myModal.modal({keyboard: false});
+    myModal.modal('show');
+}
+</script>
 {%- endmacro -%}

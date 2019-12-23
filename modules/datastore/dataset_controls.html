@@ -38,8 +38,8 @@
                         Operacje <span class="caret"></span>
                 </button>
                 <ul class="dropdown-menu">
-                {% if not file.is_archived() %}<li><a href="/fs/{{file.uid}}">Pobierz</a></li>{% endif %}
-                {% if "beamlets" == file.type %}<li><a href="/dash_histograms/?beamlets_token={{file.token}}" target="_blank">Histogram</a></li>{% endif %}
+                {% if not file.is_archived() %}<li><a href="/fs/{{file.uid}}">Pobierz</a></li>{% endif %}         
+                {% if "beamlets" == file.type %}<li><a href="/histogram/{{file.token}}" target="_blank">Histogram</a></li>{% endif %}
                 <li><a href="#" onclick="showModalEditComment( {{ file.uid }}, '{{ file.description }}'); return false;">Zmień komentarz</a></li>
                 <li role="separator" class="divider"></li>
                 {% if not file.is_archived() %}<li><a href="/fs/delete/{{file.uid}}">Usuń</a></li>{% endif %}
@@ -89,6 +89,7 @@
         </td>
         {% else -%}
         <td class="col3">
+            <input type="checkbox" id="chk-{{file.token}}" style="margin-right: 1em;" onclick="Dataset.clickedCheckbox(this,'{{file.name}}','{{file.token}}');" />
             <b>{{file.name}}</b>
         </td>
         <td class="col4">{{file.description}}</td>

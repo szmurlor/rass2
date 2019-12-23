@@ -9,8 +9,9 @@ from flask_babel import gettext, refresh
 
 import authentication
 import modules.datastore.datastore
-import modules.scenarios.scenarios
 import modules.help.help
+import modules.histograms.histograms
+import modules.scenarios.scenarios
 
 try:
     for f in database.StoredFile.query.filter_by(token=None):
@@ -136,6 +137,9 @@ def get_locale():
 app.jinja_env.globals['get_locale'] = get_locale
 
 
+###########################################################
+# INIT DASH
+###########################################################
 from modules.histograms.dash_histograms import init_dash
 init_dash(app)
 
