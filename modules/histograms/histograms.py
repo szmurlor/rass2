@@ -16,17 +16,23 @@ import urllib.parse
 @app.route('/histogram/<ftokens>')
 def histogram(ftokens):
     """Opis działania:
-        1. pobieram wszystkie pliki z bazy danych podane po tokenach rozdielane przecinkami
+        1. pobieram wszystkie pliki z bazy danych podane po tokenach rozdzielane przecinkami
         2. szukam pliku beamlets
-        3. szukam plików fluence maps 9sortuję nakońcu specjalnie, aby odnajdywac dobrze folder)
+        3. szukam plików fluence maps (sortuję na końcu, aby odnajdywać dobrze folder z ewentualnym cache)
         4. buduję lokalizację folderu cache
     """
 
     if not g.user_id:
         abort(401)
+
+    # dopisać sprawdzanie czy podano poprawny argument ftokens
+
     mlist = filter(lambda v: len(v) > 0, ftokens.split(","))
     stored_files = [storage.find_file_by_token(token) for token in mlist]
-    res = None
+
+    # dopisać sprawdzanie czy udało się znaleźć wszystkie pliki
+
+    res = None # to będzie odpowiedź dla użytkownika
     data = None
     message = None
 
@@ -34,41 +40,26 @@ def histogram(ftokens):
     fluences = []
     # find beamlets
     for f in stored_files:
-        print(f.type)
         if f.type == 'beamlets':
+            print("Znalazłem beamlety")
             beamlets = f
         if f.type == 'pareto':
+            print("Znalazłem plik z mapami fluencji")
             fluences.append(f)
     fluences = sorted(fluences, key=lambda f: f.token)
 
     if beamlets != None:
+        #** Zlecam uruchomienie zadania, ponieważ nie ma go w cache
+        processing_foder = generate_dirname(beamlets, fluences)
+        
         data = {}
         res = "success"
-        processing_foder = generate_dirname(beamlets, fluences)
-        if not os.path.isdir(processing_foder):
-            data["cached"] = False
-            os.mkdir(processing_foder)
-
-            with open(processing_foder + "/params-input.json", "w") as fout:
-                pars = {
-                    "beamlets": beamlets.uid,
-                    "beamlets_name": beamlets.name,
-                    "beamlets_path": beamlets.path,
-                    "fluences": [ {
-                        "uid": f.uid,
-                        "name": f.name,
-                        "path": f.path,
-                        } for f in fluences]
-                }
-                fout.write(json.dumps(pars))
-        else:
-            data["cached"] = True
-
         task_id = hworker.calculate_histogram(processing_foder)
         data["task_id"] = task_id
+
     else:
         res = "failure"
-        message = f"Unable to locate file with dose deposition data for file tokens: {ftokens}"
+        message = f"Unable to locate file with dose deposition data (Dane do optymalizacji PW) for file tokens: {ftokens}"
 
 
     res = { "result": res }

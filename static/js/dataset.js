@@ -29,7 +29,8 @@ var Dataset = {
             }            
         });
         Dataset.selected = [];
-        e.preventDefault();
+        if (e)
+            e.preventDefault();
         $('#dataset-fixed').hide("slow");
     },
     rebuildList: function() {
@@ -44,17 +45,24 @@ var Dataset = {
             list.appendChild(li);
         });
     },
-    histogram: async function() {
-        console.log(Dataset.selected);
-        var items='';
-        Dataset.selected.map(v => {items += v.token + ",";}); 
-        var res = await fetch("/histogram/"+items);
-        var jsonRes = await res.json();
-        console.log(jsonRes);
-        if (jsonRes.result == 'failure') {
-            showModalInfo(jsonRes.message);
-        } else {
-         window.open("/histogram/"+items, target="_blank");
-        }
+    histogram: function() {
+        /* Scalamy identyfikatory. */ 
+        var items = Dataset.selected.map(v => v.token).join(','); 
+
+        var res = fetch("/histogram/"+items)
+                    .then( (res) => res.json())
+                    .then( jsonRes => {
+                            console.log(jsonRes);
+                            if (jsonRes.result == 'failure') {
+                                showModalInfo(jsonRes.message);
+                            } else {
+                                // console.log("Wygląda ok - zamykam okno.");
+                                // Dataset.closeFixed();
+                                window.open("/dash_histograms/?task_id="+jsonRes.data.task_id, target="_blank");
+                            }
+                        })
+                    .catch( (err) => {
+                        showModalInfo(err);
+                    });
     }
 }

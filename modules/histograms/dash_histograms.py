@@ -4,7 +4,7 @@ import dash_html_components as html
 import dash_core_components as dcc
 import urllib
 
-import database
+#import database
 import modules.histograms.worker as hworker
 
 dash_histograms = None
@@ -13,52 +13,67 @@ def init_dash(app):
 
     dash_histograms = Dash(__name__, server=app, url_base_pathname='/dash_histograms/')
     dash_histograms.layout = html.Div( [
-            dcc.Location(id="id-location", refresh=False),
-            html.Div(id="my-out", children=f"Witaj świecie ...!"),
-            dcc.Store(id="my-store", data={'task_id':'none'}),
-            dcc.Interval(
-            id='my-interval',
-            interval=1*1000 # in milliseconds
-            ),
-            html.Div(id="my-out-2", children=f"Task status...!"),
+            dcc.Location(id="id-location", refresh=False), # to potrzebuję aby wyciągnąć z URLa identyfikator zadania
+            html.Div(id="my-debug-before", children=f"proszę czekać...!"),
+            dcc.Store(id="my-store", data={'task_id':'none'}), # tutaj będę przechowywać zmienne
+            dcc.Interval(id='my-interval',interval=1*1000),    # in milliseconds - co jaki czas odświeżamy w celu sprawdzenia, czy zadanie obliczeniowe się skończyło
+            html.Div(id="my-debug-after", children=f"Proszę czekać...!"),
         ])
     dash_histograms.config.suppress_callback_exceptions = True
 
 
     @dash_histograms.callback([
-                    dash.dependencies.Output('my-out', 'children'),
+                    dash.dependencies.Output('my-debug-before', 'children'),
                     dash.dependencies.Output('my-store', 'data')
                 ],
                 [dash.dependencies.Input('id-location', 'pathname'),
                 dash.dependencies.Input('id-location', 'search')],
                 state = [dash.dependencies.State('my-store', 'data')])
     def display_page(pathname, search, data):
-        print(pathname)
-        print(search)
-        print(f'data before: {data}')
-        search = search[1:] if search.startswith("?") else search
-        print(urllib.parse.parse_qs(search))
-        args = urllib.parse.parse_qs(search)    
-        firstname = args['firstname'][0] if 'firstname' in args else "brak danych"
-            
-        res = None
-        if "beamlets_token" in args:
-            btoken = args["beamlets_token"][0]
-            stored_file = database.StoredFile.query.filter_by(token=btoken).one_or_none()
-            #firstname = stored_file.name
-            res = hworker.calculate_histogram(stored_file.uid)
-            data['task_id'] = res['data']['task_id']
+        print(f"pathname: {pathname} search: {search} my-store.data before: {data}" )
 
+        # obcinam '/' z początku
+        search = search[1:] if search.startswith("?") else search       
+
+        # Data are returned as a dictionary. The dictionary keys are the unique query 
+        # variable names and the values are lists of values for each name. 
+        args = urllib.parse.parse_qs(search)    
+            
+        if "task_id" in args:
+            print(f'Otrzymałem task_id: {args["task_id"][0]}')
+        else:
+            print(f'pusto....')
+
+        data['task_id'] = args["task_id"][0]
         print(f'data after: {data}')
-        return f"Witaj świecie {firstname} {res}", data
+        return f"Witaj świecie {args['task_id']}", data
 
 
     @dash_histograms.callback(
-                    [dash.dependencies.Output('my-out-2', 'children')],
+                    [dash.dependencies.Output('my-debug-after', 'children')],
                     [dash.dependencies.Input('my-interval', 'n_intervals')],          
                     state = [dash.dependencies.State('my-store','data')])
     def display_interval(value, data):
-        job = hworker.get_job(data['task_id'])
-        return f"Witaj świecie {data} {job['status']}", 
+        msg = ""
+        if data['task_id'] != 'none':
+            print(f"Szukam joba: {data['task_id']}")
+
+            ############ Pytam się o joba... ########
+            job = hworker.get_job(data['task_id'])
+            #########################################
+            #print(f"Oto job: {job}")
+
+            if job is not None:                
+                msg = html.Div(children=[
+                        f"Status zadania o identyfikatorze {data['task_id']} to ", 
+                        html.Span(job['status'], style={"color": "red"}) 
+                    ])
+            else:
+                msg = f"Nie mogę odnaleźć zadania o identyfikatorze {data['task_id']}"
+        else:
+            return f"Czekam na rozpoczęcie zadania. (Brak parametru 'task_id' w lokalnym stanie.)", 
+
+        return msg, 
+
 
     

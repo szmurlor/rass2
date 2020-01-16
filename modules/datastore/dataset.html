@@ -6,18 +6,19 @@
 {% import 'datastore/dataset_modal_comment.html'as modal %} 
 {% import 'datastore/dataset_controls.html' as controls %}
 
+
 <script src="{{ url_for('static', filename='js/dataset.js') }}"></script>
-
-
 <div id="dataset-fixed" class="fixed-bottom" style="display: none;">
-    <p>Witaj w świecie dolnym.</p>
+    <p>Wybrałeś zbiór - możesz narysować jego histogram. Operacja może chwilę trwać z uwagi na wielkość zbioru. Prosimy o cierpliwość.</p>
     <ul style="text-align: left;" id="dataset-fixed-items">
         <li>
             ???
         </li>
     </ul>
-    <a href="#" onclick="Dataset.histogram(event);">({{ _("Histogram") }})</a>
-    <a href="#" onclick="Dataset.closeFixed(event);">({{ _("Zamknij") }})</a>
+    <div class="text-center">
+        <a href="#" onclick="Dataset.histogram(event);">({{ _("Histogram") }})</a>
+        <a href="#" onclick="Dataset.closeFixed(event);">({{ _("Zamknij") }})</a>
+    </div>
 </div>
 
 

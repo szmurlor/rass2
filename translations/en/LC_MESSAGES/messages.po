@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2019-11-28 04:20+0100\n"
+"POT-Creation-Date: 2020-01-16 15:19+0100\n"
 "PO-Revision-Date: 2019-11-26 16:40+0100\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: en\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.4.0\n"
 
-#: rass.py:34
+#: rass.py:36
 msgid "Nie mogę zaktualizować struktury bazy danych!"
 msgstr ""
 
@@ -26,7 +26,7 @@ msgstr ""
 msgid "Scenariusze"
 msgstr "Scenarios"
 
-#: modules/base.html:54 modules/datastore/datastore.html:4
+#: modules/base.html:54 modules/datastore/datastore.html:3
 msgid "Magazyn danych"
 msgstr "Datastore"
 
@@ -62,7 +62,16 @@ msgstr "Username"
 msgid "Hasło"
 msgstr "Password"
 
-#: modules/datastore/dataset.html:31
+#: modules/datastore/dataset.html:19
+msgid "Histogram"
+msgstr ""
+
+#: modules/datastore/dataset.html:20
+#: modules/datastore/dataset_modal_comment.html:53
+msgid "Zamknij"
+msgstr "Close"
+
+#: modules/datastore/dataset.html:69
 msgid "Zbiór danych"
 msgstr "Dataset"
 
@@ -70,11 +79,13 @@ msgstr "Dataset"
 msgid "Zmień"
 msgstr "Change"
 
-#: modules/datastore/dataset_header.html:27 modules/datastore/datastore.html:31
+#: modules/datastore/dataset_header.html:27 modules/datastore/datastore.html:28
+#: modules/datastore/datastore.html:113
 msgid "Data utworzenia"
 msgstr "Date created"
 
-#: modules/datastore/dataset_header.html:28 modules/datastore/datastore.html:33
+#: modules/datastore/dataset_header.html:28 modules/datastore/datastore.html:30
+#: modules/datastore/datastore.html:114
 msgid "Nazwa"
 msgstr "Name"
 
@@ -86,54 +97,62 @@ msgstr "Owner"
 msgid "Krótkie uwagi"
 msgstr "Short notes"
 
-#: modules/datastore/datastore.html:24
+#: modules/datastore/datastore.html:21
 msgid "Zbiory danych"
 msgstr "Datasets"
 
-#: modules/datastore/datastore.html:25
+#: modules/datastore/datastore.html:22
 msgid "Tabela zbiorów danych do których masz uprawnienia."
 msgstr "Table with datasets which you are authorized to view."
 
-#: modules/datastore/datastore.html:29
+#: modules/datastore/datastore.html:26 modules/datastore/datastore.html:111
 msgid "L.p."
 msgstr "No."
 
-#: modules/datastore/datastore.html:30
+#: modules/datastore/datastore.html:27 modules/datastore/datastore.html:112
 msgid "Operacje"
 msgstr "Operations"
 
-#: modules/datastore/datastore.html:35
+#: modules/datastore/datastore.html:32 modules/datastore/datastore.html:115
 msgid "Uwagi"
 msgstr "Notes"
 
-#: modules/datastore/datastore.html:37
+#: modules/datastore/datastore.html:34 modules/datastore/datastore.html:116
 msgid "Ostatnia modyfikacja"
 msgstr "Last modified"
 
-#: modules/datastore/datastore.html:45
+#: modules/datastore/datastore.html:42
 msgid "Otwórz"
 msgstr "Open"
 
-#: modules/datastore/datastore.html:49
+#: modules/datastore/datastore.html:46 modules/datastore/datastore.html:127
 msgid "przez"
 msgstr "by"
 
-#: modules/datastore/datastore.html:58
+#: modules/datastore/datastore.html:55
 msgid "Nowy zbiór danych"
 msgstr "New dataset"
 
-#: modules/datastore/datastore.html:105
+#: modules/datastore/datastore.html:102
 msgid "Pokaż archiwalne"
 msgstr "Show archived"
 
-#: modules/datastore/datastore.html:106
+#: modules/datastore/datastore.html:103
 msgid "Ukryj archiwalne"
 msgstr "Hide archived"
 
-#: modules/datastore/datastore.html:109
+#: modules/datastore/datastore.html:106
 msgid "Archiwalne zbiory danych"
 msgstr "Archived datasets"
 
+#: modules/datastore/datastore.html:107
+msgid "Tabela zbiorów danych, które zostały przeniesione do archiwum (usunięte?)."
+msgstr "Table with datasets which have been archived (deleted?)."
+
+#: modules/datastore/datastore.html:123
+msgid "Wyjmij z archiwum"
+msgstr "Unarchive"
+
 #~ msgid "Data utworzenia:"
-#~ msgstr ""
+#~ msgstr "Date created:"
 
