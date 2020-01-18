@@ -18,15 +18,6 @@ Arguments:
 $argc=$args.count
 $argv=$args
 
-for ( $i = 0; $i -lt $args.count; $i++ ) {
-    if ($args[ $i ] -eq "/n"){ $strName=$args[ $i+1 ]}
-    if ($args[ $i ] -eq "-n"){ $strName=$args[ $i+1 ]}
-    if ($args[ $i ] -eq "/d"){ $strDomain=$args[ $i+1 ]}
-    if ($args[ $i ] -eq "-d"){ $strDomain=$args[ $i+1 ]}
-}
-Write-Host $strName
-Write-Host $strDomain
-
 for ( $i=0; $i -lt $argc; $i++ ) {
     if ( "--name" -eq $argv[ $i ] ) {
 	    $IMAGE_NAME = $argv[ $i+1 ]
