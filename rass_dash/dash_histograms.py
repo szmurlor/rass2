@@ -49,6 +49,16 @@ def init_dash(app):
         return f"Witaj świecie {args['task_id']}", data
 
 
+    def buildLog(taskLog):
+        return html.Div(children=[
+                            f"Postęp obliczeń: {taskLog['progress_percent']}",
+                            html.Ul(
+                                children = list(map( lambda msg: html.Li(children=[msg]), taskLog['messages']))
+                            )
+                        ]
+                    )
+
+
     @dash_histograms.callback(
                     [dash.dependencies.Output('my-debug-after', 'children')],
                     [dash.dependencies.Input('my-interval', 'n_intervals')],          
@@ -63,12 +73,17 @@ def init_dash(app):
             #########################################
             #print(f"Oto job: {job}")
 
-            if job is not None:                
+            if job is not None:             
+                print(job['taskLogs'])
                 msg = html.Div(children=[
-                        f"Status zadania o identyfikatorze {data['task_id']} to ", 
-                        html.Span(job['status'], style={"color": "red"}),
-                        f", zwrócona wartość zadania: {job['job']}"
-                    ])
+                                html.Div(children=[
+                                    f"Status zadania o identyfikatorze {data['task_id']} to ", 
+                                    html.Span(job['status'], style={"color": "red"}),
+                                    f", zwrócona wartość zadania: {job['job']}"
+                                ]),
+                                buildLog(job['taskLogs'])
+                            ]
+                        )
             else:
                 msg = f"Nie mogę odnaleźć zadania o identyfikatorze {data['task_id']}"
         else:

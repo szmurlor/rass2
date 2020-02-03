@@ -10,6 +10,7 @@ if [ ! -z "$REDIS_PID"  ]; then
 fi
 
 export RASS_DEV_LOGGER="%(message)s"
+export DEV_DELAY=true
 
 echo "Starting redis-server..."
 redis-server&
