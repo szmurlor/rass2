@@ -90,9 +90,66 @@ def _task_calculate_histogram(processing_folder):
             task_log.log("Done.", 30)
 
             ######################################################
-            task_log.log("Calculating histograms...")
-            dev_only_delay(1)
-            task_log.log("Done.", 50)
+            task_log.log("Finding m_* file...")
+            m_file = None
+            only_dirs = True
+            first_dir = None
+            for fn in os.listdir(proc_dir):
+                if not os.path.isdir(proc_dir + "/" + fn):
+                    only_dirs = False
+                else:
+                    if first_dir is None: 
+                        first_dir = "/" + fn
+            if not only_dirs:
+                first_dir = ""            
+
+
+            for fn in os.listdir(proc_dir + first_dir):
+                print(f"plik: {fn}")
+                if fn.startswith("m_"):
+                    m_file = proc_dir + first_dir + "/" + fn
+                    break
+            
+            if m_file is not None:
+                task_log.log(f"Found m_file in the archive: {m_file}")
+
+                ######################################################
+                task_log.log("Calculating histograms...")
+                dev_only_delay(1)
+
+                from rass_redis.histogram import DosesMain
+                main = DosesMain(m_file)
+
+                logger.info(dir(main))
+                main.save_png_preview_fluence = True
+                main.histogram()
+                
+                #if "-of" in argv:
+                #    idx = argv.index("-of")
+                #    main.override_fluences_filename = argv[idx+1]
+
+                #if "--preview_fluence" in argv:
+                #    print("Previewing fluences")
+                #    main.preview_fluence = True
+
+                #if "--save_png_fluence" in argv:
+                #    print("Saving fluences maps to png files")
+                #    main.save_png_preview_fluence = True
+
+                #what = "."
+                #if len(argv) > 2 and argv[2] == "histogram":
+                #    main.histogram()
+                #    what = "generating histogram."
+
+                #if len(argv) > 2 and argv[2] == "fluences":
+                #    main.fluences()
+                #    what = "generating fluence maps."
+
+
+                task_log.log("Done.", 50)
+            else:
+                task_log.log("Error! Unable to find file with its name starting with 'm_'...", 100)
+
 
             status = "finished"
 

@@ -24,6 +24,10 @@ RUN pip3 install flask \
 RUN git clone https://github.com/szmurlor/rass2.git \
   && cd rass2 
 
+RUN pip3 install numpy
+RUN pip3 install scipy
+RUN pip3 install pandas
+
 EXPOSE 5000 
 
 WORKDIR /rass2
