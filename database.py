@@ -289,9 +289,3 @@ class ProcessingTask(db.Model):
         self.name = name
 
 
-
-#for _file in StoredFile.query.filter_by(token=None).all():
-#    _file.token = str(uuid.uuid4()).replace("-", "")
-#    print "Generated token '%s' for file '%s'" % (_file.token, _file.path)
-#    db.session.add(_file)
-#    db.session.commit()

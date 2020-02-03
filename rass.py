@@ -105,10 +105,13 @@ def before_request():
 def index():
     return render_template('index.html', scenarios=scenarios)
 
+
 @app.route('/lang/<lang>')
 def set_language(lang):
     session['lang'] = lang
+    refresh() # odświeżam cache językowy, bo mogłem zmienić język?
     return index()
+
 
 @app.template_filter('datetime')
 def _jinja2_filter_datetime(date, fmt=None):
@@ -121,16 +124,17 @@ def _jinja2_filter_date(date, fmt=None):
     dformat = '%d.%m.%Y'
     return date.strftime(dformat)
 
+
 @app.template_filter('markdown')
 def markdown_filter(data):
     from flask import Markup
     from markdown import markdown
     return Markup(markdown(data, extensions=['markdown.extensions.attr_list']))
 
+
 @babel.localeselector
 def get_locale():
     if "lang" in session:
-        refresh()
         return session.get('lang')
     return 'pl'
 
