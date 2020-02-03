@@ -1,6 +1,5 @@
 # -*- coding: utf-8
 from flask import Flask, g, request
-from flask_babel import Babel
 import os
 import json
 import logging
@@ -52,13 +51,6 @@ app.config['SQLALCHEMY_DATABASE_URI'] = SQLALCHEMY_DATABASE_URI
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['REDIS_URL'] = REDIS_URL
 app.config['REDIS_WORKER'] = REDIS_WORKER_NAME
-
-
-############################################################
-# Zainstalowanie wsparcia dla trybu wielojęzykowego
-############################################################
-
-babel = Babel(app)
 
 
 ############################################################

@@ -5,7 +5,7 @@ import dash_core_components as dcc
 import urllib
 
 #import database
-import modules.histograms.worker as hworker
+import rass_redis.worker as hworker
 
 dash_histograms = None
 def init_dash(app):

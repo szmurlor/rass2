@@ -11,7 +11,7 @@ from rass_app import app
 from utils import *
 import uuid
 
-import redis
+import rass_redis
 from rq import Queue, Connection
 import urllib.parse
 

@@ -6,7 +6,7 @@ import database
 from rass_app import app
 import storage
 import json
-import modules.histograms.worker as hworker
+import rass_redis.worker as hworker
 
 import redis
 from rq import Queue, Connection

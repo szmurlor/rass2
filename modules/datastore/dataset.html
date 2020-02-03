@@ -8,8 +8,9 @@
 
 
 <script src="{{ url_for('static', filename='js/dataset.js') }}"></script>
+
 <div id="dataset-fixed" class="fixed-bottom" style="display: none;">
-    <p>Wybrałeś zbiór - możesz narysować jego histogram. Operacja może chwilę trwać z uwagi na wielkość zbioru. Prosimy o cierpliwość.</p>
+    <p>{{ _("Wybrałeś zbiór - możesz narysować jego histogram. Operacja może chwilę trwać z uwagi na wielkość zbioru. Prosimy o cierpliwość.") }}</p>
     <ul style="text-align: left;" id="dataset-fixed-items">
         <li>
             ???

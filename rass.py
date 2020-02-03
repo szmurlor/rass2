@@ -2,10 +2,10 @@
 from flask import g, session, request, flash, send_from_directory
 from flask import render_template, redirect, url_for
 from datetime import datetime
-from rass_app import app, set_upload_folder, babel
+from rass_app import app, set_upload_folder
 import logger
 import database
-from flask_babel import gettext, refresh
+from flask_babel import gettext, refresh, Babel
 
 import authentication
 import modules.datastore.datastore
@@ -132,6 +132,11 @@ def markdown_filter(data):
     return Markup(markdown(data, extensions=['markdown.extensions.attr_list']))
 
 
+############################################################
+# Zainstalowanie wsparcia dla trybu wielojęzykowego
+############################################################
+babel = Babel(app)
+
 @babel.localeselector
 def get_locale():
     if "lang" in session:
@@ -141,10 +146,11 @@ def get_locale():
 app.jinja_env.globals['get_locale'] = get_locale
 
 
+
 ###########################################################
 # INIT DASH
 ###########################################################
-from modules.histograms.dash_histograms import init_dash
+from rass_dash.dash_histograms import init_dash
 init_dash(app)
 
 
