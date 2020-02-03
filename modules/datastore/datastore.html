@@ -56,7 +56,7 @@ W ciągu całej pracy, zbiór danych może być opatrzony dowolnym komentarzem t
 
     <form id="new_dataset" class="form-horizontal" action="/data/add" method="POST">
         <div class="form-group" id="fg_Rodzaj">
-            <label class="control-label col-sm-2" for="Rodzaj">Rodzaj zbioru:</label>
+            <label class="control-label col-sm-2" for="Rodzaj">{{ _("Rodzaj zbioru") }}:</label>
             <div class="col-sm-4">
                 <select id="Rodzaj" class="form-control" name="dataset_type">
                     {% for type in dataset_types %}
@@ -71,29 +71,29 @@ W ciągu całej pracy, zbiór danych może być opatrzony dowolnym komentarzem t
             </div>
         </div>
         <div class="form-group" id="fg_Data_utworzenia">
-            <label class="control-label col-sm-2" for="Data_utworzenia">Data utworzenia:</label>
+            <label class="control-label col-sm-2" for="Data_utworzenia">{{ _("Data utworzenia") }}:</label>
             <div class="col-sm-4">
                 <input id="Data_utworzenia" class="form-control" name="date_created" type="text" value="{{ now|date }}" />
                 <small>(Format: dd.mm.YYYY, np. 29.10.2016)</small>
             </div>
         </div>
         <div class="form-group">
-            <label class="control-label col-sm-2" for="Nazwa">Nazwa (PID):</label>
+            <label class="control-label col-sm-2" for="Nazwa">{{ _("Nazwa") }} (PID):</label>
             <div class="col-sm-4">
                 <input class="form-control" name="name" id="Nazwa" type="text" value="" />
-                <small>(Nazwa przypadku)</small>
+                <small>({ _("Nazwa przypadku") )</small>
             </div>
         </div>
         <div class="form-group">
-            <label class="control-label col-sm-2" for="notes">Krótkie uwagi:</label>
+            <label class="control-label col-sm-2" for="notes">{{ _("Krótkie uwagi" ) }}:</label>
             <div class="col-sm-4">
                 <input class="form-control" id="notes" name="short_notes" type="text" value="" /> <small>(Krótkie adnotacje, widoczne na liście ze zbiorami danych.)</small>
             </div>
         </div>
 
         <div class="form-group">
-            <button class="btn btn-success" onclick="return validate_add()" type="submit">Dodaj</button>
-            <a href="#" onclick="hide_new_dataset();">(Anuluj)</a>
+            <button class="btn btn-success" onclick="return validate_add()" type="submit">{{ _("Dodaj") }}</button>
+            <a href="#" onclick="hide_new_dataset();">({{ _("Anuluj") }})</a>
         </div>
     </form>
 </div>
