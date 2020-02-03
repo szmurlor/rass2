@@ -28,3 +28,4 @@ export FLASK_APP=rass.py
 export FLASK_DEBUG=1
 mkdir -p $DIR/processing
 python -m flask run --host=0.0.0.0 
+
