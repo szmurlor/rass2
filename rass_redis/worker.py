@@ -1,33 +1,16 @@
 import redis
 from rq import Queue, Connection
 from rq.job import Job
-import database
 import os
 import json
+import logger
 from datetime import datetime as dt
 
-def _task_calculate_histogram(processing_folder):
-    print(f"TASK CALCULATE in folder: {processing_folder}")
-    data = {}
-    if not os.path.isdir(processing_folder):
-        data["cached"] = False
-        os.mkdir(processing_folder)
 
-        with open(processing_folder + "/params-input.json", "w") as fout:
-            pars = {
-                "beamlets": beamlets.uid,
-                "beamlets_name": beamlets.name,
-                "beamlets_path": beamlets.path,
-                "fluences": [ {
-                    "uid": f.uid,
-                    "name": f.name,
-                    "path": f.path,
-                    } for f in fluences]
-            }
-            fout.write(json.dumps(pars))
+def _task_cached_histogram(processing_folder):
+    logger.debug("Running _task_cached_histogram")
 
-    else:            
-        data["cached"] = True
+    data = {"cached": True }
 
     return {
         "data": data,
@@ -35,7 +18,36 @@ def _task_calculate_histogram(processing_folder):
     }
 
 
-def calculate_histogram(processing_folder):
+def _task_calculate_histogram(processing_folder):
+    message = None
+    if (os.path.isdir(processing_folder)):
+
+        pars_fname = processing_folder + "/params-input.json"
+
+        if (os.path.isfile(pars_fname)):            
+            with open(pars_fname, "r") as fin:
+                pars = (json.load(fin))
+                logger.info(pars)
+
+            status = "finished"
+
+        else:
+            logger.error(f"Brak pliku z parametrami: {pars_fname}")
+            message = "Nie mogę odnaleźć pliku z parametrami do obliczenia histogramu."
+    else:
+        logger.error(f"Brak folderu: {processing_folder}")
+        message = "Nie mogę odnaleźć folderu do obliczeń."
+
+    data = {"cached": False}
+    if message:
+        data["message"] = message
+    return {
+        "data": data,
+        "status": status
+    }
+
+
+def start_calculate_histogram_job(processing_folder):
     from rass_app import app
     with Connection(redis.from_url(app.config['REDIS_URL'])):
         q = Queue(app.config['REDIS_WORKER'])
@@ -43,8 +55,16 @@ def calculate_histogram(processing_folder):
         return task.get_id()
 
 
+def start_cached_histogram_job(processing_folder):
+    from rass_app import app
+    with Connection(redis.from_url(app.config['REDIS_URL'])):
+        q = Queue(app.config['REDIS_WORKER'])
+        task = q.enqueue(_task_cached_histogram, processing_folder)
+        return task.get_id()
+
+
 def get_job(task_id):
-    """ Szukam w kolejce zadąń zadania o zadanym  id i zwracam status w słowniku. """
+    """ Szukam w kolejce zadań zadania o zadanym  id i zwracam status w słowniku. """
     from rass_app import app
     with Connection(redis.from_url(app.config['REDIS_URL'])) as con:
         try:

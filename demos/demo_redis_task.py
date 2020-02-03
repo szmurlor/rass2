@@ -1,4 +1,4 @@
-import logging
+import logger as log
 import rass_app
 from rass_app import app
 
@@ -9,7 +9,7 @@ from rq.job import Job
 from demos.demo_task import do_something
 
 EXAMPLE_WORKER_QUEUE="demo_worker"
-log = logging.getLogger(__name__)
+
 
 def check_redis_started():
     rs = redis.from_url(app.config['REDIS_URL'])

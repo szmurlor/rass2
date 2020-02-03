@@ -46,19 +46,31 @@ var Dataset = {
         });
     },
     histogram: function() {
+        /* Czy wymuaszym ponowne obliczenie? */
+        let forceRecalculate = false
+        elForcerecalculate = document.getElementById("force-recalculate-histogram");
+        if (elForcerecalculate) {
+            forceRecalculate = elForcerecalculate.checked;
+        }
+
         /* Scalamy identyfikatory. */ 
         var items = Dataset.selected.map(v => v.token).join(','); 
-
-        var res = fetch("/histogram/"+items)
+        var extraParams = "";
+        if (forceRecalculate) {
+            extraParams += "?forceRecalculate=true";
+        }
+        var res = fetch("/histogram/"+items+extraParams)
                     .then( (res) => res.json())
                     .then( jsonRes => {
-                            console.log(jsonRes);
                             if (jsonRes.result == 'failure') {
                                 showModalInfo(jsonRes.message);
                             } else {
-                                // console.log("Wygląda ok - zamykam okno.");
-                                // Dataset.closeFixed();
-                                window.open("/dash_histograms/?task_id="+jsonRes.data.task_id, target="_blank");
+                                if (!jsonRes.data || !jsonRes.data.task_id) {
+                                    console.log("Odpowiedź z zserwera: ", jsonRes);
+                                    showModalInfo("Błędna odpowiedź serwera. Oczekiwałem res.data.task_id. " +
+                                                  "Proszę skontaktować się z administratorami systemu.");
+                                } else  
+                                    window.open("/dash_histograms/?task_id="+jsonRes.data.task_id, target="_blank");
                             }
                         })
                     .catch( (err) => {

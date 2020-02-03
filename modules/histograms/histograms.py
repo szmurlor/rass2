@@ -3,10 +3,12 @@ import os
 
 from flask import g, abort, render_template, flash, redirect, session, jsonify
 import database
+import logger
 from rass_app import app
 import storage
 import json
-import rass_redis.worker as hworker
+import rass_redis.worker as redis_worker
+from utils import merge_http_request_arguments
 
 import redis
 from rq import Queue, Connection
@@ -25,6 +27,12 @@ def histogram(ftokens):
     if not g.user_id:
         abort(401)
 
+    forceRecalculate = False
+
+    args = merge_http_request_arguments()
+    if "forceRecalculate" in args:
+        forceRecalculate = args["forceRecalculate"].lower() == "true"
+    
     # dopisać sprawdzanie czy podano poprawny argument ftokens
 
     mlist = filter(lambda v: len(v) > 0, ftokens.split(","))
@@ -49,18 +57,53 @@ def histogram(ftokens):
     fluences = sorted(fluences, key=lambda f: f.token)
 
     if beamlets != None:
-        #** Zlecam uruchomienie zadania, ponieważ nie ma go w cache
-        processing_foder = generate_dirname(beamlets, fluences)
+        # Generuję nazwę folderu cache na podstawie plików i ich czasów załączenia do systemu
+        processing_folder = generate_dirname(beamlets, fluences)                        
+
+        print(f"Checking processing folder: {processing_folder}")
+        if not os.path.isdir(processing_folder) or forceRecalculate:
+            if os.path.isdir(processing_folder):
+                logger.debug(f"Removing processing folder: {processing_folder}")
+                import shutil
+                shutil.rmtree(processing_folder)
+
         
-        data = {}
+            logger.debug(f"Creating new processing folder: {processing_folder}")
+            os.mkdir(processing_folder)
+
+            pars_fname = processing_folder + "/params-input.json"
+            logger.debug(f"Creating parameters file: {pars_fname}")
+            with open(pars_fname, "w") as fout:
+                pars = {
+                    "beamlets": beamlets.uid,
+                    "beamlets_name": beamlets.name,
+                    "beamlets_path": beamlets.path,
+                    "fluences": [ {
+                        "uid": f.uid,
+                        "name": f.name,
+                        "path": f.path,
+                        } for f in fluences]
+                }
+                fout.write(json.dumps(pars))
+
+            #######################################################################
+            logger.debug("Scheduling a job with calculations...")
+            task_id = redis_worker.start_calculate_histogram_job(processing_folder)
+            #######################################################################
+
+        else:            
+            logger.info(f"Found processing folder - will return cached data: {processing_folder}")
+
+            #######################################################################
+            logger.debug("Scheduling a job which will return cached data...")
+            task_id = redis_worker.start_cached_histogram_job(processing_folder)
+            #######################################################################
+
+        data = {"task_id":  task_id}
         res = "success"
-        task_id = hworker.calculate_histogram(processing_foder)
-        data["task_id"] = task_id
-
     else:
-        res = "failure"
         message = f"Unable to locate file with dose deposition data (Dane do optymalizacji PW) for file tokens: {ftokens}"
-
+        res = "failure"
 
     res = { "result": res }
     if message:

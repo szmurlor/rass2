@@ -57,11 +57,14 @@ app.config['REDIS_WORKER'] = REDIS_WORKER_NAME
 # Konfiguracja bilbioteki do logowania komunikatów
 ############################################################
 
-FORMAT = '%(asctime)-15s- %(message)s'
+#if "RASS_DEV_LOGGER" in os.environ:
+#    FORMAT = os.environ["RASS_DEV_LOGGER"]
+#else:    
+#    FORMAT = '%(asctime)-15s- %(message)s'
 #logging.basicConfig(format=FORMAT, filename='log/production.log', level=logging.DEBUG)
-logging.basicConfig(format=FORMAT, level=logging.DEBUG)
+#logging.basicConfig(format=FORMAT, level=logging.DEBUG)
 
-
+import logger
 
 def set_upload_folder(folder):
     """ Tutaj możemy przesłonić ustawiony katalogów do zapisywania danych. """

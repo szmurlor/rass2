@@ -4,7 +4,7 @@ import dash_html_components as html
 import dash_core_components as dcc
 import urllib
 
-#import database
+import logger
 import rass_redis.worker as hworker
 
 dash_histograms = None
@@ -30,7 +30,7 @@ def init_dash(app):
                 dash.dependencies.Input('id-location', 'search')],
                 state = [dash.dependencies.State('my-store', 'data')])
     def display_page(pathname, search, data):
-        print(f"pathname: {pathname} search: {search} my-store.data before: {data}" )
+        logger.debug(f"pathname: {pathname} search: {search} my-store.data before: {data}" )
 
         # obcinam '/' z początku
         search = search[1:] if search.startswith("?") else search       
@@ -56,7 +56,7 @@ def init_dash(app):
     def display_interval(value, data):
         msg = ""
         if data['task_id'] != 'none':
-            print(f"Szukam joba: {data['task_id']}")
+            logger.debug(f"Szukam joba: {data['task_id']}")
 
             ############ Pytam się o joba... ########
             job = hworker.get_job(data['task_id'])
@@ -66,7 +66,8 @@ def init_dash(app):
             if job is not None:                
                 msg = html.Div(children=[
                         f"Status zadania o identyfikatorze {data['task_id']} to ", 
-                        html.Span(job['status'], style={"color": "red"}) 
+                        html.Span(job['status'], style={"color": "red"}),
+                        f", zwrócona wartość zadania: {job['job']}"
                     ])
             else:
                 msg = f"Nie mogę odnaleźć zadania o identyfikatorze {data['task_id']}"

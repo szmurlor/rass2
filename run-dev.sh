@@ -9,6 +9,8 @@ if [ ! -z "$REDIS_PID"  ]; then
     kill -9 $REDIS_PID
 fi
 
+export RASS_DEV_LOGGER="%(message)s"
+
 echo "Starting redis-server..."
 redis-server&
 sleep 1
