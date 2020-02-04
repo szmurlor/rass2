@@ -6,6 +6,7 @@ import json
 import logger
 import time
 from datetime import datetime as dt
+from workers.tasklog import TaskLog
 
 
 def _task_cached_histogram(processing_folder):
@@ -18,30 +19,6 @@ def _task_cached_histogram(processing_folder):
         "status": "finished"
     }
 
-class TaskLog:
-    def __init__(self, filename, dup2log=True):
-        self.filename = filename
-        self.messages = []
-        self.progress = 0.0
-        self.progress_max = 100.0
-        self.dup2log = dup2log
-
-    def log(self, msg, progress=None):
-        if progress is not None:
-            self.progress = progress
-        self.messages.append(msg)
-
-        if self.dup2log:
-            logger.info(msg)
-
-        r = {
-            "progress": round(self.progress),
-            "progress_max": round(self.progress_max),
-            "progress_percent": round(self.progress / self.progress_max * 100.0),
-            "messages": self.messages
-        }
-        with open(self.filename, "w") as f:
-            json.dump(r, f)
 
 def dev_only_delay(secs):
     if "DEV_DELAY" in os.environ:
@@ -70,7 +47,7 @@ def _task_calculate_histogram(processing_folder):
                 pars = (json.load(fin))
                 logger.debug(f"Read pars from {pars_fname} file: {pars}")
             dev_only_delay(1)
-            logger.debug("Done.", 1)
+            task_log.log("Done.", 1)
 
             ######################################################
             task_log.log("Copying beamlets file...")
@@ -117,35 +94,16 @@ def _task_calculate_histogram(processing_folder):
                 task_log.log("Calculating histograms...")
                 dev_only_delay(1)
 
-                from rass_redis.histogram import DosesMain
-                main = DosesMain(m_file)
-
-                logger.info(dir(main))
+                from workers.histogram import DosesMain
+                main = DosesMain(m_file, task_log)
                 main.save_png_preview_fluence = True
-                main.histogram()
+                hist = main.histogram()
+
+                hist_fname = f"{processing_folder}/histogram.json"
+                with open(hist_fname, "w") as f:       
+                    print(hist)
+                    json.dump(hist, f)
                 
-                #if "-of" in argv:
-                #    idx = argv.index("-of")
-                #    main.override_fluences_filename = argv[idx+1]
-
-                #if "--preview_fluence" in argv:
-                #    print("Previewing fluences")
-                #    main.preview_fluence = True
-
-                #if "--save_png_fluence" in argv:
-                #    print("Saving fluences maps to png files")
-                #    main.save_png_preview_fluence = True
-
-                #what = "."
-                #if len(argv) > 2 and argv[2] == "histogram":
-                #    main.histogram()
-                #    what = "generating histogram."
-
-                #if len(argv) > 2 and argv[2] == "fluences":
-                #    main.fluences()
-                #    what = "generating fluence maps."
-
-
                 task_log.log("Done.", 50)
             else:
                 task_log.log("Error! Unable to find file with its name starting with 'm_'...", 100)
@@ -201,7 +159,8 @@ def get_job(task_id):
                             taskLogs = json.load(f)
                 response = {
                     'status': job.get_status(),
-                    'job': job.result
+                    'job': job.result,
+                    'args': job.args
                 }
                 if taskLogs is not None:
                     response["taskLogs"] = taskLogs

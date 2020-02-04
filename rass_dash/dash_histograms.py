@@ -2,10 +2,15 @@ import dash
 from dash import Dash
 import dash_html_components as html
 import dash_core_components as dcc
+import dash_table
+import plotly.graph_objs as go
 import urllib
+import json
 
 import logger
-import rass_redis.worker as hworker
+import workers.worker as hworker
+import numpy as np
+import pandas as pd
 
 dash_histograms = None
 def init_dash(app):
@@ -66,7 +71,7 @@ def init_dash(app):
     def display_interval(value, data):
         msg = ""
         if data['task_id'] != 'none':
-            logger.debug(f"Szukam joba: {data['task_id']}")
+            #logger.debug(f"Szukam joba: {data['task_id']}")
 
             ############ Pytam się o joba... ########
             job = hworker.get_job(data['task_id'])
@@ -74,8 +79,37 @@ def init_dash(app):
             #print(f"Oto job: {job}")
 
             if job is not None:             
-                print(job['taskLogs'])
-                msg = html.Div(children=[
+                #print(job['taskLogs'])
+                if job['status'] == 'finished':
+                    with open(f"{job['args'][0]}/histogram.json") as f:
+                        histogram = json.load(f)
+                    plots = []
+                    sc = histogram['scale']
+                    df = pd.DataFrame([], columns=['ROI', 'D_min', 'D_avg', 'D_max'])
+                    for k in histogram["original"].keys():
+                        h = histogram["original"][k]
+                        hdata = np.array(h[0])
+                        plots.append( 
+                            go.Scatter(x=hdata[:,0], y=hdata[:,1], name=k, mode='lines+markers')
+                        )
+                        df = df.append([ {'ROI': k, 'D_min': h[1]*sc, 'D_avg': h[2]*sc, 'D_max': h[3]*sc} ])
+                    fig = go.Figure(data=plots)
+                    plot = dcc.Graph(
+                            id='histogram-graph',
+                            figure=fig
+                        )
+                    table = dash_table.DataTable(
+                       id='table',
+                        columns=[{"name": i, "id": i} for i in df.columns],
+                        data=df.to_dict('records'),
+                    )
+                    msg = html.Div(children=[
+                                plot,
+                                table
+                            ]
+                        )
+                else:
+                    msg = html.Div(children=[
                                 html.Div(children=[
                                     f"Status zadania o identyfikatorze {data['task_id']} to ", 
                                     html.Span(job['status'], style={"color": "red"}),

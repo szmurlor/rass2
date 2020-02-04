@@ -7,7 +7,7 @@ import logger
 from rass_app import app
 import storage
 import json
-import rass_redis.worker as redis_worker
+import workers.worker as redis_worker
 from utils import merge_http_request_arguments
 
 import redis

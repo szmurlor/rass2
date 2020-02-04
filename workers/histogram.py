@@ -1,12 +1,14 @@
 # -*- coding: utf-8 -*-
+import logger as log
 from sys import argv
 import numpy as np
 import re
 import os
 import time
+import pandas as pd
 
 
-def histogram(doses, markerArray, sid, fname, scale, npts, dmax):
+def histogram(doses, markerArray, sid, scale, npts, dmax):
     start = time.time()
     d = doses[(markerArray & sid) == sid]
     if len(d) < 1:
@@ -18,25 +20,41 @@ def histogram(doses, markerArray, sid, fname, scale, npts, dmax):
         treshold = dmax * (s + 1) / npts
         i = np.sum(d < treshold)
         v = 1. - (i - 1.) / vol
-        hist.append((scale * treshold, v * 100.))
-
-    f = open(fname, 'w')
-    for p in hist:
-        f.write('%f %f\n' % p)
-    f.close()
+        hist.append(( float(scale * treshold), float(v * 100.)))
 
     end = time.time()
-    print("Histogram generated in %f seconds to the file %s." % (end - start, fname))
+    log.debug("Histogram generated in %f seconds." % (end - start))
 
-    return np.min(d), np.average(d), np.max(d)
+    return hist, float(np.min(d)), float(np.average(d)), float(np.max(d))
 
 
 class DosesMain:
-    def __init__(self, fname):
+    def __init__(self, fname, task_log=None):
+        self.path = os.path.dirname(fname)
+        self.task_log = task_log
+
         self.override_fluences_filename = None
         self.preview_fluence = None
         self.save_png_preview_fluence = None
-        self.path = os.path.dirname(fname)
+        self.voxels = None 
+        self.x = None 
+        self.xcoords = None
+        self.D = None 
+        self.d = None 
+        self.HIST_PTS = 50
+
+        self.init_from_m_file(fname)
+
+    def debug(self, msg):
+        log.debug(msg)
+
+    def info(self, msg, progress=None):
+        if self.task_log is not None:
+            self.task_log.info(msg,progress);
+        else:
+            log.info(msg)
+
+    def init_from_m_file(self, fname):
         fin = open(fname, mode='r')
         self.treatment_name = fin.readline().rstrip()
         self.bno = self.read_1_int(fin)
@@ -44,10 +62,8 @@ class DosesMain:
         self.bsizes = np.array(range(self.bno), dtype=np.int32)
         for i in range(self.bno):
             self.bnos[i], self.bsizes[i] = self.read_2_int(fin)
-
         self.vno = self.read_1_int(fin)
-
-        self.dosegridscaling = self.read_1_float(fin)
+        self.dosegridscaling = float(self.read_1_float(fin))
         self.roino = self.read_1_int(fin)
         self.roinames = []
         self.roiids = []
@@ -55,31 +71,20 @@ class DosesMain:
             cols = re.split(r'\s+', fin.readline(), 1)
             self.roiids.append(int(cols[0]))
             self.roinames.append(cols[1].rstrip())
-
         self.btno = np.sum(self.bsizes)
-
-        self.voxels = None # self.read_voxels()
-        self.x = None # self.read_fluences()
-        self.xcoords = None
-        self.D = None # self.read_doses()
-
-        self.d = None # self.D.dot(self.x)
-
 
     def read_fluences(self):
         res = np.zeros((self.btno,), dtype=np.float32)
         j = 0
         for i in range(self.bno):
             nbeam = self.bnos[i]
-            print("reading fluences for beam %s" % (nbeam))
+            self.info("Reading fluences for beam %s" % (nbeam))
             if self.override_fluences_filename is not None:
                 fbeam = open('%s/%s%d.txt' % (self.path, self.override_fluences_filename, nbeam-1))
             else:
                 fbeam = open('%s/x_%s_%d.txt' % (self.path, self.treatment_name, nbeam))
             for k in range(self.bsizes[nbeam-1]):
-                print(j)
                 s = fbeam.readline()
-                print (s)
                 cols = s.split(' ')
                 if len(cols) == 1:
                     res[j] = float(cols[0])
@@ -113,69 +118,147 @@ class DosesMain:
 
         return res
 
-    def read_voxels(self):
-        res = np.array(range(self.vno), dtype=np.int32)
-        with open('%s/v_%s.txt' % (self.path, self.treatment_name), "r") as f:
-            for k in range(self.vno):
-                line = f.readline()
-                sr, sx, sy, sz, c = line.split()
-                #sr, = line.split()
+    def read_voxels(self, save_cache=False, skip_cache=False):
+        fname = f'{self.path}/v_{self.treatment_name}.txt'
 
-                res[k] = int(sr)
-        
+        fname_npy = f'{self.path}/v_{self.treatment_name}.txt.npy'
+        if not skip_cache:
+            if (os.path.isfile(fname_npy)):
+                self.info("Reading voxel to ROI mapping from cache.")
+                return np.load(fname_npy)
+
+        self.info("Reading voxel to ROI mapping from text file. This may take a while...")
+        res = pd.read_csv(fname, delimiter=" ", header=None).iloc[:,0].values
+        self.info(f"Done, shape of voxels: {res.shape}")
+
+        if save_cache:
+            self.info("Saving voxel to ROI mapping to a cache file for future use.")
+            np.save(fname_npy, res)
+
         return res
+        
 
-    def read_doses(self):
-        import pandas as pd
+    def read_doses(self, save_cache=False, skip_cache=False):
+        from scipy import sparse
         from scipy.sparse import dok_matrix
+        fname_all = f'{self.path}/d_{self.treatment_name}.txt.npz'
+        if not skip_cache:
+            if os.path.isfile(fname_all):
+                self.debug(f"Reading all doses from beamlets in sparse form from cache file: {fname_all}")
+                self.info("Reading doses from beamlets mapping from cache file...")
+                return sparse.load_npz(fname_all)
+
         res = dok_matrix((self.vno, self.btno),dtype=np.float32)
-        #res = np.zeros((self.vno, self.btno), dtype=np.float32)
+
         start_col = 0
         for i in range(self.bno):
             nbeam = self.bnos[i]
             bsize = self.bsizes[i]
-            with open('%s/d_%s_%d.txt' % (self.path, self.treatment_name, nbeam)) as f:
-                #count = self.read_1_int(f)
-                print("Reading doses for beam no %d" % (nbeam))
-                df = pd.read_csv(f, delimiter=" ", skiprows=1)
-                v = np.array( df.iloc[:,0])
-                b = np.array( df.iloc[:,1])
-                d = np.array( df.iloc[:,2])
-                #for k in range(count):
-                #for k in range(200000):
-                #    v, b, d = self.read_3_int(f)
-                res[v, start_col + b] = d
+
+            fname = f'{self.path}/d_{self.treatment_name}_{nbeam}.txt'
+            fname_npy = f'{self.path}/d_{self.treatment_name}_{nbeam}.txt.npy'
+
+            v = None
+            b = None
+            d = None
+            if not skip_cache:
+                if os.path.isfile(fname_npy):
+                    log.debug(f"Reading doses for beam no {nbeam} from cache file: {fname_npy}")
+                    self.info(f"Reading doses for beam no {nbeam} from cache file.")
+                    npdata = np.load(fname_npy)
+                    v = npdata[:,0]
+                    b = npdata[:,1]
+                    d = npdata[:,2]
+
+            if v is None:
+                with open(fname) as f:
+                    log.debug(f"Reading doses for beam no {nbeam} from text file: {fname}")
+                    self.info(f"Reading doses for beam no {nbeam} from text file.")
+                    df = pd.read_csv(f, delimiter=" ", skiprows=1, header=None)
+                    v = np.array( df.iloc[:,0])
+                    b = np.array( df.iloc[:,1])
+                    d = np.array( df.iloc[:,2])
+
+                    if save_cache:
+                        np.save(fname_npy, df.values)
+
+            res[v, start_col + b] = d
             start_col += bsize
+
+        log.debug(f"Converting dok matrix to csr: {fname}")
+        self.info(f"Converting all doses to csr format.")
+        res = res.tocsr()
+        if save_cache:
+            log.debug(f"Saving csr matrix to: {fname_all}")
+            self.info(f"Saving all doses mapping to cache file.")
+            sparse.save_npz(fname_all, res)
+
         return res
 
-    def histogram(self):
+    def preprocess(self):
+        """Zadaniem funkcji jest przetworzenie tekstowego zbioru PARETO i zapisanie danych 
+        w formacie binarnym (NumPy)"""
+        main.read_voxels(save_cache=True)
+        main.read_doses(save_cache=True)
+
+    def histogram(self, gnuplot=False):
+        res_hist = {
+            "original": {}
+        }
+
         if self.voxels is None:
-            self.voxels = self.read_voxels()
+            self.voxels = self.read_voxels(save_cache=True)
 
         if self.x is None:
             self.x = self.read_fluences()
 
         if self.D is None:
-            self.D = self.read_doses()
+            self.D = self.read_doses(save_cache=True)
 
+        self.info("Applying flunce vector to Dose deposition matrix to find final scaled doses...")
         self.d = self.D.dot(self.x)
+        self.info("Done.")
 
-        dmax = np.max(self.d)
-        HIST_PTS = 50
-        f = open('%s/histograms.gpt' % self.path, 'w')
-        f.write('set grid\nset style data lp\nset xlabel \'Dose [cGy]\'\n'
-                'set ylabel \'% of volume\'\nset yrange [0:110]\nplot ')
+        dmax = np.max(self.d)        
+        res_hist["d_max"] = float(dmax)
+        res_hist["n_pts"] = self.HIST_PTS
+        res_hist["dosegridscaling"] = float(self.dosegridscaling)
+        res_hist["scale"] = float(100. * self.dosegridscaling)
+        res_hist["units"] = "cGy"
+
+        interesting_rois = []
         for r in range(self.roino):
             sid = self.roiids[r]
             name = self.roinames[r]
-            print("+----- %s" % (name))
-            minD, avgD, maxD = histogram(self.d, self.voxels, sid, "%s/%s.hist" % (self.path, name), 100. * self.dosegridscaling, HIST_PTS, dmax)
-            print('Voxel doses in %20s: min=%12g avg=%12g max=%12g [cGy]' % (
-                name, 100. * minD * self.dosegridscaling, 100. * avgD * self.dosegridscaling, 100. * maxD * self.dosegridscaling))
+
+            self.info(f"Finding histogram for ROI: {name} [sid: {sid}].")
+            hist, minD, avgD, maxD = histogram(self.d, self.voxels, sid, 100. * self.dosegridscaling, self.HIST_PTS, dmax)
+
             if maxD > 0:
+                pass
+                res_hist["original"][name] = (hist, minD, avgD, maxD)
+
+            if gnuplot and maxD > 0:
+                interesting_rois.append(name)
+                fname = f"{self.path}/{name}.hist"
+                f = open(fname, 'w')
+                for p in hist:
+                    f.write('%f %f\n' % p)
+                    f.close()
+
+            self.info('Voxel doses in %20s: min=%12g avg=%12g max=%12g [cGy]' % (
+                name, 100. * minD * self.dosegridscaling, 100. * avgD * self.dosegridscaling, 100. * maxD * self.dosegridscaling))
+
+        if gnuplot:
+            f = open('%s/histograms.gpt' % self.path, 'w')
+            f.write('set grid\nset style data lp\nset xlabel \'Dose [cGy]\'\n'
+                    'set ylabel \'% of volume\'\nset yrange [0:110]\nplot ')
+            for name in interesting_rois:
                 f.write('\'' + name + '.hist\', ')
-        f.write('\npause 120\n')
-        f.close()
+            f.write('\npause 120\n')
+            f.close()
+        
+        return res_hist
 
     def fluences(self):
         if self.xcoords is None:
@@ -224,14 +307,14 @@ class DosesMain:
             f.close()
 
             if self.preview_fluence:
-                print("Showing plot")
+                log.debug("Showing plot")
                 import matplotlib.pyplot as plt
                 plt.imshow(fmap)
                 plt.show()
 
             if self.save_png_preview_fluence:
                 fname = '%s/Preview Field %d_%s.png' % (self.path, nbeam, self.treatment_name)
-                print("Saving plot to %s" % fname)
+                log.debug("Saving plot to %s" % fname)
                 import matplotlib.pyplot as plt
                 plt.imshow(fmap)
                 plt.savefig(fname)
@@ -264,6 +347,23 @@ if __name__ == '__main__':
 
     path = os.path.dirname(argv[1])
     main = DosesMain(argv[1])
+
+    if "-test" in argv:
+        v = main.read_voxels(save_cache=True)
+        print(v)
+        print(np.min(v))
+        print(np.max(v))
+
+        D = main.read_doses(save_cache=True)
+        print(D)
+        print(D.shape)
+
+        print("Reading fluences...")
+        x = main.read_fluences()
+        print("Multiplying...")
+        d = D.dot(x)
+
+        print(d)
 
     if "-of" in argv:
         idx = argv.index("-of")
