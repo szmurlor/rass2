@@ -6,7 +6,7 @@
 IMAGE_NAME=szmurlor/rass2:0.9
 USAGE="./run-docker-dev.sh [-h] [--name IMAGE_NAME] 
 
-First script checks if a docker image with name IMAGE_NAME exists. If not then it 
+The script first checks if a docker image with name IMAGE_NAME exists. If not then it 
 builds a new image using docker/Dockerfile specification. Then the IMAGE_NAME is 
 run with interactive mode and with an attached current folder into /rass2-dev folder.
 
@@ -36,4 +36,4 @@ else
 	echo "Found docker image $IMAGE_NAME with ID: $IMAGE_ID"
 fi
 echo "Starting image $IMAGE_NAME with ID: $IMAGE_ID"
-docker run -ti -w="/rass2-dev" -v $(pwd):/rass2-dev $IMAGE_ID 
+docker run -ti -w="/rass2-dev" -v $(pwd):/rass2-dev -p5000:5000 $IMAGE_ID 
