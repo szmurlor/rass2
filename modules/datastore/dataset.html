@@ -70,7 +70,7 @@
     }
 </style>
 
-<div class="pull-right"><small>Ostatnia modyfikacja: {{dataset.date_modified|datetime}} przez {{dataset.user_modified.username}}</small></div>
+<div class="pull-right"><small>{{ _("Ostatnia modyfikacja") }}: {{dataset.date_modified|datetime}} {{ _("przez") }} {{dataset.user_modified.username}}</small></div>
 <h1>{{ _("Zbiór danych") }}</h1>
 
 {{ modal.modal_comment() }} {{ header.dataset_header(dataset) }} 
@@ -78,7 +78,7 @@
 {% for file_type in dataset.type.file_types_list(parent=None) %}
 <div class="panel panel-default">
     <div class="panel-heading">
-        <h4>{{ file_type.desc }} ({{ file_type.responsible }})</h4>
+        <h4>{{ _(file_type.desc) }} ({{ file_type.responsible }})</h4>
     </div>
     <div class="panel-body">
         <div class="col-sm-12">
@@ -103,6 +103,6 @@
 {% endfor %}
 
 <div>
-    <a href="/data/archive/{{dataset.id}}">(Przenieś zbiór danych do archiwum)</a>
+    <a href="/data/archive/{{dataset.id}}">({{ _("Przenieś zbiór danych do archiwum") }})</a>
 </div>
 {% endblock %}

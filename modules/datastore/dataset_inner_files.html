@@ -6,7 +6,7 @@
         <div class="row">
            <div class="col-sm-12">
                 <h4 title="{{ file_type_inner.formats }}">
-                    {{ file_type_inner.desc }} ({{ file_type_inner.responsible }}) 
+                    {{ _(file_type_inner.desc) }} ({{ file_type_inner.responsible }}) 
                     <small>
                     {% if not file_type_inner.only_one or dataset.files_by_type(file_type_inner.name, parent_uid = parent_uid)|length == 0 %}
                     {{ new_file.render_upload_new(dataset, file_type_inner, parent_uid) }}

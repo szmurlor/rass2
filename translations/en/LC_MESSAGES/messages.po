@@ -7,48 +7,86 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2020-01-18 09:30+0000\n"
-"PO-Revision-Date: 2019-11-26 16:40+0100\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2020-11-16 18:48+0100\n"
+"PO-Revision-Date: 2020-11-16 18:48+0100\n"
+"Last-Translator: \n"
 "Language: en\n"
 "Language-Team: en <LL@li.org>\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.8.0\n"
+"Generated-By: Babel 2.4.0\n"
 
 #: rass.py:36
 msgid "Nie mogę zaktualizować struktury bazy danych!"
-msgstr ""
+msgstr "I can not update database structure!"
 
-#: modules/base.html:51
-msgid "Scenariusze"
-msgstr "Scenarios"
+#: rass.py:153
+msgid "Dane CT"
+msgstr "CT data"
 
-#: modules/base.html:54 modules/datastore/datastore.html:3
+#: rass.py:154
+msgid "Dane o strukturach ROI"
+msgstr "ROI structures data"
+
+#: rass.py:155
+msgid "Plany radioterapii"
+msgstr "Radiotherapy plans"
+
+#: rass.py:156
+msgid "Inne"
+msgstr "Other"
+
+#: rass.py:157
+msgid "Wszyscy"
+msgstr "All"
+
+#: modules/base.html:51 modules/datastore/datastore.html:3
 msgid "Magazyn danych"
 msgstr "Datastore"
 
-#: modules/base.html:57
+#: modules/base.html:54
 msgid "Pomoc"
 msgstr "Help"
 
-#: modules/base.html:77 modules/login.html:22
+#: modules/base.html:74 modules/login.html:22
 msgid "Zaloguj"
 msgstr "Login"
 
-#: modules/base.html:79
+#: modules/base.html:76
 msgid "Wyloguj"
 msgstr "Logout"
 
-#: modules/base.html:90
+#: modules/base.html:87
 msgid "Komunikat"
 msgstr "Message"
 
-#: modules/base.html:100
-msgid "Wydział Elektryczny PW, IETiSIP 2019"
-msgstr "Faculty of Electrical Engineering WUT, IETiSIP 2019"
+#: modules/base.html:97
+msgid "Wydział Elektryczny PW, IETiSIP 2015-2020"
+msgstr "Faculty of Electrical Engineering"
+
+#: modules/index.html:11
+msgid "Aplikacja RasS Politechnika Warszawska"
+msgstr "RASS Application Warsaw University of Technology"
+
+#: modules/index.html:13
+msgid ""
+"System umożliwia wymianę danych między zespołami pracującymi nad "
+"planowaniem radioterapii.\n"
+"  Do jego zasadniczych funkcji należy:"
+msgstr ""
+"System allows to exchange data between teams working on Radiotherapy "
+"Planning.\n"
+" The main  features are:"
+
+#: modules/index.html:16
+msgid ""
+"Wymiana danych (plików) między zespołami za pomocą wspólnego <a "
+"href='/data/'>Magazynu danych</a>"
+msgstr ""
+"Dataset exchange (files) between the teams bby using a common data "
+"storage  <a href='/data/'>Datastore</a>"
 
 #: modules/login.html:3
 msgid "Logowanie"
@@ -62,40 +100,99 @@ msgstr "Username"
 msgid "Hasło"
 msgstr "Password"
 
-#: modules/datastore/dataset.html:19
-msgid "Histogram"
+#: modules/datastore/dataset.html:13
+msgid ""
+"Wybrałeś zbiór - możesz narysować jego histogram. Operacja może chwilę "
+"trwać z uwagi na wielkość zbioru. Prosimy o cierpliwość."
 msgstr ""
+"You have chosen a dataset - you can draw its histogram. The operation may"
+" take a while due to large dataset size. Please be patient."
 
 #: modules/datastore/dataset.html:20
+msgid "wymuś ponowne obliczenie"
+msgstr "force recalculation of data"
+
+#: modules/datastore/dataset.html:23
+msgid "Histogram"
+msgstr "Histogram"
+
+#: modules/datastore/dataset.html:24
 #: modules/datastore/dataset_modal_comment.html:53
 msgid "Zamknij"
 msgstr "Close"
 
-#: modules/datastore/dataset.html:70
+#: modules/datastore/dataset.html:73 modules/datastore/datastore.html:34
+#: modules/datastore/datastore.html:116
+msgid "Ostatnia modyfikacja"
+msgstr "Last modified"
+
+#: modules/datastore/dataset.html:73 modules/datastore/dataset_controls.html:96
+#: modules/datastore/datastore.html:46 modules/datastore/datastore.html:127
+msgid "przez"
+msgstr "by"
+
+#: modules/datastore/dataset.html:74
 msgid "Zbiór danych"
 msgstr "Dataset"
+
+#: modules/datastore/dataset.html:106
+msgid "Przenieś zbiór danych do archiwum"
+msgstr "Move dataset to archive"
 
 #: modules/datastore/dataset_header.html:24
 msgid "Zmień"
 msgstr "Change"
 
-#: modules/datastore/dataset_header.html:27 modules/datastore/datastore.html:28
-#: modules/datastore/datastore.html:113
+#: modules/datastore/dataset_header.html:27
+#: modules/datastore/dataset_header.html:41 modules/datastore/datastore.html:28
+#: modules/datastore/datastore.html:74 modules/datastore/datastore.html:113
 msgid "Data utworzenia"
 msgstr "Date created"
 
-#: modules/datastore/dataset_header.html:28 modules/datastore/datastore.html:30
-#: modules/datastore/datastore.html:114
+#: modules/datastore/dataset_header.html:28
+#: modules/datastore/dataset_header.html:42 modules/datastore/datastore.html:30
+#: modules/datastore/datastore.html:81 modules/datastore/datastore.html:114
 msgid "Nazwa"
 msgstr "Name"
 
 #: modules/datastore/dataset_header.html:29
+#: modules/datastore/dataset_header.html:43
 msgid "Właściciel"
 msgstr "Owner"
 
 #: modules/datastore/dataset_header.html:30
+#: modules/datastore/dataset_header.html:44 modules/datastore/datastore.html:88
 msgid "Krótkie uwagi"
 msgstr "Short notes"
+
+#: modules/datastore/dataset_header.html:49
+#: modules/datastore/dataset_header.html:105
+msgid "Zapisz"
+msgstr "Save"
+
+#: modules/datastore/dataset_header.html:50
+#: modules/datastore/dataset_header.html:106
+#: modules/datastore/dataset_new_file.html:19
+#: modules/datastore/datastore.html:96
+msgid "Anuluj"
+msgstr "Cancel"
+
+#: modules/datastore/dataset_header.html:72
+#: modules/datastore/dataset_header.html:97
+msgid "Dłuższy komentarz / notatki"
+msgstr "Longer comment / note"
+
+#: modules/datastore/dataset_header.html:88
+msgid "(Zmień)"
+msgstr "(Change)"
+
+#: modules/datastore/dataset_header.html:100
+msgid "Tekst może być wpisywany zgodnie ze składnią"
+msgstr "Text may be edited according to "
+
+#: modules/datastore/dataset_new_file.html:2
+msgid "Prześlij nowy plik"
+msgstr "Upload new file"
 
 #: modules/datastore/datastore.html:21
 msgid "Zbiory danych"
@@ -117,21 +214,21 @@ msgstr "Operations"
 msgid "Uwagi"
 msgstr "Notes"
 
-#: modules/datastore/datastore.html:34 modules/datastore/datastore.html:116
-msgid "Ostatnia modyfikacja"
-msgstr "Last modified"
-
 #: modules/datastore/datastore.html:42
 msgid "Otwórz"
 msgstr "Open"
 
-#: modules/datastore/datastore.html:46 modules/datastore/datastore.html:127
-msgid "przez"
-msgstr "by"
-
 #: modules/datastore/datastore.html:55
 msgid "Nowy zbiór danych"
 msgstr "New dataset"
+
+#: modules/datastore/datastore.html:59
+msgid "Rodzaj zbioru"
+msgstr "Dataset type"
+
+#: modules/datastore/datastore.html:95
+msgid "Dodaj"
+msgstr "Add"
 
 #: modules/datastore/datastore.html:102
 msgid "Pokaż archiwalne"
@@ -155,4 +252,13 @@ msgstr "Unarchive"
 
 #~ msgid "Data utworzenia:"
 #~ msgstr "Date created:"
+
+#~ msgid "Scenariusze"
+#~ msgstr "Scenarios"
+
+#~ msgid "Wydział Elektryczny PW, IETiSIP 2019"
+#~ msgstr "Faculty of Electrical Engineering WUT, IETiSIP 2019"
+
+#~ msgid "Other"
+#~ msgstr "Inne"
 

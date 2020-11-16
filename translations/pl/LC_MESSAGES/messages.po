@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2020-01-18 09:30+0000\n"
+"POT-Creation-Date: 2020-11-16 18:48+0100\n"
 "PO-Revision-Date: 2019-11-26 16:40+0100\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: pl\n"
@@ -17,38 +17,71 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.8.0\n"
+"Generated-By: Babel 2.4.0\n"
 
 #: rass.py:36
 msgid "Nie mogę zaktualizować struktury bazy danych!"
 msgstr ""
 
-#: modules/base.html:51
-msgid "Scenariusze"
+#: rass.py:153
+msgid "Dane CT"
 msgstr ""
 
-#: modules/base.html:54 modules/datastore/datastore.html:3
+#: rass.py:154
+msgid "Dane o strukturach ROI"
+msgstr ""
+
+#: rass.py:155
+msgid "Plany radioterapii"
+msgstr ""
+
+#: rass.py:156
+msgid "Inne"
+msgstr ""
+
+#: rass.py:157
+msgid "Wszyscy"
+msgstr ""
+
+#: modules/base.html:51 modules/datastore/datastore.html:3
 msgid "Magazyn danych"
 msgstr ""
 
-#: modules/base.html:57
+#: modules/base.html:54
 msgid "Pomoc"
 msgstr ""
 
-#: modules/base.html:77 modules/login.html:22
+#: modules/base.html:74 modules/login.html:22
 msgid "Zaloguj"
 msgstr ""
 
-#: modules/base.html:79
+#: modules/base.html:76
 msgid "Wyloguj"
 msgstr ""
 
-#: modules/base.html:90
+#: modules/base.html:87
 msgid "Komunikat"
 msgstr ""
 
-#: modules/base.html:100
-msgid "Wydział Elektryczny PW, IETiSIP 2019"
+#: modules/base.html:97
+msgid "Wydział Elektryczny PW, IETiSIP 2015-2020"
+msgstr ""
+
+#: modules/index.html:11
+msgid "Aplikacja RasS Politechnika Warszawska"
+msgstr ""
+
+#: modules/index.html:13
+msgid ""
+"System umożliwia wymianę danych między zespołami pracującymi nad "
+"planowaniem radioterapii.\n"
+"  Do jego zasadniczych funkcji należy:"
+msgstr ""
+
+#: modules/index.html:16
+msgid ""
+"Wymiana danych (plików) między zespołami za pomocą wspólnego <a "
+"href='/data/'>Magazynu danych</a>"
 msgstr ""
 
 #: modules/login.html:3
@@ -63,39 +96,96 @@ msgstr ""
 msgid "Hasło"
 msgstr ""
 
-#: modules/datastore/dataset.html:19
-msgid "Histogram"
+#: modules/datastore/dataset.html:13
+msgid ""
+"Wybrałeś zbiór - możesz narysować jego histogram. Operacja może chwilę "
+"trwać z uwagi na wielkość zbioru. Prosimy o cierpliwość."
 msgstr ""
 
 #: modules/datastore/dataset.html:20
+msgid "wymuś ponowne obliczenie"
+msgstr ""
+
+#: modules/datastore/dataset.html:23
+msgid "Histogram"
+msgstr ""
+
+#: modules/datastore/dataset.html:24
 #: modules/datastore/dataset_modal_comment.html:53
 msgid "Zamknij"
 msgstr ""
 
-#: modules/datastore/dataset.html:70
+#: modules/datastore/dataset.html:73 modules/datastore/datastore.html:34
+#: modules/datastore/datastore.html:116
+msgid "Ostatnia modyfikacja"
+msgstr ""
+
+#: modules/datastore/dataset.html:73 modules/datastore/dataset_controls.html:96
+#: modules/datastore/datastore.html:46 modules/datastore/datastore.html:127
+msgid "przez"
+msgstr ""
+
+#: modules/datastore/dataset.html:74
 msgid "Zbiór danych"
+msgstr ""
+
+#: modules/datastore/dataset.html:106
+msgid "Przenieś zbiór danych do archiwum"
 msgstr ""
 
 #: modules/datastore/dataset_header.html:24
 msgid "Zmień"
 msgstr ""
 
-#: modules/datastore/dataset_header.html:27 modules/datastore/datastore.html:28
-#: modules/datastore/datastore.html:113
+#: modules/datastore/dataset_header.html:27
+#: modules/datastore/dataset_header.html:41 modules/datastore/datastore.html:28
+#: modules/datastore/datastore.html:74 modules/datastore/datastore.html:113
 msgid "Data utworzenia"
 msgstr ""
 
-#: modules/datastore/dataset_header.html:28 modules/datastore/datastore.html:30
-#: modules/datastore/datastore.html:114
+#: modules/datastore/dataset_header.html:28
+#: modules/datastore/dataset_header.html:42 modules/datastore/datastore.html:30
+#: modules/datastore/datastore.html:81 modules/datastore/datastore.html:114
 msgid "Nazwa"
 msgstr ""
 
 #: modules/datastore/dataset_header.html:29
+#: modules/datastore/dataset_header.html:43
 msgid "Właściciel"
 msgstr ""
 
 #: modules/datastore/dataset_header.html:30
+#: modules/datastore/dataset_header.html:44 modules/datastore/datastore.html:88
 msgid "Krótkie uwagi"
+msgstr ""
+
+#: modules/datastore/dataset_header.html:49
+#: modules/datastore/dataset_header.html:105
+msgid "Zapisz"
+msgstr ""
+
+#: modules/datastore/dataset_header.html:50
+#: modules/datastore/dataset_header.html:106
+#: modules/datastore/dataset_new_file.html:19
+#: modules/datastore/datastore.html:96
+msgid "Anuluj"
+msgstr ""
+
+#: modules/datastore/dataset_header.html:72
+#: modules/datastore/dataset_header.html:97
+msgid "Dłuższy komentarz / notatki"
+msgstr ""
+
+#: modules/datastore/dataset_header.html:88
+msgid "(Zmień)"
+msgstr ""
+
+#: modules/datastore/dataset_header.html:100
+msgid "Tekst może być wpisywany zgodnie ze składnią"
+msgstr ""
+
+#: modules/datastore/dataset_new_file.html:2
+msgid "Prześlij nowy plik"
 msgstr ""
 
 #: modules/datastore/datastore.html:21
@@ -118,20 +208,20 @@ msgstr ""
 msgid "Uwagi"
 msgstr ""
 
-#: modules/datastore/datastore.html:34 modules/datastore/datastore.html:116
-msgid "Ostatnia modyfikacja"
-msgstr ""
-
 #: modules/datastore/datastore.html:42
 msgid "Otwórz"
 msgstr ""
 
-#: modules/datastore/datastore.html:46 modules/datastore/datastore.html:127
-msgid "przez"
-msgstr ""
-
 #: modules/datastore/datastore.html:55
 msgid "Nowy zbiór danych"
+msgstr ""
+
+#: modules/datastore/datastore.html:59
+msgid "Rodzaj zbioru"
+msgstr ""
+
+#: modules/datastore/datastore.html:95
+msgid "Dodaj"
 msgstr ""
 
 #: modules/datastore/datastore.html:102
@@ -155,5 +245,14 @@ msgid "Wyjmij z archiwum"
 msgstr ""
 
 #~ msgid "Data utworzenia:"
+#~ msgstr ""
+
+#~ msgid "Scenariusze"
+#~ msgstr ""
+
+#~ msgid "Wydział Elektryczny PW, IETiSIP 2019"
+#~ msgstr ""
+
+#~ msgid "Other"
 #~ msgstr ""
 

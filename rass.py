@@ -43,26 +43,6 @@ scenarios = None
 
 import sys
 
-def init_scenarios():
-    import modules.scenarios.roi.roi
-    import modules.scenarios.pareto.pareto
-    global scenarios
-    scenarios = {
-        'roi': create_scenario('roi', modules.scenarios.roi.roi),
-        'pareto': create_scenario('pareto', modules.scenarios.pareto.pareto)
-    }
-
-
-def create_scenario(module_name, scenario_class):
-    return {
-        'href': module_name,
-        'class': scenario_class,
-        'name': getattr(scenario_class, '__scenario__', 'Scenariusz %s' % module_name)
-    }
-
-
-init_scenarios()
-
 @app.route('/doc/<path:path>')
 def send_js(path):
     return send_from_directory('doc', path)
@@ -169,3 +149,9 @@ if __name__ == '__main__':
             set_processing_folder(arg)
 
     app.run(host='0.0.0.0')
+
+    gettext("Dane CT")
+    gettext("Dane o strukturach ROI")
+    gettext("Plany radioterapii")
+    gettext("Inne")
+    gettext("Wszyscy")
