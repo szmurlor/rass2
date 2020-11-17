@@ -76,10 +76,10 @@ def init_dash(app):
             ############ Pytam się o joba... ########
             job = hworker.get_job(data['task_id'])
             #########################################
-            #print(f"Oto job: {job}")
+            print(f"Oto job: {job['args']}")
 
             if job is not None:             
-                #print(job['taskLogs'])
+                print(job['taskLogs'])
                 if job['status'] == 'finished':
                     with open(f"{job['args'][0]}/histogram.json") as f:
                         histogram = json.load(f)

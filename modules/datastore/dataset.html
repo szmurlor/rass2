@@ -78,7 +78,7 @@
 {% for file_type in dataset.type.file_types_list(parent=None) %}
 <div class="panel panel-default">
     <div class="panel-heading">
-        <h4>{{ _(file_type.desc) }} ({{ file_type.responsible }})</h4>
+        <h4>{{ _(file_type.desc) }} ({{ _(file_type.responsible) }})</h4>
     </div>
     <div class="panel-body">
         <div class="col-sm-12">

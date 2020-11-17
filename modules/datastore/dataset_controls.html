@@ -31,18 +31,18 @@
 #}
 {% macro file_menu(file) -%}
     {% if file.is_archived() -%}
-        <span class="text-muted">Zarchiwizowany</span>
+        <span class="text-muted">{{ _("Zarchiwizowany") }}</span>
     {% else -%}
         <div class="btn-group">
                 <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-                        Operacje <span class="caret"></span>
+                        {{ _("Operacje") }} <span class="caret"></span>
                 </button>
                 <ul class="dropdown-menu">
-                {% if not file.is_archived() %}<li><a href="/fs/{{file.uid}}">Pobierz</a></li>{% endif %}         
-                {% if "beamlets" == file.type %}<li><a href="/histogram/{{file.token}}" target="_blank">Histogram</a></li>{% endif %}
-                <li><a href="#" onclick="showModalEditComment( {{ file.uid }}, '{{ file.description }}'); return false;">Zmień komentarz</a></li>
+                {% if not file.is_archived() %}<li><a href="/fs/{{file.uid}}">{{ _("Pobierz") }}</a></li>{% endif %}         
+                {% if "beamlets" == file.type %}<li><a href="/histogram/{{file.token}}" target="_blank">{{ _("Histogram") }}</a></li>{% endif %}
+                <li><a href="#" onclick="showModalEditComment( {{ file.uid }}, '{{ file.description }}'); return false;">{{ _("Zmień komentarz") }}</a></li>
                 <li role="separator" class="divider"></li>
-                {% if not file.is_archived() %}<li><a href="/fs/delete/{{file.uid}}">Usuń</a></li>{% endif %}
+                {% if not file.is_archived() %}<li><a href="/fs/delete/{{file.uid}}">{{ _("Usuń") }}</a></li>{% endif %}
                 {% if file.can_archive() -%}
                 <li>                                    
                     {% if file.is_archived() -%}
@@ -83,7 +83,7 @@
         </td>
         <td class="col5">
             <span class="text-muted">
-                    {{file.stored_at|datetime}} przez {{file.stored_by.username}}                                 
+                    {{file.stored_at|datetime}} {{ _("przez") }} {{file.stored_by.username}}                                 
                     <a class="link-muted" href="/fs/unarchive/{{file.uid}}"><span title="The file was archived." class="glyphicon glyphicon-open"></span>&nbsp; Przywróć z archiwum</a>
             </span>
         </td>

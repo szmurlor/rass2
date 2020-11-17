@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2020-11-16 18:48+0100\n"
+"POT-Creation-Date: 2020-11-17 15:59+0100\n"
 "PO-Revision-Date: 2019-11-26 16:40+0100\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: pl\n"
@@ -106,7 +106,7 @@ msgstr ""
 msgid "wymuś ponowne obliczenie"
 msgstr ""
 
-#: modules/datastore/dataset.html:23
+#: modules/datastore/dataset.html:23 modules/datastore/dataset_controls.html:42
 msgid "Histogram"
 msgstr ""
 
@@ -120,7 +120,8 @@ msgstr ""
 msgid "Ostatnia modyfikacja"
 msgstr ""
 
-#: modules/datastore/dataset.html:73 modules/datastore/dataset_controls.html:96
+#: modules/datastore/dataset.html:73 modules/datastore/dataset_controls.html:86
+#: modules/datastore/dataset_controls.html:96
 #: modules/datastore/datastore.html:46 modules/datastore/datastore.html:127
 msgid "przez"
 msgstr ""
@@ -131,6 +132,27 @@ msgstr ""
 
 #: modules/datastore/dataset.html:106
 msgid "Przenieś zbiór danych do archiwum"
+msgstr ""
+
+#: modules/datastore/dataset_controls.html:34
+msgid "Zarchiwizowany"
+msgstr ""
+
+#: modules/datastore/dataset_controls.html:38
+#: modules/datastore/datastore.html:27 modules/datastore/datastore.html:112
+msgid "Operacje"
+msgstr ""
+
+#: modules/datastore/dataset_controls.html:41
+msgid "Pobierz"
+msgstr ""
+
+#: modules/datastore/dataset_controls.html:43
+msgid "Zmień komentarz"
+msgstr ""
+
+#: modules/datastore/dataset_controls.html:45
+msgid "Usuń"
 msgstr ""
 
 #: modules/datastore/dataset_header.html:24
@@ -161,11 +183,13 @@ msgstr ""
 
 #: modules/datastore/dataset_header.html:49
 #: modules/datastore/dataset_header.html:105
+#: modules/datastore/dataset_modal_comment.html:20
 msgid "Zapisz"
 msgstr ""
 
 #: modules/datastore/dataset_header.html:50
 #: modules/datastore/dataset_header.html:106
+#: modules/datastore/dataset_modal_comment.html:19
 #: modules/datastore/dataset_new_file.html:19
 #: modules/datastore/datastore.html:96
 msgid "Anuluj"
@@ -184,8 +208,28 @@ msgstr ""
 msgid "Tekst może być wpisywany zgodnie ze składnią"
 msgstr ""
 
+#: modules/datastore/dataset_modal_comment.html:8
+msgid "Edycja komentarza"
+msgstr ""
+
+#: modules/datastore/dataset_modal_comment.html:13
+msgid "Nowy komentarz"
+msgstr ""
+
 #: modules/datastore/dataset_new_file.html:2
 msgid "Prześlij nowy plik"
+msgstr ""
+
+#: modules/datastore/dataset_new_file.html:12
+msgid "Proszę wgrywać"
+msgstr ""
+
+#: modules/datastore/dataset_new_file.html:15
+msgid "Opcjonalny komentarz"
+msgstr ""
+
+#: modules/datastore/dataset_new_file.html:18
+msgid "Wyślij"
 msgstr ""
 
 #: modules/datastore/datastore.html:21
@@ -198,10 +242,6 @@ msgstr ""
 
 #: modules/datastore/datastore.html:26 modules/datastore/datastore.html:111
 msgid "L.p."
-msgstr ""
-
-#: modules/datastore/datastore.html:27 modules/datastore/datastore.html:112
-msgid "Operacje"
 msgstr ""
 
 #: modules/datastore/datastore.html:32 modules/datastore/datastore.html:115

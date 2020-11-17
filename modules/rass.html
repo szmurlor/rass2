@@ -37,14 +37,6 @@
     <input type="file" name="{{ name }}" hidden="hidden"/>
 {% endmacro -%}
 
-{% macro scenario_list(scenarios) -%}
-  <ul>
-  {% for key, scenario in scenarios.items() -%}
-    <li><a href="/{{ scenario.href }}/">{{ scenario.name }}</a></li>
-  {% endfor -%}
-  </ul>
-{% endmacro -%}
-
 {% macro debug_panel(context) -%}
 <div>
   <h1>Debug</h1>

@@ -1,21 +1,19 @@
 # -*- encoding: utf-8
 import os
+import storage
+import json
 
 from flask import g, abort, render_template, flash, redirect, session, jsonify
 import database
 import logger
-from rass_app import app
-import storage
-import json
+from rass_app import app, protected
 import workers.worker as redis_worker
 from utils import merge_http_request_arguments
 
-import redis
-from rq import Queue, Connection
-import urllib.parse
 
 
 @app.route('/histogram/<ftokens>')
+@protected
 def histogram(ftokens):
     """Opis działania:
         1. pobieram wszystkie pliki z bazy danych podane po tokenach rozdzielane przecinkami
@@ -23,10 +21,6 @@ def histogram(ftokens):
         3. szukam plików fluence maps (sortuję na końcu, aby odnajdywać dobrze folder z ewentualnym cache)
         4. buduję lokalizację folderu cache
     """
-
-    if not g.user_id:
-        abort(401)
-
     forceRecalculate = False
 
     args = merge_http_request_arguments()

@@ -1,6 +1,5 @@
 # -*- encoding: utf-8
-from flask import g, session, request, flash, send_from_directory
-from flask import render_template, redirect, url_for
+from flask import g, session, request, flash, send_from_directory, render_template, redirect, url_for
 from datetime import datetime
 from rass_app import app, set_upload_folder
 import logger
@@ -11,7 +10,6 @@ import authentication
 import modules.datastore.datastore
 import modules.help.help
 import modules.histograms.histograms
-import modules.scenarios.scenarios
 
 try:
     for f in database.StoredFile.query.filter_by(token=None):
@@ -39,8 +37,6 @@ except:
 ##################################
 # Global variables
 ##################################
-scenarios = None
-
 import sys
 
 @app.route('/doc/<path:path>')
@@ -67,14 +63,12 @@ def internal_error(error):
 def before_request():
     g.user_id = None
     g.user_home = None
-    g.scenarios = None
     user_id = session.get('user_id')
     if user_id:
         try:
             user = database.User.query.filter_by(id=user_id).one()
             g.user_id = user_id
             g.user_home = user.home
-            g.scenarios = scenarios
         # logger.debug("Authorized to %s" % g.user_id)
         except Exception as e:
             logger.debug('Could not find the user with id=%s' % user_id)
@@ -83,7 +77,7 @@ def before_request():
 
 @app.route('/')
 def index():
-    return render_template('index.html', scenarios=scenarios)
+    return render_template('index.html')
 
 
 @app.route('/lang/<lang>')

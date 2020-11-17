@@ -7,12 +7,13 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2020-11-16 18:48+0100\n"
-"PO-Revision-Date: 2020-11-16 18:48+0100\n"
+"POT-Creation-Date: 2020-11-17 15:59+0100\n"
+"PO-Revision-Date: 2020-11-17 15:59+0100\n"
 "Last-Translator: \n"
 "Language: en\n"
 "Language-Team: en <LL@li.org>\n"
-"Plural-Forms: nplurals=2; plural=(n != 1)\n"
+"Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && "
+"(n%100<10 || n%100>=20) ? 1 : 2)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -112,7 +113,7 @@ msgstr ""
 msgid "wymuś ponowne obliczenie"
 msgstr "force recalculation of data"
 
-#: modules/datastore/dataset.html:23
+#: modules/datastore/dataset.html:23 modules/datastore/dataset_controls.html:42
 msgid "Histogram"
 msgstr "Histogram"
 
@@ -126,7 +127,8 @@ msgstr "Close"
 msgid "Ostatnia modyfikacja"
 msgstr "Last modified"
 
-#: modules/datastore/dataset.html:73 modules/datastore/dataset_controls.html:96
+#: modules/datastore/dataset.html:73 modules/datastore/dataset_controls.html:86
+#: modules/datastore/dataset_controls.html:96
 #: modules/datastore/datastore.html:46 modules/datastore/datastore.html:127
 msgid "przez"
 msgstr "by"
@@ -138,6 +140,27 @@ msgstr "Dataset"
 #: modules/datastore/dataset.html:106
 msgid "Przenieś zbiór danych do archiwum"
 msgstr "Move dataset to archive"
+
+#: modules/datastore/dataset_controls.html:34
+msgid "Zarchiwizowany"
+msgstr "Archived"
+
+#: modules/datastore/dataset_controls.html:38
+#: modules/datastore/datastore.html:27 modules/datastore/datastore.html:112
+msgid "Operacje"
+msgstr "Operations"
+
+#: modules/datastore/dataset_controls.html:41
+msgid "Pobierz"
+msgstr "Download"
+
+#: modules/datastore/dataset_controls.html:43
+msgid "Zmień komentarz"
+msgstr "Edit comment"
+
+#: modules/datastore/dataset_controls.html:45
+msgid "Usuń"
+msgstr "Delete"
 
 #: modules/datastore/dataset_header.html:24
 msgid "Zmień"
@@ -167,11 +190,13 @@ msgstr "Short notes"
 
 #: modules/datastore/dataset_header.html:49
 #: modules/datastore/dataset_header.html:105
+#: modules/datastore/dataset_modal_comment.html:20
 msgid "Zapisz"
 msgstr "Save"
 
 #: modules/datastore/dataset_header.html:50
 #: modules/datastore/dataset_header.html:106
+#: modules/datastore/dataset_modal_comment.html:19
 #: modules/datastore/dataset_new_file.html:19
 #: modules/datastore/datastore.html:96
 msgid "Anuluj"
@@ -188,11 +213,31 @@ msgstr "(Change)"
 
 #: modules/datastore/dataset_header.html:100
 msgid "Tekst może być wpisywany zgodnie ze składnią"
-msgstr "Text may be edited according to "
+msgstr "Text may be edited according to"
+
+#: modules/datastore/dataset_modal_comment.html:8
+msgid "Edycja komentarza"
+msgstr "Edit comment"
+
+#: modules/datastore/dataset_modal_comment.html:13
+msgid "Nowy komentarz"
+msgstr "New comment"
 
 #: modules/datastore/dataset_new_file.html:2
 msgid "Prześlij nowy plik"
 msgstr "Upload new file"
+
+#: modules/datastore/dataset_new_file.html:12
+msgid "Proszę wgrywać"
+msgstr "Pleas upload"
+
+#: modules/datastore/dataset_new_file.html:15
+msgid "Opcjonalny komentarz"
+msgstr "Optional comment"
+
+#: modules/datastore/dataset_new_file.html:18
+msgid "Wyślij"
+msgstr "Upload"
 
 #: modules/datastore/datastore.html:21
 msgid "Zbiory danych"
@@ -205,10 +250,6 @@ msgstr "Table with datasets which you are authorized to view."
 #: modules/datastore/datastore.html:26 modules/datastore/datastore.html:111
 msgid "L.p."
 msgstr "No."
-
-#: modules/datastore/datastore.html:27 modules/datastore/datastore.html:112
-msgid "Operacje"
-msgstr "Operations"
 
 #: modules/datastore/datastore.html:32 modules/datastore/datastore.html:115
 msgid "Uwagi"

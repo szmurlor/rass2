@@ -9,13 +9,13 @@
             <div>
                 <div class="form-group">
                     <input type="file" name="file"/>
-                    <p class="help-block">Proszę wgrywać: {{file_type.formats}}</p>
+                    <p class="help-block">{{ _("Proszę wgrywać") }}: {{file_type.formats}}</p>
                 </div>
                 <div class="form-group">
-                    <label for="id-upload-file-comment-{{file_type.name}}-{{parent_uid}}">Opcjonalny komentarz</label>
+                    <label for="id-upload-file-comment-{{file_type.name}}-{{parent_uid}}">{{ _("Opcjonalny komentarz") }}</label>
                     <input class="form-control" type="text" name="description" id="id-upload-file-comment-{{file_type.name}}-{{parent_uid}}" maxlength="512" />
                 </div>
-                <input type="submit" formmethod="POST" name="upload_{{file_type.name}}" class="btn btn-success" value="Wyślij" />
+                <input type="submit" formmethod="POST" name="upload_{{file_type.name}}" class="btn btn-success" value="{{ _('Wyślij') }}" />
                 <a href="#" onclick="hide_upload_file('{{file_type.name}}-{{parent_uid}}'); return false;">({{ _("Anuluj") }})</a>
             </div>
         </form>

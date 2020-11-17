@@ -5,19 +5,19 @@
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="myModalLabel">Edycja komentarza</h4>
+        <h4 class="modal-title" id="myModalLabel">{{ _("Edycja komentarza") }}</h4>
       </div>
       <form class="form" action="/data/update_comment"  method="POST">
           <div class="modal-body">
             <div class="form-group">
-                <label class="form-control-label" for="modal_comment">Nowy komentarz:</label>
+                <label class="form-control-label" for="modal_comment">{{ _("Nowy komentarz") }}:</label>
                 <input class="form-control" type="text" id="modal_comment" name="comment" size="50" />
                 <input type="hidden" id="modal_file_id" name="file_id" />
             </div>
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-default" data-dismiss="modal">Anuluj</button>
-            <button type="submit" class="btn btn-primary">Zapisz</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal">{{ _("Anuluj") }}</button>
+            <button type="submit" class="btn btn-primary">{{ _("Zapisz") }}</button>
           </div>
       </form>
     </div>

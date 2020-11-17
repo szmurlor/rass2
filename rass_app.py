@@ -3,6 +3,7 @@ from flask import Flask, g, request
 import os
 import json
 import logging
+import functools
 
 app = Flask('rass', template_folder='modules')
 
@@ -54,7 +55,7 @@ app.config['REDIS_WORKER'] = REDIS_WORKER_NAME
 
 
 ############################################################
-# Konfiguracja bilbioteki do logowania komunikatów
+# Konfiguracja biblioteki do logowania komunikatów
 ############################################################
 
 #if "RASS_DEV_LOGGER" in os.environ:
@@ -63,7 +64,6 @@ app.config['REDIS_WORKER'] = REDIS_WORKER_NAME
 #    FORMAT = '%(asctime)-15s- %(message)s'
 #logging.basicConfig(format=FORMAT, filename='log/production.log', level=logging.DEBUG)
 #logging.basicConfig(format=FORMAT, level=logging.DEBUG)
-
 import logger
 
 def set_upload_folder(folder):
@@ -75,3 +75,14 @@ def set_upload_folder(folder):
 def set_processing_folder(folder):
     print("Setting processing folder to: %s" % folder)
     app.config['PROCESSING_FOLDER'] = folder
+
+
+def protected(fun):
+    @functools.wraps(fun)
+    def _wrapper(*args,**argv):
+        if not g.user_id:
+            abort(401)
+
+        return fun(*args, **argv)
+
+    return _wrapper

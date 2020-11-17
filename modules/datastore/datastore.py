@@ -7,7 +7,7 @@ from werkzeug.utils import secure_filename
 
 import database
 import rass_app
-from rass_app import app
+from rass_app import app, protected
 from utils import *
 import uuid
 
@@ -21,10 +21,8 @@ CN_MODIFED_DATE="MODIFIED_DATE"
 CN_NAME="NAME"
 
 @app.route('/data/')
+@protected
 def datastore():
-    if not g.user_id:
-        abort(401)
-
     scol = session.get(DATASET_SORT_COL)
     if scol == None:
         scol = CN_MODIFED_DATE
@@ -42,14 +40,13 @@ def datastore():
     datasets = database.Dataset.query.filter_by(deleted=False).order_by(sort_by)        
     archived_datasets = database.Dataset.query.filter_by(deleted=True).order_by(database.Dataset.date_modified)
     dataset_types = database.DatasetType.query.order_by(database.DatasetType.name)
-    return render_template('datastore/datastore.html', scenarios=g.scenarios, uid=None, datasets=datasets,
+    return render_template('datastore/datastore.html', uid=None, datasets=datasets,
                            now=datetime.utcnow(), dataset_types=dataset_types, archived_datasets=archived_datasets)
 
 
 @app.route('/data/update', methods=['POST'])
+@protected
 def update_dataset():
-    if not g.user_id:
-        abort(401)
     args = merge_http_request_arguments(True)
 
     user = database.User.query.filter_by(id=g.user_id).one()
@@ -64,13 +61,12 @@ def update_dataset():
     database.db.session.add(dataset)
     database.db.session.commit()
 
-    return render_template('datastore/dataset.html', scenarios=g.scenarios, uid=dataset.id, dataset=dataset)
+    return render_template('datastore/dataset.html', uid=dataset.id, dataset=dataset)
 
 
 @app.route('/data/add', methods=['POST'])
+@protected
 def new_dataset():
-    if not g.user_id:
-        abort(401)
     args = merge_http_request_arguments(True)
 
     user = database.User.query.filter_by(id=g.user_id).one()
@@ -85,14 +81,12 @@ def new_dataset():
     database.db.session.add(dataset)
     database.db.session.commit()
 
-    return render_template('datastore/dataset.html', scenarios=g.scenarios, uid=dataset.id, dataset=dataset)
+    return render_template('datastore/dataset.html', uid=dataset.id, dataset=dataset)
 
 
 @app.route('/data/archive/<id>')
+@protected
 def delete_dataset(id):
-    if not g.user_id:
-        abort(401)
-
     dataset = database.Dataset.query.filter_by(id=int(id)).one()
     dataset.deleted = True
 
@@ -104,11 +98,8 @@ def delete_dataset(id):
     return datastore()
 
 @app.route('/data/unarchive/<id>')
+@protected
 def undelete_dataset(id):
-    if not g.user_id:
-        abort(401)
-
-
     dataset = database.Dataset.query.filter_by(id=int(id)).one()
     dataset.deleted = False
 
@@ -144,10 +135,8 @@ def order_dataset_by(col=None):
     return datastore()
 
 @app.route('/data/upload/', methods=['POST', 'GET'])
+@protected
 def upload_file():
-    if not g.user_id:
-        abort(401)
-
     args = {}
     for key, value in request.form.items():
         args[key] = value  # it is OK to overwrite QueryString parameters        
@@ -210,7 +199,7 @@ def upload_file():
 
         flash(u'Pobrałem plik o nazwie: %s' % file.filename, 'success')
 
-    return render_template('datastore/dataset.html', scenarios=g.scenarios, uid=dataset.id, dataset=dataset)
+    return render_template('datastore/dataset.html', uid=dataset.id, dataset=dataset)
 
 
 def modify_dataset(dataset):
@@ -222,10 +211,8 @@ def modify_dataset(dataset):
 
 
 @app.route('/fs/delete/<uid>', methods=['GET'])
+@protected
 def delete_file(uid):
-    if not g.user_id:
-        abort(401)
-
     dataset = None
 
     stored_file = database.StoredFile.query.filter_by(uid=uid).one()
@@ -244,13 +231,11 @@ def delete_file(uid):
         modify_dataset(dataset)
         flash(u"Poprawnie usunąłem plik %s" % file_name, 'success')
 
-    return render_template('datastore/dataset.html', scenarios=g.scenarios, uid=dataset.id, dataset=dataset)
+    return render_template('datastore/dataset.html', uid=dataset.id, dataset=dataset)
 
 @app.route('/data/update_comment', methods=['POST', 'GET'])
+@protected
 def update_comment():
-    if not g.user_id:
-        abort(401)
-
     dataset = None
 
     args = merge_http_request_arguments(True)
@@ -269,23 +254,19 @@ def update_comment():
         modify_dataset(dataset)
         flash(u"Zaktualizowałem komentarz do pliku %s na wartość: '%s'" % (file_name, new_comment), 'success')
 
-    return render_template('datastore/dataset.html', scenarios=g.scenarios, uid=dataset.id, dataset=dataset)
+    return render_template('datastore/dataset.html', uid=dataset.id, dataset=dataset)
 
 
 @app.route('/data/<dsid>')
+@protected
 def dataset(dsid):
-    if not g.user_id:
-        abort(401)
-
     dataset = database.Dataset.query.filter_by(id=dsid).one()
 
-    return render_template('datastore/dataset.html', scenarios=g.scenarios, uid=dsid, dataset=dataset)
+    return render_template('datastore/dataset.html', uid=dsid, dataset=dataset)
 
 @app.route('/fs/archive/<fuid>')
+@protected
 def archive(fuid):
-    if not g.user_id:
-        abort(401)
-
     file = database.StoredFile.query.filter_by(uid=fuid).one()
     file.set_archived(True)
     database.db.session.add(file)
@@ -294,14 +275,12 @@ def archive(fuid):
     dataset = file.dataset
     dsid = file.dataset_id
 
-    return render_template('datastore/dataset.html', scenarios=g.scenarios, uid=dsid, dataset=dataset)
+    return render_template('datastore/dataset.html', uid=dsid, dataset=dataset)
 
 
 @app.route('/fs/unarchive/<fuid>')
+@protected
 def unarchive(fuid):
-    if not g.user_id:
-        abort(401)
-
     file = database.StoredFile.query.filter_by(uid=fuid).one()
     file.set_archived(False)
     database.db.session.add(file)
@@ -310,13 +289,10 @@ def unarchive(fuid):
     dataset = file.dataset
     dsid = file.dataset_id
 
-    return render_template('datastore/dataset.html', scenarios=g.scenarios, uid=dsid, dataset=dataset)
+    return render_template('datastore/dataset.html', uid=dsid, dataset=dataset)
 
 @app.route('/fs/<uid>')
 def download(uid):
-    if not g.user_id:
-        abort(401)
-
     stored_file = storage.find_file_by_uid(uid)
     if stored_file is None:
         return render_template("no_file.html", uid=uid), 404
