@@ -131,7 +131,7 @@ def start_calculate_histogram_job(processing_folder):
     from rass_app import app
     with Connection(redis.from_url(app.config['REDIS_URL'])):
         q = Queue(app.config['REDIS_WORKER'])
-        task = q.enqueue(_task_calculate_histogram, processing_folder)
+        task = q.enqueue(_task_calculate_histogram, processing_folder, job_timeout='30m')
         return task.get_id()
 
 
@@ -139,7 +139,7 @@ def start_cached_histogram_job(processing_folder):
     from rass_app import app
     with Connection(redis.from_url(app.config['REDIS_URL'])):
         q = Queue(app.config['REDIS_WORKER'])
-        task = q.enqueue(_task_cached_histogram, processing_folder)
+        task = q.enqueue(_task_cached_histogram, processing_folder, job_timeout='30m')
         return task.get_id()
 
 
