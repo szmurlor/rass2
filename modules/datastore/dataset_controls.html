@@ -62,7 +62,7 @@
     Renderowanie jednego wiersza tabeli z informacjami o pliku.
 #}
 {% macro file_row(file, idx) %}
-<tr>
+<tr class="{{ 'archived' if file.is_archived() else '' }}" >
         {% if not file.type.only_one %}
             <td class="col1">{{idx}}.</td>
         {% endif -%}
@@ -77,14 +77,12 @@
             </span>
         </td>
         <td class="col4">
-            <span class="text-muted">
-                {{file.description}}
-            </span>
+            <span class="text-muted">{{file.description}}</span>
         </td>
         <td class="col5">
             <span class="text-muted">
                     {{file.stored_at|datetime}} {{ _("przez") }} {{file.stored_by.username}}                                 
-                    <a class="link-muted" href="/fs/unarchive/{{file.uid}}"><span title="The file was archived." class="glyphicon glyphicon-open"></span>&nbsp; Przywróć z archiwum</a>
+                    <a class="link-muted" href="/fs/unarchive/{{file.uid}}"><span title="The file was archived." class="glyphicon glyphicon-open"></span>&nbsp; {{ _("Przywróć z archiwum") }}</a>
             </span>
         </td>
         {% else -%}

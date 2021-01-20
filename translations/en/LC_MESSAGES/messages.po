@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2020-11-17 15:59+0100\n"
-"PO-Revision-Date: 2020-11-17 15:59+0100\n"
+"POT-Creation-Date: 2021-01-20 16:48+0100\n"
+"PO-Revision-Date: 2021-01-20 16:48+0100\n"
 "Last-Translator: \n"
 "Language: en\n"
 "Language-Team: en <LL@li.org>\n"
@@ -19,27 +19,27 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.4.0\n"
 
-#: rass.py:36
+#: rass.py:34
 msgid "Nie mogę zaktualizować struktury bazy danych!"
 msgstr "I can not update database structure!"
 
-#: rass.py:153
+#: rass.py:147
 msgid "Dane CT"
 msgstr "CT data"
 
-#: rass.py:154
+#: rass.py:148
 msgid "Dane o strukturach ROI"
 msgstr "ROI structures data"
 
-#: rass.py:155
+#: rass.py:149
 msgid "Plany radioterapii"
 msgstr "Radiotherapy plans"
 
-#: rass.py:156
+#: rass.py:150
 msgid "Inne"
 msgstr "Other"
 
-#: rass.py:157
+#: rass.py:151
 msgid "Wszyscy"
 msgstr "All"
 
@@ -122,22 +122,30 @@ msgstr "Histogram"
 msgid "Zamknij"
 msgstr "Close"
 
-#: modules/datastore/dataset.html:73 modules/datastore/datastore.html:34
+#: modules/datastore/dataset.html:74 modules/datastore/datastore.html:34
 #: modules/datastore/datastore.html:116
 msgid "Ostatnia modyfikacja"
 msgstr "Last modified"
 
-#: modules/datastore/dataset.html:73 modules/datastore/dataset_controls.html:86
-#: modules/datastore/dataset_controls.html:96
+#: modules/datastore/dataset.html:74 modules/datastore/dataset_controls.html:84
+#: modules/datastore/dataset_controls.html:94
 #: modules/datastore/datastore.html:46 modules/datastore/datastore.html:127
 msgid "przez"
 msgstr "by"
 
-#: modules/datastore/dataset.html:74
+#: modules/datastore/dataset.html:75
+msgid "Pokaż zarchiwizowane"
+msgstr "Show archived"
+
+#: modules/datastore/dataset.html:76
+msgid "Ukryj zarchiwizowane"
+msgstr "Hide archived"
+
+#: modules/datastore/dataset.html:78
 msgid "Zbiór danych"
 msgstr "Dataset"
 
-#: modules/datastore/dataset.html:106
+#: modules/datastore/dataset.html:110
 msgid "Przenieś zbiór danych do archiwum"
 msgstr "Move dataset to archive"
 
@@ -161,6 +169,10 @@ msgstr "Edit comment"
 #: modules/datastore/dataset_controls.html:45
 msgid "Usuń"
 msgstr "Delete"
+
+#: modules/datastore/dataset_controls.html:85
+msgid "Przywróć z archiwum"
+msgstr "Bring back from archive"
 
 #: modules/datastore/dataset_header.html:24
 msgid "Zmień"
