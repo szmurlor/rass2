@@ -20,7 +20,7 @@ db = SQLAlchemy(app)
 db.session.expire_on_commit = False
 
 def get_engine():
-    return db.get_engine()
+    return db.get_engine(app)
 
 
 class User(db.Model):
