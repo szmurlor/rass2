@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2021-01-20 16:48+0100\n"
-"PO-Revision-Date: 2021-01-20 16:48+0100\n"
+"POT-Creation-Date: 2021-01-20 17:10+0100\n"
+"PO-Revision-Date: 2021-01-20 17:10+0100\n"
 "Last-Translator: \n"
 "Language: en\n"
 "Language-Team: en <LL@li.org>\n"
@@ -42,6 +42,34 @@ msgstr "Other"
 #: rass.py:151
 msgid "Wszyscy"
 msgstr "All"
+
+#: rass.py:152
+msgid "Dane do optymalizacji"
+msgstr "Dose deposition data for optimization"
+
+#: rass.py:153
+msgid "Opis optymalizacji"
+msgstr "Description of optimization"
+
+#: rass.py:154
+msgid "Wyniki pareto"
+msgstr "Pareto solutions (fluence maps)"
+
+#: rass.py:155
+msgid "Mapy fluencji po optymalizacji"
+msgstr "Fluence maps converted for Eclipse"
+
+#: rass.py:156
+msgid "PW"
+msgstr "WUT"
+
+#: rass.py:157
+msgid "COI"
+msgstr "NIO"
+
+#: rass.py:158
+msgid "PAN"
+msgstr "PAN+Almeria"
 
 #: modules/base.html:51 modules/datastore/datastore.html:3
 msgid "Magazyn danych"
@@ -314,4 +342,16 @@ msgstr "Unarchive"
 
 #~ msgid "Other"
 #~ msgstr "Inne"
+
+#~ msgid "Dane do optymalizacji (PW)"
+#~ msgstr "Dose data for optimization (uploaded by WUT)"
+
+#~ msgid "Opis optymalizacji (COI)"
+#~ msgstr "Description of optimization ((uploaded by NIO)"
+
+#~ msgid "Wyniki pareto (PAN)"
+#~ msgstr "Optimal fluence maps (pareto optimal, uploaded by PAN)"
+
+#~ msgid "Mapy fluencji po optymalizacji (PW)"
+#~ msgstr "Fluence maps converted for Eclipse (uploaded by WUT)"
 

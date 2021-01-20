@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2021-01-20 16:48+0100\n"
+"POT-Creation-Date: 2021-01-20 17:10+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -39,6 +39,34 @@ msgstr ""
 
 #: rass.py:151
 msgid "Wszyscy"
+msgstr ""
+
+#: rass.py:152
+msgid "Dane do optymalizacji"
+msgstr ""
+
+#: rass.py:153
+msgid "Opis optymalizacji"
+msgstr ""
+
+#: rass.py:154
+msgid "Wyniki pareto"
+msgstr ""
+
+#: rass.py:155
+msgid "Mapy fluencji po optymalizacji"
+msgstr ""
+
+#: rass.py:156
+msgid "PW"
+msgstr ""
+
+#: rass.py:157
+msgid "COI"
+msgstr ""
+
+#: rass.py:158
+msgid "PAN"
 msgstr ""
 
 #: modules/base.html:51 modules/datastore/datastore.html:3

@@ -4,8 +4,8 @@ function showArchived() {
         var e = elements[i];
         e.style.display = '';
     }
-    document.getElementById('show-archived').display = 'none';
-    document.getElementById('hide-archived').display = '';
+    document.getElementById('show-archived').style.display='none';
+    document.getElementById('hide-archived').style.display = '';
 }
 
 function hideArchived() {
@@ -16,8 +16,8 @@ function hideArchived() {
         e.style.display = 'none';
         console.log("Hiding: ", e);
     }
-    document.getElementById('show-archived').display = '';
-    document.getElementById('hide-archived').display = 'none';
+    document.getElementById('show-archived').style.display = '';
+    document.getElementById('hide-archived').style.display = 'none';
 }
 
 // initialization on document end
