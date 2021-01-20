@@ -19,8 +19,8 @@ streamhandler.setFormatter(formatter)
 #filehandler.setFormatter(formatter)
 
 
-from flask.logging import default_handler
-app.logger.removeHandler(default_handler)
+#from flask.logging import default_handler
+#app.logger.removeHandler(default_handler)
 app.logger.addHandler(streamhandler)
 app.logger.setLevel(DEBUG)
 

@@ -1,5 +1,5 @@
 # -*- coding: utf-8
-from flask import Flask, g, request
+from flask import Flask, g, request, abort
 import os
 import json
 import logging

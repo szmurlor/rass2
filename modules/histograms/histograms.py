@@ -3,7 +3,7 @@ import os
 import storage
 import json
 
-from flask import g, abort, render_template, flash, redirect, session, jsonify
+from flask import g, abort, render_template, flash, redirect, session, jsonify, redirect
 import database
 import logger
 from rass_app import app, protected
@@ -105,7 +105,8 @@ def histogram(ftokens):
     if data:
         res["data"] = data
 
-    return jsonify(res)
+    # return jsonify(res)
+    return redirect(f"/dash_histograms?task_id={data['task_id']}")
 
     
 def generate_dirname(beamlets, fluences):
